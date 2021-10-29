@@ -27,26 +27,26 @@ use App\Http\Controllers\TodoController;
 // });
 
 
-// Route::get('/gethypothesisdata', [HypothesisController::class, 'getHypothesisData']);
-// Route::get('/getcustomersegmentstopic', [HypothesisController::class, 'getCustomerSegmentsTopic']);
-// Route::get('/getproblemstopic', [HypothesisController::class, 'getProblemsTopic']);
-// Route::get('/getstatus/{customerproblem_id}', [HypothesisController::class, 'getstatus']);
-// Route::get('/getHypothesisID/{customerproblem_id}', [HypothesisController::class, 'getHypothesisID']);
-// Route::prefix('/hypothesis')->group(function () {
-//     Route::post('/store', [HypothesisController::class, 'store']);
-//     Route::put('/{id}', [HypothesisController::class, 'update']);
-//     Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class, 'updateCustomerProblem']);
-//     Route::delete('/custprob/{customerproblem_id}', [HypothesisController::class, 'destroy']);
-// });
+Route::get('/gethypothesisdata', [HypothesisController::class, 'getHypothesisData']);
+Route::get('/getcustomersegmentstopic', [HypothesisController::class, 'getCustomerSegmentsTopic']);
+Route::get('/getproblemstopic', [HypothesisController::class, 'getProblemsTopic']);
+Route::get('/getstatus/{customerproblem_id}', [HypothesisController::class, 'getstatus']);
+Route::get('/getHypothesisID/{customerproblem_id}', [HypothesisController::class, 'getHypothesisID']);
+Route::prefix('/hypothesis')->group(function () {
+    Route::post('/store', [HypothesisController::class, 'store']);
+    Route::put('/{id}', [HypothesisController::class, 'update']);
+    Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class, 'updateCustomerProblem']);
+    Route::delete('/custprob/{customerproblem_id}', [HypothesisController::class, 'destroy']);
+});
 
 
-// Route::prefix('/interview')->group(function () {
-//     Route::post('/store', [InterviewController::class, 'store']);
-//     // Route::put('/{id}', [HypothesisController::class,'update']);
-//     // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);
-//     // Route::delete('/custprob/{customerproblem_id}',[HypothesisController::class,'destroy']);
+Route::prefix('/interview')->group(function () {
+    Route::post('/store', [InterviewController::class, 'store']);
+    // Route::put('/{id}', [HypothesisController::class,'update']);
+    // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);
+    // Route::delete('/custprob/{customerproblem_id}',[HypothesisController::class,'destroy']);
 
-// });
+});
 
 
 // auth 
