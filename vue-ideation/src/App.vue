@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="test">
     <div v-if="authenticated" class="flex flex-row justify-center gap-4 my-5">
       <button @click="logout" class="px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-blue-500 rounded hover:bg-gray-600 focus:outline-none">Logout</button>
       <router-link :to="{name: 'ProjectsDashboard'}" class="px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-blue-500 rounded hover:bg-gray-600 focus:outline-none">Project Dashboard</router-link>
@@ -35,4 +35,7 @@ export default {
   }
 };
 </script>
+
+<style>
+</style>
 
