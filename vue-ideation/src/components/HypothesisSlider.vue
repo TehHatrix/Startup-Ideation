@@ -1,5 +1,4 @@
 <template>
-  <div id="sliderContainer">
     <div class="tick-slider">
       <!-- <div class="tick-slider-header">
                 <h5><label for="weightSlider">Total weight</label></h5>
@@ -41,27 +40,7 @@
         data-min-label-id="weightLabelMin"
         data-max-label-id="weightLabelMax"
       />
-      <!-- <input
-        id="weightSlider"
-        class="tick-slider-input"
-        type="range"
-        ref="slider"
-        :min="sliderMin"
-        :max="sliderMax"
-        step="1"
-        value="0"
-        v-model="SliderValue"
-        @input="onSliderInput()"
-        data-tick-step="1"
-        data-tick-id="weightTicks"
-        data-value-id="weightValue"
-        data-progress-id="weightProgress"
-        data-handle-size="18"
-        data-min-label-id="weightLabelMin"
-        data-max-label-id="weightLabelMax"
-      /> -->
     </div>
-  </div>
 </template>
 
 <script>
@@ -387,6 +366,7 @@ export default {
 
 .tick-slider {
   position: relative;
+  max-width: 400px;
   width: 100%;
 }
 
