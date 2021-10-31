@@ -1,13 +1,18 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Hypothesis from '../views/Hypothesis.vue'
-import Test from '../views/Test.vue'
 import store from '@/store'
 import Login from '../views/Login.vue'
+
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/',
+    name: 'HomeGuest',
+    component: () => import('../views/Authentication/Authentication.vue')
+  },
   {    
     path: '/about',
     name: 'About',
@@ -20,11 +25,6 @@ const routes = [
     path: '/hypothesis',
     name: 'Hypothesis',
     component: Hypothesis
-  },
-  {
-    path: '/test',
-    name: 'test',
-    component: Test
   },
   {
     path: '/login',
@@ -64,7 +64,8 @@ const routes = [
     path: '/projects/:projectId/todos',
     name: 'Todo',
     component: () => import('../views/Todo/Todo.vue')
-  }
+  },
+
 ]
 
 const router = new VueRouter({

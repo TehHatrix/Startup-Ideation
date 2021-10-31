@@ -1,14 +1,14 @@
 <template lang="">
     <section class="mt-10">
-        <div class="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <div class="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md ">
           <div class="px-6 py-4">
-              <h2 class="text-3xl font-bold text-center text-gray-700 dark:text-white">Startup Ideation</h2>
+              <h2 class="text-3xl font-bold text-center text-gray-700 ">Startup Ideation</h2>
 
-              <h3 class="mt-1 text-xl font-medium text-center text-gray-600 dark:text-gray-200">We are glad to serve you</h3>
+              <h3 class="mt-1 text-xl font-medium text-center text-gray-600 ">We are glad to serve you</h3>
 
               <form @submit.prevent="register">
                   <div class="w-full mt-4">
-                      <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" 
+                      <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md  focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" 
                       type="text" 
                       placeholder="name" 
                       aria-label="name"
@@ -17,7 +17,7 @@
                   </div>
                   
                   <div class="w-full mt-4">
-                      <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" 
+                      <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md  focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" 
                       type="email" 
                       placeholder="Email Address" 
                       aria-label="Email Address"
@@ -26,7 +26,7 @@
                   </div>
 
                   <div class="w-full mt-4">
-                      <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" 
+                      <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md  focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" 
                       type="password" 
                       placeholder="Password" 
                       aria-label="Password"
@@ -35,7 +35,7 @@
                   </div>
 
                   <div class="w-full mt-4">
-                      <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" 
+                      <input class="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-500 bg-white border rounded-md  focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" 
                       type="password" 
                       placeholder="Confirm Password" 
                       aria-label="Confirm Password"
