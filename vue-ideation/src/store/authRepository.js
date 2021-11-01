@@ -20,9 +20,11 @@ const actions = {
         await auth.createSession()
         const { data } = await auth.login(payload)
         console.log(data)
-        commit('SET_USER', data)
+        commit('SET_USER', data.user)
 
-        localStorage.user = JSON.stringify(data)
+        localStorage.user = JSON.stringify(data.user)
+
+        return data
     },
 
     async logout({commit}) {

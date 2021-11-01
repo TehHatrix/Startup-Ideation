@@ -5,7 +5,7 @@ import store from './store'
 import '@/assets/style.css'
 import Axios from 'axios'
 import vSelect from 'vue-select'
-import {vsSelect } from 'vuesax'
+import vsSelect  from 'vuesax'
 import 'vuesax/dist/vuesax.css'
 
 Vue.component('v-select', vSelect)
@@ -17,6 +17,5 @@ Vue.prototype.$http = Axios;
 new Vue({
   router,
   store,
-
   render: h => h(App)
 }).$mount('#app')

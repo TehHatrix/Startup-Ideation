@@ -15,7 +15,18 @@ class Controller extends BaseController
     {
         $response = [
             'success' => true,
-            'task' => $result
+            'data' => $result,
+            'errors' => null
+        ];
+
+        return $response;
+    }
+
+    public function failResponse($err) {
+
+        $response = [
+            'success' => false,
+            'errors' => $err
         ];
 
         return $response;
