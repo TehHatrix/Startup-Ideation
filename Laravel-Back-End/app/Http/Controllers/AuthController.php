@@ -52,7 +52,7 @@ class AuthController extends Controller
             'errors' => 'fail to register',
             'message' => 'fail to register',
             'success' => false
-        ], 404);
+        ]);
     }
 
     public function login(Request $request)
@@ -74,12 +74,14 @@ class AuthController extends Controller
             'success' => false,
             'message' => 'error in login',
             'user' => null
-        ], 404);
+        ]);
     }
 
     public function logout()
     {
         Auth::logout();
-        return response(null, 200);
+        return response()->json([
+            'success' => true
+        ], 200);
     }
 }

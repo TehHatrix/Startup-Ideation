@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Hypothesis from '../views/Hypothesis.vue'
 import store from '@/store'
-import Login from '../views/Login.vue'
 
 
 Vue.use(VueRouter)
@@ -13,14 +12,6 @@ const routes = [
     name: 'HomeGuest',
     component: () => import('../views/Authentication/Authentication.vue')
   },
-  {    
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  },
   {
     path: '/hypothesis',
     name: 'Hypothesis',
@@ -29,14 +20,15 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login,
-    beforeEnter: (to, from, next) => {
-      if(store.getters['authenticated']) {
-        next({name: 'ProjectsDashboard'})
-      } else {
-        next()
-      }
-    }
+    
+    // component: Login,
+    // beforeEnter: (to, from, next) => {
+    //   if(store.getters['authenticated']) {
+    //     next({name: 'ProjectsList'})
+    //   } else {
+    //     next()
+    //   }
+    // }
   },
   {
     path: '/register',
@@ -45,13 +37,13 @@ const routes = [
   },
   {
     path: '/projects',
-    name: 'ProjectsDashboard',
-    component: () => import('../views/Project/ProjectsDashboard.vue'),
+    name: 'ProjectsList',
+    component: () => import('../views/Project/ProjectsList.vue'),
     beforeEnter: (to, from, next) => {
       if(store.getters['authenticated']) {
         next()
       } else {
-        next({name: 'Login'})
+        next({name: 'HomeGuest'})
       }
     }
   },

@@ -23,7 +23,10 @@ class ProjectController extends Controller
 
         // $projects = User::find(Auth::id())->projects()->get();
 
-        return response(['projects' => $projects ], 200);
+        return response()->json([
+            'success' => true,
+            'projects' => $projects
+        ], 200);
     }
 
  

@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class FreeCanvasContentController extends Controller
 {
 
-    public function __construct()
-    {
-        Auth::loginUsingId(1, false);
-    }
     public function index($canvas) {
         $content = FreeCanvas::with('contents')->where('id', $canvas);
         return response(['content' => $content], 200);

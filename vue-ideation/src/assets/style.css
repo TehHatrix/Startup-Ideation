@@ -1,6 +1,9 @@
 @import url("./css/_text.css");
 @import url("./css/_grid.css");
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+@import url("./css/_margin.css");
+@import url("./css/_display.css");
+
 :root {
     --tw-bg-opacity: 1;
     --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -237,4 +240,17 @@ body {
     background-color: #fff;
     border-radius: 0.5rem;
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+/* project-title */
+.project-title {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	border-bottom-width: 2px;
+	border-color: rgba(124, 58, 237, var(--tw-border-opacity));
+	padding-left: 0.75rem;
+	padding-right: 0.75rem;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
 }
