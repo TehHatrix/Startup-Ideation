@@ -28,9 +28,17 @@ export default {
 };
 </script>
 
-<style>
-#app{
-  font-family: 'Poppins', 'sans-serif';
+  <style>
+#app {
+  background: url("~@/assets/double-bubble-outline.png");
+  z-index: -1;
+  height: 100%;
+  background-size: 200px 200px;
+  background-repeat: repeat;
+  font-family: Poppins;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.1px;
 }
 </style>
 

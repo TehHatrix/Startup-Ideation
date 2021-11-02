@@ -11,43 +11,39 @@
       </tr>
       <tr v-for="(item, index) in hypothesis_data" :key="index">
         <td>
-          <v-select
-            v-model="selected_custseg[index]"
-            v-bind:options="custseg_options()"
-          ></v-select>
+          <p id="cust_seg">{{ selected_custseg[index] }}</p>
         </td>
         <td>has a problems of</td>
         <td>
-          <v-select
-            v-model="selected_problems[index]"
-            v-bind:options="problems_options()"
-          ></v-select>
+          <p id="problems">{{ selected_problems[index] }}</p>
         </td>
         <td>
           <p>Problems Frequency</p>
-          <vue-slider
+          <Slider type="Frequency" v-model="pain_value1[index]" ></Slider>
+          <!-- <vue-slider
             v-model="pain_value1[index]"
             :adsorb="true"
             :data="pain_data1"
             :marks="true"
-          ></vue-slider>
+          ></vue-slider> -->
           <p>Problems Severity</p>
-          <vue-slider
+          <Slider type="Severity" v-model="pain_value2[index]"></Slider>
+          <!-- <vue-slider
             v-model="pain_value2[index]"
             :adsorb="true"
             :data="pain_data2"
             :marks="true"
-          ></vue-slider>
+          ></vue-slider> -->
         </td>
 
         <td>
           <p>How long to interviews all the customer segments?</p>
-          <vue-slider
+          <!-- <vue-slider
             v-model="feedback_value[index]"
             :adsorb="true"
             :data="feedback_data"
             :marks="true"
-          ></vue-slider>
+          ></vue-slider> -->
         </td>
         <Modal></Modal>
       </tr>
@@ -86,9 +82,11 @@
 
 <script>
 import Modal from "@/components/GeneralModal.vue";
+import Slider from "@/components/HypothesisSlider.vue";
 export default {
-  components:{
-    Modal
+  components: {
+    Modal,
+    Slider,
   },
   data() {
     return {
@@ -108,7 +106,7 @@ export default {
       .get("http://localhost:80/api/gethypothesisdata")
       .then((response) => {
         this.hypothesis_data = response.data;
-        console.log(this.hypothesis_data)
+        console.log(this.hypothesis_data);
         for (let item in this.hypothesis_data) {
           this.selected_custseg[item] = this.hypothesis_data[item][1];
           this.selected_problems[item] = this.hypothesis_data[item][2];
@@ -116,7 +114,7 @@ export default {
       })
       .catch((error) => console.log(error));
   },
-  mount(){
+  mount() {
     this.show();
   },
   methods: {
@@ -150,4 +148,18 @@ export default {
 </script>
 
 <style scoped>
+#cust_seg,
+#problems {
+  font-weight: bold;
+  text-align: center;
+}
+
+#cust_seg {
+  margin-right: 30px;
+}
+
+#problems {
+  margin-left: 30px;
+  margin-right: 30px;
+}
 </style>
