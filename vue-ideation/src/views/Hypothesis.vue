@@ -19,7 +19,7 @@
         </td>
         <td>
           <p>Problems Frequency</p>
-          <Slider type="Frequency"></Slider>
+          <Slider type="Frequency" v-model="pain_value1[index]" ></Slider>
           <!-- <vue-slider
             v-model="pain_value1[index]"
             :adsorb="true"
@@ -27,7 +27,7 @@
             :marks="true"
           ></vue-slider> -->
           <p>Problems Severity</p>
-          <Slider type="Severity"></Slider>
+          <Slider type="Severity" v-model="pain_value2[index]"></Slider>
           <!-- <vue-slider
             v-model="pain_value2[index]"
             :adsorb="true"

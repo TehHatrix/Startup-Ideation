@@ -1,264 +1,173 @@
 <template>
-    <div class="tick-slider">
-      <!-- <div class="tick-slider-header">
+  <div class="tick-slider">
+    <!-- <div class="tick-slider-header">
                 <h5><label for="weightSlider">Total weight</label></h5>
                 <h5>kg</h5>
             </div> -->
-      <div v-if="type == 'Frequency'" class="tick-slider-value-container">
-        <div id="weightLabelMin" class="tick-slider-label">Daily</div>
-        <div id="weightLabelMax" class="tick-slider-label">Yearly</div>
-        <!-- <div id="weightValue" class="tick-slider-value">
+    <div v-if="type == 'Frequency'" class="tick-slider-value-container">
+      <div id="weightLabelMin" class="tick-slider-label" ref="weightValueMin">
+        Daily
+      </div>
+      <div id="weightLabelMax" class="tick-slider-label" ref="weightValueMax">
+        Yearly
+      </div>
+      <!-- <div id="weightValue" class="tick-slider-value">
           {{ SliderLabelValue }}
         </div> -->
-        <div id="weightValue" class="tick-slider-value"></div>
+      <div id="weightValue" class="tick-slider-value" ref="weightValue">
+        {{ SliderLabelValue }}
       </div>
-      <div v-else-if="type == 'Severity'" class="tick-slider-value-container">
-        <div id="weightLabelMin" class="tick-slider-label">Mild</div>
-        <div id="weightLabelMax" class="tick-slider-label">Severe</div>
-        <!-- <div id="weightValue" class="tick-slider-value" ref="weightValue">
-          {{ SliderLabelValue }}
-        </div> -->
-        <div id="weightValue" class="tick-slider-value"></div>
-      </div>
-      <div class="tick-slider-background" id="slider-background"></div>
-      <div id="weightProgress" class="tick-slider-progress"></div>
-      <div id="weightTicks" class="tick-slider-tick-container"></div>
-      <input
-        id="weightSlider"
-        class="tick-slider-input"
-        type="range"
-        ref="slider"
-        min="0"
-        max="3"
-        step="1"
-        value="0"
-        data-tick-step="1"
-        data-tick-id="weightTicks"
-        data-value-id="weightValue"
-        data-progress-id="weightProgress"
-        data-handle-size="18"
-        data-min-label-id="weightLabelMin"
-        data-max-label-id="weightLabelMax"
-      />
     </div>
+    <div v-else-if="type == 'Severity'" class="tick-slider-value-container">
+      <div id="weightLabelMin" class="tick-slider-label" ref="weightValueMin">
+        Mild
+      </div>
+      <div id="weightLabelMax" class="tick-slider-label" ref="weightValueMax">
+        Severe
+      </div>
+      <!-- <div id="weightValue" class="tick-slider-value" ref="weightValue">
+          {{ SliderLabelValue }}
+        </div> -->
+      <div id="weightValue" class="tick-slider-value" ref="weightValue">
+        {{ SliderLabelValue }}
+      </div>
+    </div>
+    <div class="tick-slider-background" id="slider-background"></div>
+    <div
+      id="weightProgress"
+      class="tick-slider-progress"
+      ref="weightProgress"
+    ></div>
+    <div
+      id="weightTicks"
+      class="tick-slider-tick-container"
+      ref="weightTicks"
+    ></div>
+    <input
+      id="weightSlider"
+      class="tick-slider-input"
+      type="range"
+      ref="slider"
+      :min="sliderMin"
+      :max="sliderMax"
+      step="1"
+      v-model="modelValue"
+      @input="onSliderInput()"
+      @resize="onResize()"
+      data-tick-step="1"
+      data-tick-id="weightTicks"
+      data-value-id="weightValue"
+      data-progress-id="weightProgress"
+      data-handle-size="18"
+      data-min-label-id="weightLabelMin"
+      data-max-label-id="weightLabelMax"
+    />
+  </div>
 </template>
 
 <script>
 export default {
   props: {
-    type: { type: String },
+    type: { type: String, modelValue: Number },
   },
   data() {
     return {
       SliderType: this.type,
-      SliderValue: 0,
       SliderLabelValue: "",
+      modelValue: this.modelValue,
       sliderMin: 0,
       sliderMax: 3,
-      // sliderValue: 0,
-      // sliderValuePosition: 0,
-      // sliderLabel: 'meow',
-      // sliderProgress: 0,
+      currentSliderWidth: 0,
+      currentValueWidth: 0,
     };
   },
-  // methods: {
-  //   init: function () {
-  //     setTicks(slider);
-  //     const sliders = document.getElementsByClassName("tick-slider-input");
 
-  //     for (let slider of sliders) {
-  //       slider.oninput = onSliderInput;
-  //       updateValue(slider, SliderType);
-  //       updateValuePosition(slider);
-  //       updateLabels(slider);
-  //       updateProgress(slider);
-  //       setTicks(slider);
-  //     }
-  //   },
-  // onSliderInput: function () {
-  //   this.updateValue();
-  //   this.updateValuePosition();
-  //   this.updateLabels();
-  //   this.updateProgress();
-  // },
-  // updateValue: function () {
-  //   // let value = document.getElementById(slider.dataset.valueId);
-  //   let TextValue = "";
-  //   if (this.SliderType === "Frequency") {
-  //     if (this.SliderValue === "0") {
-  //       TextValue = "Daily";
-  //       // value.innerHTML = "<div>" + TextValue + "</div>";
-  //       this.SliderLabelValue = TextValue;
-  //     } else if (this.SliderValue === "1") {
-  //       TextValue = "Weekly";
-  //       this.SliderLabelValue = TextValue;
-  //       // value.innerHTML = "<div>" + TextValue + "</div>";
-  //     } else if (this.SliderValue === "2") {
-  //       TextValue = "Monthly";
-  //       this.SliderLabelValue = TextValue;
-  //     } else if (this.SliderValue === "3") {
-  //       TextValue = "Yearly";
-  //       this.SliderLabelValue = TextValue;
-  //     } else {
-  //       this.SliderLabelValue = TextValue;
-  //       // value.innerHTML = "<div>" + slider.value + "</div>";
-  //     }
-  //   }
-  // },
-  // updateValuePosition: function () {
-  //   // let value = document.getElementById(slider.dataset.valueId);
-  //   const percent = this.getSliderPercent;
-  //   const sliderWidth = this.$refs.slider.getBoundingClientRect().width;
-  //   const valueWidth = this.$refs.weightValue.getBoundingClientRect().width;
-  //   const handleSize = 18;
+  computed: {
+    getSliderWidth: function () {
+      return this.$refs.slider.getBoundingClientRect().width;
+    },
+    getValueWidth: function () {
+      return this.$refs.weightValue.getBoundingClientRect().width;
+    },
+  },
+  methods: {
+    init: function () {
+      // slider.oninput = onSliderInput;
+      this.updateValue();
+      this.updateValuePosition();
+      this.updateLabels();
+      this.updateProgress();
+    },
+    onSliderInput: function () {
+      this.changeValue();
+      this.updateValue();
+      this.updateValuePosition();
+      this.updateLabels();
+      this.updateProgress();
+    },
+    changeValue() {
+      this.$emit("input", this.modelValue);
+    },
 
-  //   let left =
-  //     percent * (sliderWidth - handleSize) + handleSize / 2 - valueWidth / 2;
-
-  //   left = Math.min(left, sliderWidth - valueWidth);
-  //   left = this.SliderValue === this.sliderMin ? 0 : left;
-
-  //   return left;
-
-  //   value.style.left = left + "px";
-  // },
-  // getSliderPercent: function () {
-  //   const range = sliderMax - sliderMin;
-  //   const absValue = SliderValue - sliderMin;
-
-  //   return absValue / range;
-  // },
-  //   updateLabels: function () {
-  //     const value = document.getElementById(slider.dataset.valueId);
-  //     const minLabel = document.getElementById(slider.dataset.minLabelId);
-  //     const maxLabel = document.getElementById(slider.dataset.maxLabelId);
-
-  //     const valueRect = value.getBoundingClientRect();
-  //     const minLabelRect = minLabel.getBoundingClientRect();
-  //     const maxLabelRect = maxLabel.getBoundingClientRect();
-
-  //     const minLabelDelta = valueRect.left - minLabelRect.left;
-  //     const maxLabelDelta = maxLabelRect.left - valueRect.left;
-
-  //     const deltaThreshold = 32;
-
-  //     if (minLabelDelta < deltaThreshold) minLabel.classList.add("hidden");
-  //     else minLabel.classList.remove("hidden");
-
-  //     if (maxLabelDelta < deltaThreshold) maxLabel.classList.add("hidden");
-  //     else maxLabel.classList.remove("hidden");
-  //   },
-  //   updateProgress: function () {
-  //     let progress = document.getElementById(slider.dataset.progressId);
-  //     const percent = getSliderPercent(slider);
-
-  //     progress.style.width = percent * 100 + "%";
-  //   },
-
-  //   setTicks: function () {
-  //     let container = document.getElementById(slider.dataset.tickId);
-  //     const spacing = parseFloat(slider.dataset.tickStep);
-  //     const sliderRange = slider.max - slider.min;
-  //     const tickCount = sliderRange / spacing + 1; // +1 to account for
-
-  //     for (let ii = 0; ii < tickCount; ii++) {
-  //       let tick = document.createElement("span");
-
-  //       tick.className = "tick-slider-tick";
-
-  //       container.appendChild(tick);
-  //     }
-  //   },
-  //   onResize: function () {
-  //     const sliders = document.getElementsByClassName("tick-slider-input");
-
-  //     for (let slider of sliders) {
-  //       updateValuePosition(slider);
-  //     }
-  //   },
-  // },
-  mounted() {
-    let $slidertype = this;
-    function init() {
-      const sliders = document.getElementsByClassName("tick-slider-input");
-
-      for (let slider of sliders) {
-        slider.oninput = onSliderInput;
-        updateValue(slider);
-        updateValuePosition(slider);
-        updateLabels(slider);
-        updateProgress(slider);
-        setTicks(slider);
-      }
-    }
-
-    function onSliderInput(event) {
-      updateValue(event.target);
-      updateValuePosition(event.target);
-      updateLabels(event.target);
-      updateProgress(event.target);
-    }
-
-    function updateValue(slider) {
-      let value = document.getElementById(slider.dataset.valueId);
-      var TextValue = "";
-      if ($slidertype.type === "Frequency") {
-        if (slider.value === "0") {
+    updateValue: function () {
+      let TextValue = "";
+      if (this.SliderType === "Frequency") {
+        if (this.modelValue === "0") {
           TextValue = "Daily";
-          value.innerHTML = "<div>" + TextValue + "</div>";
-        } else if (slider.value === "1") {
+          this.SliderLabelValue = TextValue;
+        } else if (this.modelValue === "1") {
           TextValue = "Weekly";
-          value.innerHTML = "<div>" + TextValue + "</div>";
-        } else if (slider.value === "2") {
+          this.SliderLabelValue = TextValue;
+        } else if (this.modelValue === "2") {
           TextValue = "Monthly";
-          value.innerHTML = "<div>" + TextValue + "</div>";
-        } else if (slider.value === "3") {
+          this.SliderLabelValue = TextValue;
+        } else if (this.modelValue === "3") {
           TextValue = "Yearly";
-          value.innerHTML = "<div>" + TextValue + "</div>";
-        } else {
-          value.innerHTML = "<div>" + slider.value + "</div>";
+          this.SliderLabelValue = TextValue;
         }
       }
-      else if ($slidertype.type === "Severity") {
-        if (slider.value === "0") {
+      if (this.SliderType === "Severity") {
+        if (this.modelValue === "0") {
           TextValue = "Mild";
-          value.innerHTML = "<div>" + TextValue + "</div>";
-        } else if (slider.value === "1") {
+          this.SliderLabelValue = TextValue;
+        } else if (this.modelValue === "1") {
           TextValue = "Moderate";
-          value.innerHTML = "<div>" + TextValue + "</div>";
-        } else if (slider.value === "2") {
+          this.SliderLabelValue = TextValue;
+        } else if (this.modelValue === "2") {
           TextValue = "Major";
-          value.innerHTML = "<div>" + TextValue + "</div>";
-        } else if (slider.value === "3") {
+          this.SliderLabelValue = TextValue;
+        } else if (this.modelValue === "3") {
           TextValue = "Severe";
-          value.innerHTML = "<div>" + TextValue + "</div>";
-        } else {
-          value.innerHTML = "<div>" + slider.value + "</div>";
+          this.SliderLabelValue = TextValue;
         }
       }
-    }
+    },
 
-    function updateValuePosition(slider) {
-      let value = document.getElementById(slider.dataset.valueId);
-
-      const percent = getSliderPercent(slider);
-      const sliderWidth = slider.getBoundingClientRect().width;
-      const valueWidth = value.getBoundingClientRect().width;
-      const handleSize = slider.dataset.handleSize;
-
+    getSliderPercent: function () {
+      const range = this.sliderMax - this.sliderMin;
+      const absValue = this.modelValue - this.sliderMin;
+      return absValue / range;
+    },
+    updateValuePosition: function () { //Issues:  Value not sync with width
+      const percent = this.getSliderPercent(); //Progress Position
+      // const sliderWidth = this.$refs.slider.getBoundingClientRect().width;
+      const sliderWidth = this.getSliderWidth;
+      const valueWidth = this.$refs.weightValue.getBoundingClientRect().width;
+      console.log(valueWidth)
+      console.log(this.$refs.weightValue.getBoundingClientRect().width)
+      const handleSize = this.$refs.slider.dataset.handleSize;
       let left =
         percent * (sliderWidth - handleSize) + handleSize / 2 - valueWidth / 2;
 
       left = Math.min(left, sliderWidth - valueWidth);
-      left = slider.value === slider.min ? 0 : left;
+      left = this.modelValue === this.sliderMin ? 0 : left-9;
 
-      value.style.left = left + "px";
-    }
-
-    function updateLabels(slider) {
-      const value = document.getElementById(slider.dataset.valueId);
-      const minLabel = document.getElementById(slider.dataset.minLabelId);
-      const maxLabel = document.getElementById(slider.dataset.maxLabelId);
+      this.$refs.weightValue.style.left = left + "px";
+    },
+    updateLabels: function () {
+      const value = this.$refs.weightValue;
+      const minLabel = this.$refs.weightValueMin;
+      const maxLabel = this.$refs.weightValueMax;
 
       const valueRect = value.getBoundingClientRect();
       const minLabelRect = minLabel.getBoundingClientRect();
@@ -274,70 +183,109 @@ export default {
 
       if (maxLabelDelta < deltaThreshold) maxLabel.classList.add("hidden");
       else maxLabel.classList.remove("hidden");
-    }
-
-    function updateProgress(slider) {
-      let progress = document.getElementById(slider.dataset.progressId);
-      const percent = getSliderPercent(slider);
-
+    },
+    updateProgress: function () {
+      // let progress = document.getElementById(slider.dataset.progressId);
+      let progress = this.$refs.weightProgress;
+      const percent = this.getSliderPercent();
       progress.style.width = percent * 100 + "%";
-    }
-
-    function getSliderPercent(slider) {
-      const range = slider.max - slider.min;
-      const absValue = slider.value - slider.min;
-
-      return absValue / range;
-    }
-
-    function setTicks(slider) {
-      let container = document.getElementById(slider.dataset.tickId);
+    },
+    setTicks: function () {
+      let container = this.$refs.weightTicks;
+      let slider = this.$refs.slider;
       const spacing = parseFloat(slider.dataset.tickStep);
-      const sliderRange = slider.max - slider.min;
+      const sliderRange = this.sliderMax - this.sliderMin;
       const tickCount = sliderRange / spacing + 1; // +1 to account for
-
       for (let ii = 0; ii < tickCount; ii++) {
         let tick = document.createElement("span");
-
         tick.className = "tick-slider-tick";
-
         container.appendChild(tick);
       }
+    },
+    onResize: function () {
+      // const sliders = document.getElementsByClassName("tick-slider-input");
+      // for (let slider of sliders) {
+      this.updateValuePosition();
+      // }
+    },
+  },
+  mounted() {
+    // this.init();
+    // this.setTicks();
+    // this.currentSliderWidth = this.getSliderWidth
+    // this.currentValueWidth = this.getValueWidth
+    window.onload = updateValuePosition();
+    // updateValuePosition();
+
+    // }
+    // function onSliderInput(event) {
+    //   updateValue(event.target);
+    //   updateValuePosition(event.target);
+    //   updateLabels(event.target);
+    //   updateProgress(event.target);
+    // }
+    // function updateValue(slider) {
+    //   let value = document.getElementById(slider.dataset.valueId);
+    //   var TextValue = "";
+    //   if ($slidertype.type === "Frequency") {
+    //     if (slider.value === "0") {
+    //       TextValue = "Daily";
+    //       value.innerHTML = "<div>" + TextValue + "</div>";
+    //     } else if (slider.value === "1") {
+    //       TextValue = "Weekly";
+    //       value.innerHTML = "<div>" + TextValue + "</div>";
+    //     } else if (slider.value === "2") {
+    //       TextValue = "Monthly";
+    //       value.innerHTML = "<div>" + TextValue + "</div>";
+    //     } else if (slider.value === "3") {
+    //       TextValue = "Yearly";
+    //       value.innerHTML = "<div>" + TextValue + "</div>";
+    //     } else {
+    //       value.innerHTML = "<div>" + slider.value + "</div>";
+    //     }
+    //   } else if ($slidertype.type === "Severity") {
+    //     if (slider.value === "0") {
+    //       TextValue = "Mild";
+    //       value.innerHTML = "<div>" + TextValue + "</div>";
+    //     } else if (slider.value === "1") {
+    //       TextValue = "Moderate";
+    //       value.innerHTML = "<div>" + TextValue + "</div>";
+    //     } else if (slider.value === "2") {
+    //       TextValue = "Major";
+    //       value.innerHTML = "<div>" + TextValue + "</div>";
+    //     } else if (slider.value === "3") {
+    //       TextValue = "Severe";
+    //       value.innerHTML = "<div>" + TextValue + "</div>";
+    //     } else {
+    //       value.innerHTML = "<div>" + slider.value + "</div>";
+    //     }
+    //   }
+    // }
+    function updateValuePosition(slider) {
+      let value = document.getElementById(slider.dataset.valueId);
+      const percent = this.getSliderPercent(slider);
+      const sliderWidth = slider.getBoundingClientRect().width;
+      console.log(sliderWidth + "From mounted");
+      const valueWidth = value.getBoundingClientRect().width;
+      console.log(valueWidth + "From mounted");
+      const handleSize = slider.dataset.handleSize;
+      let left =
+        percent * (sliderWidth - handleSize) + handleSize / 2 - valueWidth / 2;
+      left = Math.min(left, sliderWidth - valueWidth);
+      left = slider.value === slider.min ? 0 : left;
+      value.style.left = left + "px";
     }
-
-    function onResize() {
-      const sliders = document.getElementsByClassName("tick-slider-input");
-
-      for (let slider of sliders) {
-        updateValuePosition(slider);
-      }
-    }
-
-    window.onload = init();
-    window.addEventListener("resize", onResize);
+    // function getSliderPercent(slider) {
+    //   const range = slider.max - slider.min;
+    //   const absValue = slider.value - slider.min;
+    //   return absValue / range;
+    // }
   },
 };
 </script>
 
 <style lang = 'scss' scoped>
 @import url("https://fonts.googleapis.com/css?family=Hind+Madurai:300,600|Poppins:300&display=swap");
-
-/* :root {
-  --yellow: #ffd049;
-  --purple: #4136f1;
-  --light-yellow: #fdf2d2;
-  --orange: #ffa929;
-  --light-gray: #e3e4e8;
-  --gray: #71738b;
-  --light-blue: #7a7c93;
-  --blue: #34385a;
-
-  --slider-handle-size: 14px;
-  --slider-handle-border-radius: 2px;
-  --slider-handle-margin-top: -4px;
-  --slider-track-height: 6px;
-  --slider-track-border-radius: 4px;
-} */
 
 * {
   box-sizing: border-box;
@@ -393,6 +341,7 @@ export default {
   color: #34385a;
 
   border-radius: 2px;
+  animation: bulge 0.3s ease-out;
 }
 
 .tick-slider-value::v-deep div {
