@@ -1,6 +1,14 @@
 @import url("./css/_text.css");
 @import url("./css/_grid.css");
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+
+@font-face {
+    font-family: "Poppins";
+    font-display: auto;
+    src: local("Poppins"), url("./fonts/Poppins/Poppins-Regular.ttf") format("truetype")
+  }
+
 :root {
     --tw-bg-opacity: 1;
     --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);

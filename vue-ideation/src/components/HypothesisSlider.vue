@@ -11,9 +11,6 @@
       <div id="weightLabelMax" class="tick-slider-label" ref="weightValueMax">
         Yearly
       </div>
-      <!-- <div id="weightValue" class="tick-slider-value">
-          {{ SliderLabelValue }}
-        </div> -->
       <div id="weightValue" class="tick-slider-value" ref="weightValue">
         {{ SliderLabelValue }}
       </div>
@@ -25,9 +22,17 @@
       <div id="weightLabelMax" class="tick-slider-label" ref="weightValueMax">
         Severe
       </div>
-      <!-- <div id="weightValue" class="tick-slider-value" ref="weightValue">
-          {{ SliderLabelValue }}
-        </div> -->
+      <div id="weightValue" class="tick-slider-value" ref="weightValue">
+        {{ SliderLabelValue }}
+      </div>
+    </div>
+    <div v-else-if="type == 'Feedback'" class="tick-slider-value-container">
+      <div id="weightLabelMin" class="tick-slider-label" ref="weightValueMin">
+        Days
+      </div>
+      <div id="weightLabelMax" class="tick-slider-label" ref="weightValueMax">
+        Months
+      </div>
       <div id="weightValue" class="tick-slider-value" ref="weightValue">
         {{ SliderLabelValue }}
       </div>
@@ -141,6 +146,22 @@ export default {
           this.SliderLabelValue = TextValue;
         }
       }
+      if (this.SliderType === "Feedback") {
+        if (this.modelValue === "0") {
+          TextValue = "Days";
+          this.SliderLabelValue = TextValue;
+        } else if (this.modelValue === "1") {
+          TextValue = "Weeks";
+          this.SliderLabelValue = TextValue;
+        } else if (this.modelValue === "2") {
+          TextValue = "1 Month";
+          this.SliderLabelValue = TextValue;
+        }
+        else if (this.modelValue === "3") {
+          TextValue = "Months";
+          this.SliderLabelValue = TextValue;
+        }
+      }
     },
 
     getSliderPercent: function () {
@@ -148,19 +169,18 @@ export default {
       const absValue = this.modelValue - this.sliderMin;
       return absValue / range;
     },
-    updateValuePosition: function () { //Issues:  Value not sync with width
+    updateValuePosition: function () {
+      //Issues:  Value not sync with width
       const percent = this.getSliderPercent(); //Progress Position
       // const sliderWidth = this.$refs.slider.getBoundingClientRect().width;
       const sliderWidth = this.getSliderWidth;
       const valueWidth = this.$refs.weightValue.getBoundingClientRect().width;
-      console.log(valueWidth)
-      console.log(this.$refs.weightValue.getBoundingClientRect().width)
       const handleSize = this.$refs.slider.dataset.handleSize;
       let left =
         percent * (sliderWidth - handleSize) + handleSize / 2 - valueWidth / 2;
 
       left = Math.min(left, sliderWidth - valueWidth);
-      left = this.modelValue === this.sliderMin ? 0 : left-9;
+      left = this.modelValue === this.sliderMin ? 0 : left - 9;
 
       this.$refs.weightValue.style.left = left + "px";
     },
@@ -210,11 +230,11 @@ export default {
     },
   },
   mounted() {
-    // this.init();
+    this.init();
     // this.setTicks();
     // this.currentSliderWidth = this.getSliderWidth
     // this.currentValueWidth = this.getValueWidth
-    window.onload = updateValuePosition();
+    // window.onload = updateValuePosition();
     // updateValuePosition();
 
     // }
@@ -261,20 +281,18 @@ export default {
     //     }
     //   }
     // }
-    function updateValuePosition(slider) {
-      let value = document.getElementById(slider.dataset.valueId);
-      const percent = this.getSliderPercent(slider);
-      const sliderWidth = slider.getBoundingClientRect().width;
-      console.log(sliderWidth + "From mounted");
-      const valueWidth = value.getBoundingClientRect().width;
-      console.log(valueWidth + "From mounted");
-      const handleSize = slider.dataset.handleSize;
-      let left =
-        percent * (sliderWidth - handleSize) + handleSize / 2 - valueWidth / 2;
-      left = Math.min(left, sliderWidth - valueWidth);
-      left = slider.value === slider.min ? 0 : left;
-      value.style.left = left + "px";
-    }
+    // function updateValuePosition(slider) {
+    //   let value = document.getElementById(slider.dataset.valueId);
+    //   const percent = this.getSliderPercent(slider);
+    //   const sliderWidth = slider.getBoundingClientRect().width;
+    //   const valueWidth = value.getBoundingClientRect().width;
+    //   const handleSize = slider.dataset.handleSize;
+    //   let left =
+    //     percent * (sliderWidth - handleSize) + handleSize / 2 - valueWidth / 2;
+    //   left = Math.min(left, sliderWidth - valueWidth);
+    //   left = slider.value === slider.min ? 0 : left;
+    //   value.style.left = left + "px";
+    // }
     // function getSliderPercent(slider) {
     //   const range = slider.max - slider.min;
     //   const absValue = slider.value - slider.min;

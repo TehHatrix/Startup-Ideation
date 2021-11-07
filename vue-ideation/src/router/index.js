@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Hypothesis from '../views/Hypothesis.vue'
+import Interview from '../views/Interviews/Interview.vue'
 import store from '@/store'
 import Login from '../views/Login.vue'
 
@@ -24,7 +25,12 @@ const routes = [
   {
     path: '/hypothesis',
     name: 'Hypothesis',
-    component: Hypothesis
+    component: Hypothesis,
+  },
+  {
+    path: '/interview',
+    name: 'Interview',
+    component: Interview
   },
   {
     path: '/login',
