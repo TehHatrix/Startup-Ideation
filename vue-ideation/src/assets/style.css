@@ -23,6 +23,8 @@
 
 body {
     background-image: url("./double-bubble-outline.png");
+	background-size: 200px 200px;
+	background-repeat: repeat;
 }
 
 .auth-page {
