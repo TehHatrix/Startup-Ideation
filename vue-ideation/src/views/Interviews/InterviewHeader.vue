@@ -1,5 +1,4 @@
 <template>
-  <div class="interviewContainer">
     <div class="card">
       <div class="overallScore">
         <p>Current Overall Score</p>
@@ -59,32 +58,24 @@
         <p>2 more interviews to go!</p>
       </div>
     </div>
-
-    <div class="customersContainer">
-
-    </div>
-  </div>
 </template>
 
 <script>
 import Stars from "@/views/Interviews/Stars.vue";
 import StarBar from "@/views/Interviews/StarBar.vue";
 import ProgressBar from "@/views/Interviews/ProgressBar.vue";
+
 export default {
   components: {
-    ProgressBar,
     StarBar,
     Stars,
+    ProgressBar,
   },
 };
 </script>
 <style lang = 'scss' scoped>
 * {
   font-family: "Poppins";
-}
-
-.interviewContainer {
-  max-width: 1800px;
 }
 .rating {
   font-size: 35px;

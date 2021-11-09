@@ -34,17 +34,6 @@ export default {
 </script>
 
 <style lang = 'scss' scoped>
-/* *{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-} */
-
-
-/* #modal-comp{
-
-} */
-
 .button{
     appearance: none;
     outline: none;
@@ -99,7 +88,7 @@ export default {
     right: 0;
     left: 0;
     bottom: 0;
-    z-index: 98;
+    z-index: 99;
     background-color: rgba(0,0,0,0.3);
 }
 
