@@ -114,21 +114,21 @@ import circularProgress from "./CircularProgress.vue";
 
 export default {
   components: {
-      circularProgress
+    circularProgress
   },
   data() {
     return {
       showModalCustomer: false,
-      showModalConclude: false,
+      showModalConclude: false
     };
   },
   mounted() {
     console.log(this.showModalCustomer);
-  },
+  }
 };
 </script>
 
-<style lang='scss' scoped >
+<style lang="scss" scoped>
 .fa-star {
   color: #e67100;
   font-size: 20px;

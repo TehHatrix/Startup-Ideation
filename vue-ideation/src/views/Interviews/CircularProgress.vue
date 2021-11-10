@@ -16,7 +16,7 @@
 export default {};
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 $progress-bar-stroke-width: 1.8;
 $progress-bar-size: 100px;
 
@@ -35,7 +35,7 @@ svg {
 .progress-bar__progress {
   fill: none;
   stroke: #e2eff0;
-  stroke: #78bec7;
+  stroke: #448f99;
   stroke-dasharray: 100 100;
   stroke-dashoffset: 100;
   stroke-linecap: round;
