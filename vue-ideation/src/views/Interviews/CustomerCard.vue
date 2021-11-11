@@ -76,12 +76,26 @@
           class="concludeContent"
           v-if="showModalCustomer && showModalConclude == true"
         >
-          <div class="conclude Header">
-            circleProgress & current score detected
+          <div class="concludeHeader">
             <circular-progress></circular-progress>
+            <p class="score">
+              <strong>Current Score </strong>
+              <span class="scoreNumber"
+                ><strong>4</strong><font-awesome-icon icon="fa-solid fa-star"
+              /></span>
+            </p>
           </div>
-          <div class="concludeQuestion">Questions</div>
-          <div class="concludeAnswer">conclude Answer</div>
+          <div class="concludeQuestion">
+            Does this person care about the problem?
+          </div>
+          <div class="concludeAnswer">
+            <div class="answerCard">
+              Yes <font-awesome-icon icon="fa-solid fa-check" />
+            </div>
+            <div class="answerCard">
+              No <font-awesome-icon icon="fa-solid fa-xmark" />
+            </div>
+          </div>
         </div>
         <button
           class="button"
@@ -291,6 +305,66 @@ export default {
           margin: auto;
         }
       }
+    }
+  }
+}
+
+.concludeHeader {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  .score {
+    font-size: 20px;
+  }
+  .scoreNumber {
+    font-size: 30px;
+  }
+}
+
+.concludeQuestion {
+  font-size: 40px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-left: 30px;
+}
+.concludeAnswer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 100px;
+  .answerCard {
+    height: 100px;
+    width: 100px;
+    border-radius: 15px;
+    box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
+      -5px -5px 30px 7px rgba(0, 0, 0, 0.22);
+    cursor: pointer;
+    transition: 0.2s ease-out;
+    font-size: 40px;
+    font-weight: bold;
+    &:hover {
+      transform: scale(1.1, 1.1);
+      box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25),
+        -5px -5px 30px 15px rgba(0, 0, 0, 0.22);
+    }
+    .fa-check {
+      background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+    }
+    .fa-xmark {
+      background: linear-gradient(
+        to bottom,
+        #008fd3 0%,
+        #008fd3 28%,
+        #609a7f 28%,
+        #609a7f 50%,
+        #a8a340 50%,
+        #a8a340 72%,
+        #f0ab00 72%,
+        #f0ab00 100%
+      );
+      // -webkit-background-clip: text;
+      // -webkit-text-fill-color: transparent;
     }
   }
 }
