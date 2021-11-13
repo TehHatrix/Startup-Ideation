@@ -1,12 +1,8 @@
 <template>
-<div class = "interviewContainer">
-
-<interview-header class = "interviewHeader">
-</interview-header>
-<customer-interview class = "customerInterview">
-</customer-interview>
-</div>
-
+  <div class="interviewContainer">
+    <interview-header class="interviewHeader"> </interview-header>
+    <customer-interview class="customerInterview"> </customer-interview>
+  </div>
 </template>
 
 
@@ -15,24 +11,25 @@ import InterviewHeader from "@/views/Interviews/InterviewHeader.vue";
 import CustomerInterview from "@/views/Interviews/CustomerInterview.vue";
 export default {
   components: {
-      InterviewHeader,CustomerInterview
+    InterviewHeader,
+    CustomerInterview,
   },
-}
+};
 </script>
 
 
 <style lang ='scss' scoped>
-.interviewContainer{
+.interviewContainer {
   display: grid;
   grid-template-areas:
-  "progressbar"
-  "header"
-  "customercontainer";
+    "progressbar"
+    "header"
+    "customercontainer";
 
-  .interviewHeader{
+  .interviewHeader {
     grid-area: header;
   }
-  .customerInterview{
+  .customerInterview {
     margin-left: 60px;
     margin-top: 60px;
     grid-area: customercontainer;

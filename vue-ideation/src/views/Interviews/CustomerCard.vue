@@ -25,78 +25,79 @@
     </transition>
     <transition name="slide" appear>
       <div class="customerInfoModal" v-if="showModalCustomer">
-        <div
-          class="customerContent"
-          v-if="showModalCustomer && showModalConclude == false"
-        >
-          <div class="customerInfo">
-            <img
-              src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-            />
-            <p class="custName"><strong>Elizabeth Tan</strong></p>
-            <p class="custRating">
-              <strong>Current Rating</strong>
-              <span class="rating">
-                3<font-awesome-icon icon="fa-solid fa-star"
-              /></span>
-            </p>
-            <p class="custOcc">
-              <strong>Occupation</strong> <span>Teacher</span>
-            </p>
-            <p class="custPhone">
-              <strong>Phone Number</strong> <span>+6019-5153880</span>
-            </p>
-            <p class="custEmail">
-              <strong>Email Address</strong> <span>elitan@gmail.com</span>
-            </p>
-            <button class="button">Edit Profile</button>
-          </div>
-          <div class="interviewdata">
-            <div class="interviewdata_header">
-              <span class="interviewlogs_title">
-                <strong>Interview Logs</strong></span
-              >
-              <button class="button" @click="showModalConclude = true">
-                Conclude Interview
-              </button>
-              <button class="button">Open Interview Logs</button>
+        <transition name="fade" appear>
+          <div
+            class="customerContent"
+            v-if="showModalCustomer && showModalConclude == false"
+          >
+            <div class="customerInfo">
+              <img
+                src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+              />
+              <p class="custName"><strong>Elizabeth Tan</strong></p>
+              <p class="custRating">
+                <strong>Current Rating</strong>
+                <span class="rating">
+                  3<font-awesome-icon icon="fa-solid fa-star"
+                /></span>
+              </p>
+              <p class="custOcc">
+                <strong>Occupation</strong> <span>Teacher</span>
+              </p>
+              <p class="custPhone">
+                <strong>Phone Number</strong> <span>+6019-5153880</span>
+              </p>
+              <p class="custEmail">
+                <strong>Email Address</strong> <span>elitan@gmail.com</span>
+              </p>
+              <button class="button">Edit Profile</button>
             </div>
-            <div class="interviewdata_content">
-              <p>
-                1. Thanks for taking my call, I’m doing some research on [main
-                activity related to problem]. Before we start, can you tell me a
-                bit about yourself? - Focus on learning about WHO your customer
-                is before moving onto the problem... 2. When was the last time
-                you [main activity related to problem]?
+            <div class="interviewdata">
+              <div class="interviewdata_header">
+                <span class="interviewlogs_title">
+                  <strong>Interview Logs</strong></span
+                >
+                <button class="button" @click="showModalConclude = true">
+                  Conclude Interview
+                </button>
+                <button class="button">Open Interview Logs</button>
+              </div>
+              <div class="interviewdata_content">
+                <p>
+                  1. Thanks for taking my call, I’m doing some research on [main
+                  activity related to problem]. Before we start, can you tell me
+                  a bit about yourself? - Focus on learning about WHO your
+                  customer is before moving onto the problem... 2. When was the
+                  last time you [main activity related to problem]?
+                </p>
+              </div>
+            </div>
+          </div>
+        </transition>
+
+        <transition name="fade" appear>
+          <div
+            class="concludeContent"
+            v-if="showModalCustomer && showModalConclude == true"
+          >
+            <div class="concludeHeader">
+              <circular-progress></circular-progress>
+              <p class="score">
+                <strong>Current Score </strong>
+                <span class="scoreNumber"
+                  ><strong>4</strong><font-awesome-icon icon="fa-solid fa-star"
+                /></span>
               </p>
             </div>
-          </div>
-        </div>
-        <div
-          class="concludeContent"
-          v-if="showModalCustomer && showModalConclude == true"
-        >
-          <div class="concludeHeader">
-            <circular-progress></circular-progress>
-            <p class="score">
-              <strong>Current Score </strong>
-              <span class="scoreNumber"
-                ><strong>4</strong><font-awesome-icon icon="fa-solid fa-star"
-              /></span>
-            </p>
-          </div>
-          <div class="concludeQuestion">
-            Does this person care about the problem?
-          </div>
-          <div class="concludeAnswer">
-            <div class="answerCard">
-              Yes <font-awesome-icon icon="fa-solid fa-check" />
+            <div class="concludeQuestion">
+              Does this person care about the problem?
             </div>
-            <div class="answerCard">
-              No <font-awesome-icon icon="fa-solid fa-xmark" />
+            <div class="concludeAnswer">
+              <div class="answerCard"><check></check> Yes</div>
+              <div class="answerCard"><x-Mark></x-Mark> No</div>
             </div>
           </div>
-        </div>
+        </transition>
         <button
           class="button"
           style="margin-top: 10px"
@@ -125,20 +126,24 @@
 
 <script>
 import circularProgress from "./CircularProgress.vue";
+import xMark from "@/components/icons/x-mark.vue";
+import check from "@/components/icons/check.vue";
 
 export default {
   components: {
-    circularProgress
+    circularProgress,
+    xMark,
+    check,
   },
   data() {
     return {
       showModalCustomer: false,
-      showModalConclude: false
+      showModalConclude: false,
     };
   },
   mounted() {
     console.log(this.showModalCustomer);
-  }
+  },
 };
 </script>
 
@@ -227,7 +232,7 @@ export default {
   max-width: 1000px;
   background-color: #fff;
   border-radius: 16px;
-  overflow: scroll;
+  // overflow: scroll;
   padding: 25px;
   p {
     padding-top: 2px;
@@ -334,37 +339,22 @@ export default {
   margin-top: 20px;
   gap: 100px;
   .answerCard {
-    height: 100px;
-    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 160px;
+    width: 160px;
     border-radius: 15px;
-    box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
-      -5px -5px 30px 7px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
     cursor: pointer;
     transition: 0.2s ease-out;
     font-size: 40px;
     font-weight: bold;
     &:hover {
       transform: scale(1.1, 1.1);
-      box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25),
-        -5px -5px 30px 15px rgba(0, 0, 0, 0.22);
-    }
-    .fa-check {
-      background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
-    }
-    .fa-xmark {
-      background: linear-gradient(
-        to bottom,
-        #008fd3 0%,
-        #008fd3 28%,
-        #609a7f 28%,
-        #609a7f 50%,
-        #a8a340 50%,
-        #a8a340 72%,
-        #f0ab00 72%,
-        #f0ab00 100%
-      );
-      // -webkit-background-clip: text;
-      // -webkit-text-fill-color: transparent;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
+        0 10px 10px rgba(0, 0, 0, 0.22);
     }
   }
 }
