@@ -20,6 +20,7 @@
         @click="
           showModalCustomer = false;
           showModalConclude = false;
+          showInterviewLogs = false;
         "
       ></div>
     </transition>
@@ -29,7 +30,11 @@
           <transition name="fade" appear>
             <div
               class="customerContent"
-              v-if="showModalCustomer && showModalConclude == false"
+              v-if="
+                showModalCustomer &&
+                showModalConclude == false &&
+                showInterviewLogs == false
+              "
             >
               <div class="customerInfo">
                 <img
@@ -61,7 +66,9 @@
                   <button class="button" @click="showModalConclude = true">
                     Conclude Interview
                   </button>
-                  <button class="button">Open Interview Logs</button>
+                  <button class="button" @click="showInterviewLogs = true">
+                    Open Interview Logs
+                  </button>
                 </div>
                 <div class="interviewdata_content">
                   <p>
@@ -99,6 +106,25 @@
               </div>
             </div>
           </transition>
+          <transition name="fade" appear>
+            <div
+              class="interviewLogs"
+              v-if="
+                showModalCustomer &&
+                showModalConclude == false &&
+                showInterviewLogs == true
+              "
+            >
+              <div class="notepad">
+                <div class="top"></div>
+                <div class="paper" contenteditable="true">
+                  Hello, this is a paper.<br />
+                  Click to write your Interview Script.
+                  {{ interviewLogsContent }}
+                </div>
+              </div>
+            </div>
+          </transition>
         </div>
 
         <button
@@ -107,17 +133,19 @@
           @click="
             showModalCustomer = false;
             showModalConclude = false;
+            showInterviewLogs = false;
           "
         >
           Close
         </button>
         <button
-          v-if="showModalConclude"
+          v-if="showModalConclude || showInterviewLogs"
           class="button"
           style="margin-top: 10px"
           @click="
             showModalCustomer = true;
             showModalConclude = false;
+            showInterviewLogs = false;
           "
         >
           Back
@@ -142,6 +170,8 @@ export default {
     return {
       showModalCustomer: false,
       showModalConclude: false,
+      showInterviewLogs: false,
+      interviewLogsContent: "",
     };
   },
   mounted() {
@@ -238,8 +268,7 @@ export default {
   // overflow: scroll;
   padding: 25px;
   .modalContentContainer {
-    display:grid;
-    
+    display: grid;
   }
   p {
     padding-top: 2px;
@@ -323,7 +352,9 @@ export default {
   }
 }
 
-.customerContent, .concludeContent{
+.customerContent,
+.concludeContent,
+.interviewLogs {
   grid-column: 1;
   grid-row: 1;
 }
@@ -371,6 +402,39 @@ export default {
         0 10px 10px rgba(0, 0, 0, 0.22);
     }
   }
+}
+
+.notepad {
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 10px 10px 40px rgba(black, 0.15);
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+  margin: auto;
+}
+
+.top {
+  width: 100%;
+  height: 50px;
+  background: #333;
+  border-radius: 5px 5px 0 0;
+}
+
+.paper {
+  width: 100%;
+  height: 100%;
+  min-height: 60vh;
+  padding: 35px 20px;
+  background: repeating-linear-gradient(
+    #f1ede9,
+    #f1ede9 31px,
+    #94acd4 31px,
+    #94acd4 32px
+  );
+  font-family: "Shadows Into Light", cursive;
+  line-height: 32px;
+  outline: 0;
+  font-size: 22px;
 }
 
 .modal-overlay {
