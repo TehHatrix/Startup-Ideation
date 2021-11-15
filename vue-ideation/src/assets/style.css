@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 @import url("./css/_margin.css");
 @import url("./css/_display.css");
+@import url("./css/_button.css");
 
 :root {
     --tw-bg-opacity: 1;
@@ -10,15 +11,57 @@
     --tw-ring-offset-shadow: 0 0 #0000;
     --tw-ring-shadow: 0 0 #0000;
     --tw-text-opacity: 1; 
+	--tw-screen-sm: 640px;
+	--tw-screen-md: 768px;
+	--tw-screen-lg: 1024px;
+	--tw-screen-xl: 1280px;
 }
 /* !!! for same size height and width */
 * {
 	box-sizing: border-box;
 }
 
+.shadow-lg {
+	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.overflow-hidden {
+	overflow: hidden;
+}
+
 body {
     background-image: url("./double-bubble-outline.png");
 }
+
+.container {
+	margin: auto;
+	width: 60%;
+}
+
+@media screen and (max-width: var(--tw-screen-sm)) {
+	.container {
+		max-width: 640px;
+	}
+}
+
+@media screen and (max-width: var(--tw-screen-md)) {
+	.container {
+		max-width: 768px;
+	}
+}
+
+@media screen and (max-width: var(--tw-screen-lg)) {
+	.container {
+		max-width: 1024px;
+	}
+}
+
+@media screen and (max-width: var(--tw-screen-xl)) {
+	.container {
+		max-width: 1280px;
+	}
+}
+
 
 .auth-page {
 	display: flex;
@@ -247,10 +290,13 @@ body {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	border-bottom-width: 2px;
-	border-color: rgba(124, 58, 237, var(--tw-border-opacity));
-	padding-left: 0.75rem;
-	padding-right: 0.75rem;
-	padding-top: 1rem;
-	padding-bottom: 1rem;
+
+}
+
+
+
+.card-white {
+	background-color: #fff;
+	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+	border-radius: 0.5rem;
 }

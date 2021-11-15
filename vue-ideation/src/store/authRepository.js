@@ -28,7 +28,7 @@ const actions = {
     },
 
     async logout({commit}) {
-        let { data } = await auth.logout()
+        let { data } = await auth.logout() 
         if(data.success) {
             commit('SET_USER', null)
             localStorage.removeItem('user')

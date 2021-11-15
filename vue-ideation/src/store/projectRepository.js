@@ -1,8 +1,8 @@
 import api from '@/api/projectApi'
 
 const state = {
-    projects: null,
-    project: null
+    projects: {},
+    project: sessionStorage.project ? JSON.parse(sessionStorage.project) : {}
 }
 
 const getters = {
@@ -20,7 +20,11 @@ const mutations = {
     },
 
     DESTROY_PROJECT_LOCALLY(state) {
-        state.project = null
+        state.project = {}
+    },
+
+    UPDATE_PROJECT(state) {
+        state.project
     }
 
     
@@ -50,6 +54,14 @@ const actions = {
         // console.log(res)
         if(res.data.success === false) return res
         commit('SET_PROJECT_LOCALLY', res.data.project)
+        sessionStorage.project = JSON.stringify(res.data.project)
+    },
+
+    async updateProject({commit}, payload) {
+        let {data} = await api.updateProject(payload.project_id, payload.updateProjectForm)
+        if(data.success) {
+            commit('UPDATE_PROJECT', data.project)
+        }
     }
 }
 

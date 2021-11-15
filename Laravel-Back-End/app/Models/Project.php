@@ -23,4 +23,8 @@ class Project extends Model
     public function canvases() {
         return $this->hasMany(FreeCanvas::class);
     }
+
+    public function leanCanvases() {
+        return $this->hasOne(LeanCanvas::class);
+    }
 }

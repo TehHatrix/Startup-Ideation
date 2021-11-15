@@ -170,3 +170,11 @@
 .col-end-auto {
     grid-column-end: auto;
 }
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}

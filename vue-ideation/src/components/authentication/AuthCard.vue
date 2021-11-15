@@ -96,7 +96,6 @@ export default {
                 this.formSignIn.email = ''
                 this.formSignIn.password = ''
             } catch (error) {
-                console.log('error is happerning')
                 console.log(error)
 
             }

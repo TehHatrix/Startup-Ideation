@@ -9,7 +9,7 @@ const getters = {
 }
 
 const mutations = {
-    SET_TASKS(state, payload) {
+    GET_TASKS(state, payload) {
         state.tasks = payload
     }
 }
@@ -17,13 +17,18 @@ const mutations = {
 const actions = {
     async getTodos({ commit }, payload) {
         let res = await api.getTask(payload)
-        console.log(res)
-        commit('SET_TASKS', res)
+        // console.log(res)
+        commit('GET_TASKS', res.data.tasks)
     },
 
-    async setTodo() {
-        
-    }
+    // async addTask(payload) {
+    //     let {data} = await api.addTask(payload.projectId, payload.form)
+    //     if(data.success) {
+    //         this.getTodos
+    //     } else {
+    //         console.log(data.errors)
+    //     }
+    // }
 
 }
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Todo;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class TodoController extends Controller
 {
@@ -22,7 +23,7 @@ class TodoController extends Controller
         $project = Project::findOrFail($projectId);
         $task = $project->todos()->get();
         return response()->json([
-            'todo' => $task,
+            'tasks' => $task,
             'success' => true
         ], 200);
     }
@@ -35,27 +36,48 @@ class TodoController extends Controller
      */
     public function store(Request $request, $projectId)
     {
-        $data = $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'task' => 'required|string',
-            'assigned_to' => 'nullable|integer',
+            'assigned_to' => 'integer',
             'due_date' => 'nullable|date'
         ]);
 
-        $task = Todo::create([
-            'task' => $data['task'],
-            'assigned_to' => $data['assigned_to'],
-            'due_date' => $data['due_date'],
-            'completed' => false,
-            'project_id' => $projectId
-        ]);
+        if($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $data = $validator->validated();
+
+
+
+        $project = Project::find($projectId);
+        $task = new Todo;
+        $task->task = $data['task'];
+        $task->assigned_to = $data['assigned_to'];
+        $task->due_date = $data['due_date'];
+        $task->completed = false;
+        $task->project()->associate($project);
+        $task->save();
+
+
+        
+
+        $task->project()->associate($projectId);
 
         // $task->project()->attach($projectId);
 
-        return response([
-            'task' => $task
-        ], 200);
 
-        return new TodoResource($this->successResponse($task));
+
+        return response()->json([
+            'success' => true,
+            'task' => $task,
+            'errors' => null
+        ]);
+
     }
 
     /**
@@ -68,7 +90,10 @@ class TodoController extends Controller
     {
         // $task = Todo::with('project')->where('id', $todo)->get();
         $task = Todo::findOrFail($todo)->where('project_id', $project)->get();
-        return $task;
+        return response()->json([
+            'task' => $task,
+            'success' => true
+        ]);
     }
 
     /**
@@ -80,12 +105,27 @@ class TodoController extends Controller
      */
     public function update(Request $request, $project, $id)
     {
-        $data = $request->validate([
+        // $data = $request->validate([
+        //     'task' => 'required|string',
+        //     'assigned_to' => 'nullable|integer',
+        //     'due_date' => 'nullable|date',
+        //     'completed' => 'boolean'
+        // ]);
+        $validator = Validator::make($request->all(), [
             'task' => 'required|string',
-            'assigned_to' => 'nullable|integer',
+            'assigned_to' => 'integer',
             'due_date' => 'nullable|date',
             'completed' => 'boolean'
         ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $data = $validator->validated();
 
         $task = Todo::findOrFail($id)->where('project_id', $project)->update([
             'task' => $data['task'],
@@ -94,7 +134,11 @@ class TodoController extends Controller
             'completed' => $data['completed']
         ]);
 
-        return response($task, 200);
+        return response()->json([
+            'task' => $task,
+            'success' => true,
+            'errors' => null
+        ]);
     }
 
     /**
@@ -106,6 +150,10 @@ class TodoController extends Controller
     public function destroy($project, $id)
     {
         $task = Todo::find($id)->where('project_id', $project)->delete();
-        return response('success', 200);
+        return response()->json([
+            'success' => true
+        ], 200);
     }
+
+
 }

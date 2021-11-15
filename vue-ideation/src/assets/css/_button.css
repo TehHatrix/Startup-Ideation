@@ -1,0 +1,41 @@
+:root {
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-ring-color: rgba(165, 180, 252, 1);
+    --tw-ring-opacity: 0.8;
+}
+
+.c-btn-primary {
+    -moz-transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -ms-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out;
+    -webkit-appearance: none;
+    position: relative;
+    display: inline-block;
+    background: rgba(79, 70, 229, 1);
+    color: #fff !important;
+    text-transform: uppercase;
+    border-radius: 4px;
+    border: 0;
+    outline: 0;
+    font-size: 0.5em;
+    box-shadow: 0.125em 0.175em 0 0 rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.85em;
+    letter-spacing: 2px;
+    padding: 0.85em 2.75em 0.85em 2.75em;
+    
+    
+}
+
+.c-btn-primary:hover {
+    background-color: rgba(139, 92, 246, 1);
+}
+

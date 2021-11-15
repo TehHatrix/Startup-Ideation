@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Hypothesis from '../views/Hypothesis.vue'
 import store from '@/store'
-
+import middleware from './middleware'
 
 Vue.use(VueRouter)
 
@@ -10,7 +10,8 @@ const routes = [
   {
     path: '/',
     name: 'HomeGuest',
-    component: () => import('../views/Authentication/Authentication.vue')
+    component: () => import('../views/Authentication/Authentication.vue'),
+    beforeEnter: middleware.user
   },
   {
     path: '/hypothesis',
@@ -20,8 +21,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    
-    // component: Login,
+    beforeEnter: middleware.user,
     // beforeEnter: (to, from, next) => {
     //   if(store.getters['authenticated']) {
     //     next({name: 'ProjectsList'})
@@ -33,7 +33,9 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
-    component: () => import('../views/Register.vue')
+    component: () => import('../views/Register.vue'),
+    beforeEnter: middleware.guest
+
   },
   {
     path: '/projects',
@@ -57,6 +59,12 @@ const routes = [
     name: 'Todo',
     component: () => import('../views/Todo/Todo.vue')
   },
+
+  {
+    path: '/projects/:id/leancanvas',
+    name: 'LeanCanvas',
+    component: () => import('../views/LeanCanvas/LeanCanvas.vue'),
+  }
 
 ]
 

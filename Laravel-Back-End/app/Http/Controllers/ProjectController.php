@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LeanCanvas;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
@@ -39,10 +40,6 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        // $data = $request->validate([
-        //     'project_name' => 'required',
-        //     'project_description' => 'required'
-        // ]);
 
         $validator = Validator::make($request->all(), [
             'project_name' => 'required',
@@ -62,6 +59,10 @@ class ProjectController extends Controller
 
         $project->users()->attach(Auth::id());
 
+        $leanCanvas = new LeanCanvas;
+        $leanCanvas->project()->associate($project->id)->save();
+
+        
         // $user = Auth::user();
         // $project = $user->projects()->create([
         //     'project_name' => $data['project_name'],
@@ -69,7 +70,7 @@ class ProjectController extends Controller
         // ]);
 
         return response()->json([
-            'errors' => [],
+            'errors' => null,
             'message' => 'successful',
             'success' => true
         ]);
@@ -94,7 +95,7 @@ class ProjectController extends Controller
         }
         if(!in_array(Auth::id(), $tempId)) {
             // return response(['message' => 'you are not the collaborator for this project'], 401);
-            return response()->json(['message' => 'you are not the collaborator for this project', 'success' => false], 401);
+            return response()->json(['message' => 'you are not the collaborator for this project', 'success' => false, 'errors' => ['you are not authorized']], 401);
         }    
         
         // return response([
@@ -117,14 +118,32 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->validate([
+        // $data = $request->validate([
+        //     'project_name' => 'required',
+        //     'project_description' => 'required',
+        //     'collaborator' => 'array',
+        //     'collaborator.*' => 'integer',
+        //     'remove_collaborator' => 'array',
+        //     'remove_collaborator.*' => 'integer'
+        // ]);
+
+        $validator = Validator::make($request->all(), [
             'project_name' => 'required',
             'project_description' => 'required',
             'collaborator' => 'array',
             'collaborator.*' => 'integer',
-            'remove_collaborator' => 'array',
+            'remove_collaborator' => 'array', 
             'remove_collaborator.*' => 'integer'
         ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors
+            ]);
+        }
+
+        $data = $validator->validated();
 
         // $project = Project::with('users')->where('id', $id)->get();
         // return $project;
@@ -137,7 +156,10 @@ class ProjectController extends Controller
             array_push($tempId, $user['id']);
         }
         if(!in_array(Auth::id(), $tempId)) {
-            return response(['message' => 'you are not the collaborator for this project'], 401);
+            return response([
+                'success' => false, 
+                'errors' => 'you are not a colaborator for this project'
+            ]);
         } 
 
         $project->project_name = $data['project_name'];
@@ -156,10 +178,16 @@ class ProjectController extends Controller
         }
         $collaborator = $project->users()->get(array('id', 'name'))->toArray();
 
-        return response([
+        // return response([
+        //     'project' => $project,
+        //     'collaborator' => $collaborator
+        // ], 200);
+        return response()->json([
             'project' => $project,
-            'collaborator' => $collaborator
-        ], 200);
+            'collaborator' => $collaborator,
+            'success' => true,
+            'errros' => null
+        ]);
     }
 
     /**
@@ -184,7 +212,7 @@ class ProjectController extends Controller
         $project->users()->detach();
         $project->delete();
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'successfully deleted']);
         
     }
 }
