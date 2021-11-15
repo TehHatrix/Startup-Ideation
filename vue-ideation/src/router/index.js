@@ -4,6 +4,7 @@ import Hypothesis from '../views/Hypothesis.vue'
 import Interview from '../views/Interviews/Interview.vue'
 import store from '@/store'
 import Login from '../views/Login.vue'
+import Test from "../views/Test.vue"
 
 
 Vue.use(VueRouter)
@@ -31,6 +32,11 @@ const routes = [
     path: '/interview',
     name: 'Interview',
     component: Interview
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: Test
   },
   {
     path: '/login',

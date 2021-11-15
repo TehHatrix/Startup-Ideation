@@ -1,27 +1,13 @@
 <template>
   <div>
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
-    <!-- <Modal /> -->
-    <dropdown> </dropdown>
-    <!-- <v-select></v-select> -->
-    <GeneralModal></GeneralModal>
-    <Slider type="Frequency" v-model="sliderValue[0]"></Slider>
-    <div>{{ sliderValue[0] }}</div>
-    <Slider type="Severity" v-model="sliderValue[1]"></Slider>
-    <div>{{ sliderValue[1] }}</div>
-    <Slider type="Frequency" v-model="sliderValue[2]"></Slider>
-    <div>{{ sliderValue[2] }}</div>
-    <Slider type="Frequency" v-model="sliderValue[3]"></Slider>
-    <div>{{ sliderValue[3] }}</div>
+    <register-form></register-form>
   </div>
 </template>
 
 <script>
-// @ is an alias to /s1rc
-import Dropdown from "@/components/Dropdown.vue";
-import GeneralModal from "@/components/GeneralModal.vue";
-import Slider from "@/components/HypothesisSlider.vue";
-// import Modal from "@/components/Modal.vue";
+// @ is an alias to /src
+import RegisterForm from './Interviews/RegisterForm.vue';
 export default {
   name: "Test",
   data() {
@@ -30,17 +16,9 @@ export default {
     };
   },
   components: {
-    Dropdown,
-    GeneralModal,
-    Slider,
+    RegisterForm,
   },
   methods: {
-    show() {
-      this.$modal.show("my-first-modal");
-    },
-    hide() {
-      this.$modal.hide("my-first-modal");
-    },
   },
   mounted() {
     console.log(this)
