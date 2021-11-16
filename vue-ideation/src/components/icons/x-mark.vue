@@ -23,7 +23,7 @@
 </template>
 
 <style scoped>
-svg{
+.fa-xmark{
     height:50px;
     width:50px;
     font-weight:800;

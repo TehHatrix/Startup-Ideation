@@ -14,16 +14,8 @@
       <div
         class="addCustomerModal"
         v-if="addCustomerClicked"
-        @click="addCustomerClicked = true"
       >
-        <div class="addFormContainer">
-          <div class="formContent">
-            Name
-            Occupation
-            Phone Number
-            Email Address
-          </div>
-        </div>
+          <register-form v-if="addCustomerClicked"></register-form>
       </div>
     </transition>
     <p><strong>Add New Customer</strong></p>
@@ -32,9 +24,11 @@
 
 <script>
 import circlePlus from "@/components/icons/circlePlus.vue";
+import RegisterForm from './RegisterForm.vue';
 export default {
   components: {
     circlePlus,
+    RegisterForm,
   },
   data() {
     return {
@@ -79,10 +73,10 @@ p {
   transform: translate(-50%, -50%);
   z-index: 99;
 
-  width: 100%;
-  max-width: 1000px;
-  background-color: #fff;
-  border-radius: 16px;
+  /* width: 100%;
+  max-width: 1000px; */
+  /* background-color: #fff;
+  border-radius: 16px; */
   padding: 25px;
 }
 
