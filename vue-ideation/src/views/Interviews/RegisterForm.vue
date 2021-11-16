@@ -3,17 +3,37 @@
     <h1 :class="{ 'show-final': showFinal }">
       Thank you for your registration, {{ registerSteps[0].value }}
     </h1>
-    <div id="register">
-      <!-- <i v-if="position === 0" class="previousButton fas fa-user"></i> -->
-      <font-awesome-icon v-if="position === 0" class="previousButton" icon=" fa-solid fa-arrow-left" />
-      <font-awesome-icon v-else class="previousButton" icon=" fa-solid fa-arrow-left" @click="previousStep" />
-      <!-- <i
+    <div
+      class="register"
+      :class="{
+        wrong: wrongColor,
+        wronganimation: wrongAnimation,
+        okanimation: okAnimation,
+        close: closeRegister,
+      }"
+      ref="register"
+    >
+      <x-mark v-if="position === 0"></x-mark>
+      <!-- <font-awesome-icon
         v-else
-        class="previousButton fas fa-arrow-left"
+        class="previousButton"
+        icon=" fa-solid fa-arrow-left"
         @click="previousStep"
-      ></i> -->
-      <!-- <i class="forwardButton fas fa-arrow-right" @click="checkStep"></i> -->
-      <font-awesome-icon class="forwardButton" icon="fa-solid fa-arrow-right"  @click="checkStep" />
+      /> -->
+      <arrow-left
+        v-else
+        class="previousButton"
+        @click.native="previousStep"
+      ></arrow-left>
+      <arrow-right
+        class="forwardButton"
+        @click.native="checkStep"
+      ></arrow-right>
+      <!-- <font-awesome-icon
+        class="forwardButton"
+        icon="fa-solid fa-arrow-right"
+        @click="checkStep"
+      /> -->
       <div id="inputContainer" :class="{ showContainer: showContainer }">
         <form @submit.prevent="checkStep">
           <input
@@ -32,40 +52,53 @@
 </template>
 
 <script>
+import xMark from "@/components/icons/x-mark.vue";
+import ArrowLeft from "../../components/icons/arrow-left.vue";
+import ArrowRight from "../../components/icons/arrow-right.vue";
 export default {
+  components: {
+    xMark,
+    ArrowLeft,
+    ArrowRight,
+  },
   data() {
     return {
-      position: 1,
+      position: 0,
       inputLabel: "",
       inputType: "text",
       inputValue: "",
       showContainer: false,
       showFinal: false,
       progress: "0%",
+      wrongAnimation: false,
+      wrongColor: false,
+      okAnimation: false,
+      closeRegister: false,
+
       registerSteps: [
         {
-          label: "What's your first name?",
+          label: "What's Customer Name?",
           type: "text",
           value: "",
           pattern: /.+/,
         },
         {
-          label: "What's your last name?",
+          label: "What's Customer Occupation?",
           type: "text",
           value: "",
           pattern: /.+/,
         },
         {
-          label: "What's your email?",
+          label: "What's Customer Email?",
           type: "text",
           value: "",
           pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         },
         {
-          label: "Create your password",
-          type: "password",
+          label: "Create your Phone Number",
+          type: "phone",
           value: "",
-          pattern: /.+/,
+          pattern: /^\d{10}$/,
         },
       ],
     };
@@ -89,37 +122,40 @@ export default {
     },
     previousStep() {
       this.position -= 1;
-    //   register.className = "";
+      this.wrongColor = false;
+      this.wrongAnimation = false;
+      this.okAnimation = false;
       this.hideStep(this.setStep);
       this.setProgress();
     },
     checkStep() {
-    //   if (!this.registerSteps[this.position].pattern.test(this.inputValue)) {
-    //     register.classList.add("wrong");
-    //     register.classList.add("wronganimation");
-    //     setTimeout(() => {
-    //       register.classList.remove("wronganimation");
-    //     }, 500);
-    //     this.$refs.registerinput.focus();
-    //   } else {
-    //     register.className = "";
-    //     register.classList.add("okanimation");
-    //     setTimeout(() => {
-    //       register.classList.remove("okanimation");
-    //     }, 200);
-    //     this.registerSteps[this.position].value = this.inputValue;
-    //     this.position += 1;
-    //     if (this.registerSteps[this.position]) {
-    //       this.hideStep(this.setStep);
-    //     } else {
-    //       this.hideStep(() => {
-    //         register.className = "close";
-    //         setTimeout(() => {
-    //           this.showFinal = true;
-    //         }, 1000);
-    //       });
-    //     }
-    //   }
+      if (!this.registerSteps[this.position].pattern.test(this.inputValue)) {
+        this.wrongColor = true;
+        this.wrongAnimation = true;
+        setTimeout(() => {
+          this.wrongAnimation = false;
+        }, 500);
+        this.$refs.registerinput.focus();
+      } else {
+        this.wrongColor = false;
+        this.wrongAnimation = false;
+        this.okAnimation = true;
+        setTimeout(() => {
+          this.okAnimation = false;
+        }, 200);
+        this.registerSteps[this.position].value = this.inputValue;
+        this.position += 1;
+        if (this.registerSteps[this.position]) {
+          this.hideStep(this.setStep);
+        } else {
+          this.hideStep(() => {
+            this.closeRegister = true;
+            setTimeout(() => {
+              this.showFinal = true;
+            }, 1000);
+          });
+        }
+      }
       this.setProgress();
     },
     setProgress() {
@@ -133,13 +169,19 @@ export default {
 </script>
 
 <style lang = 'scss' scoped>
-#register {
+::v-deep .fa-xmark {
+  position: absolute;
+  height: 25px;
+  width: 25px;
+  margin-top: -5px;
+}
+.register {
   position: relative;
   width: 480px;
   height: 80px;
   padding: 10px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.2);
-  background-color: rgb(224, 224, 224);
+  background-color: #fff;
   &.close {
     width: 0;
     padding: 10px 0;
@@ -151,28 +193,25 @@ export default {
 
 .previousButton {
   position: absolute;
-  left: 30px;
+  left: 20px;
   top: 12px;
   font-size: 1rem;
   color: #9e9e9e;
   cursor: pointer;
   z-index: 20;
-  &:hover {
+  /* &:hover {
     color: #009345;
-  }
+  } */
 }
 
 .forwardButton {
   position: absolute;
-  top: 30px;
+  top: 20px;
   right: 20px;
   font-size: 3rem;
-  color: #106b4e;
+  color: #8743ff;
   cursor: pointer;
   z-index: 20;
-  &:hover {
-    color: #009345;
-  }
 }
 
 .wrong .forwardButton {
@@ -220,8 +259,21 @@ export default {
 
 #inputProgress {
   width: 0%;
-  border-bottom: 6px solid #106b4e;
+  border-bottom: 6px solid #e7daff;
   transition: width 0.6s ease-in-out;
+}
+
+h1 {
+  position: absolute;
+  width: max-content;
+  font-size: 2rem;
+  color: #fff;
+  opacity: 0;
+  transition: 0.8s ease-in-out;
+
+  &.show-final {
+    opacity: 1;
+  }
 }
 
 .wrong #inputProgress {
