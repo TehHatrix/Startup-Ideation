@@ -15,7 +15,7 @@
         class="addCustomerModal"
         v-if="addCustomerClicked"
       >
-          <register-form v-if="addCustomerClicked"></register-form>
+          <register-form v-if="addCustomerClicked" @closeForm="setboolCustomerClicked" ></register-form>
       </div>
     </transition>
     <p><strong>Add New Customer</strong></p>
@@ -34,6 +34,11 @@ export default {
     return {
       addCustomerClicked: false,
     };
+  },
+  methods: {
+    setboolCustomerClicked() {
+      this.addCustomerClicked = false
+    }
   },
 };
 </script>

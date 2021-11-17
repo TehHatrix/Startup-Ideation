@@ -13,13 +13,11 @@
       }"
       ref="register"
     >
-      <x-mark v-if="position === 0"></x-mark>
-      <!-- <font-awesome-icon
-        v-else
-        class="previousButton"
-        icon=" fa-solid fa-arrow-left"
-        @click="previousStep"
-      /> -->
+      <x-mark
+        v-if="position === 0"
+        class="closeButton"
+        @click.native="closeForm"
+      ></x-mark>
       <arrow-left
         v-else
         class="previousButton"
@@ -29,11 +27,6 @@
         class="forwardButton"
         @click.native="checkStep"
       ></arrow-right>
-      <!-- <font-awesome-icon
-        class="forwardButton"
-        icon="fa-solid fa-arrow-right"
-        @click="checkStep"
-      /> -->
       <div id="inputContainer" :class="{ showContainer: showContainer }">
         <form @submit.prevent="checkStep">
           <input
@@ -104,6 +97,9 @@ export default {
     };
   },
   methods: {
+    closeForm() {
+      this.$emit("closeForm");
+    },
     setStep() {
       this.inputLabel = this.registerSteps[this.position].label;
       this.inputType = this.registerSteps[this.position].type;
@@ -169,12 +165,6 @@ export default {
 </script>
 
 <style lang = 'scss' scoped>
-::v-deep .fa-xmark {
-  position: absolute;
-  height: 25px;
-  width: 25px;
-  margin-top: -5px;
-}
 .register {
   position: relative;
   width: 480px;
@@ -182,6 +172,7 @@ export default {
   padding: 10px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.2);
   background-color: #fff;
+  
   &.close {
     width: 0;
     padding: 10px 0;
@@ -189,6 +180,16 @@ export default {
     transition: 0.8s ease-in-out;
     box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.2);
   }
+}
+
+.closeButton {
+  position: absolute;
+  height: 25px;
+  width: 25px;
+  font-size: 1rem;
+  margin-top: -5px;
+  cursor: pointer;
+  z-index: 20;
 }
 
 .previousButton {
@@ -199,9 +200,6 @@ export default {
   color: #9e9e9e;
   cursor: pointer;
   z-index: 20;
-  /* &:hover {
-    color: #009345;
-  } */
 }
 
 .forwardButton {
