@@ -5,6 +5,7 @@ import Interview from '../views/Interviews/Interview.vue'
 import store from '@/store'
 import Login from '../views/Login.vue'
 import Test from "../views/Test.vue"
+import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
 
 
 Vue.use(VueRouter)
@@ -32,6 +33,11 @@ const routes = [
     path: '/interview',
     name: 'Interview',
     component: Interview
+  },
+  {
+    path: '/editor/landing',
+    name: 'LandingEditor',
+    component: LandingEditor
   },
   {
     path: '/test',

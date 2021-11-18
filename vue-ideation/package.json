@@ -15,6 +15,8 @@
     "animejs": "^3.2.1",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "grapesjs": "^0.17.29",
+    "grapesjs-preset-webpage": "^0.1.11",
     "jquery": "^3.6.0",
     "vue": "^2.6.11",
     "vue-js-modal": "^2.0.1",
