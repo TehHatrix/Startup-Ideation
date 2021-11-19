@@ -2,12 +2,14 @@
   <div>
     <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
     <register-form></register-form>
+    <tab-bar></tab-bar>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import RegisterForm from './Interviews/RegisterForm.vue';
+import TabBar from './LandingMaker/TabBar.vue';
 export default {
   name: "Test",
   data() {
@@ -17,42 +19,11 @@ export default {
   },
   components: {
     RegisterForm,
+    TabBar,
   },
   methods: {
   },
   mounted() {
-    console.log(this)
-    // this.show();
-    // function setTicks(slider) {
-    //   let container = document.getElementById(slider.dataset.tickId);
-    //   const spacing = parseFloat(slider.dataset.tickStep);
-    //   const sliderRange = slider.max - slider.min;
-    //   const tickCount = sliderRange / spacing + 1; // +1 to account for
-    //   for (let ii = 0; ii < tickCount; ii++) {
-    //     let tick = document.createElement("span");
-    //     tick.className = "tick-slider-tick";
-    //     container.appendChild(tick);
-    //   }
-    // }
-    // function init() {
-    //   const sliders = document.getElementsByClassName("tick-slider-input");
-    //   for (let slider of sliders) {
-    //     // slider.oninput = onSliderInput;
-    //     // updateValue(slider);
-    //     // updateValuePosition(slider);
-    //     // updateLabels(slider);
-    //     // updateProgress(slider);
-    //     setTicks(slider);
-    //   }
-    // }
-    // function onResize() {
-    //   const sliders = document.getElementsByClassName("tick-slider-input");
-    //   for (let slider of sliders) {
-    //     this.updateValuePosition(slider);
-    //   }
-    // }
-    // window.onload = init();
-    // window.addEventListener("resize", onResize);
   },
 };
 </script>

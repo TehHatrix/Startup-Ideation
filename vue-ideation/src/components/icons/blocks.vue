@@ -1,0 +1,26 @@
+<template>
+  <div>
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      data-prefix="fas"
+      data-icon="table-cells-large"
+      class="svg-inline--fa fa-table-cells-large"
+      role="img"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+    >
+      <path
+        fill="currentColor"
+        d="M448 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h384c35.35 0 64-28.65 64-64V96C512 60.65 483.3 32 448 32zM64 96h160v128H64V96zM64 416V288h160v128H64zM448 416h-160V288h160V416zM448 224h-160V96h160V224z"
+      ></path>
+    </svg>
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style lang="scss" scoped>
+</style>

@@ -6,7 +6,7 @@
 
 <script>
 import "grapesjs/dist/css/grapes.min.css";
-import "grapesjs-preset-webpage/src/style/main.scss";
+// import "grapesjs-preset-webpage/src/style/main.scss";
 // import "grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css";
 
 import grapesjs from "grapesjs";
@@ -52,14 +52,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "grapesjs-preset-webpage/src/style/main.scss";
 /* We can remove the border we've set at the beginnig */
 
 #gjs {
   border: none;
 }
 
-.gjs-one-bg {
-  background-color: #ff0000;
-}
 </style>

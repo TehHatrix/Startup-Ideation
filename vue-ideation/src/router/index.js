@@ -6,6 +6,7 @@ import store from '@/store'
 import Login from '../views/Login.vue'
 import Test from "../views/Test.vue"
 import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
+import LandingEditor2 from "../views/LandingMaker/LandingEditor2.vue"
 
 
 Vue.use(VueRouter)
@@ -38,6 +39,11 @@ const routes = [
     path: '/editor/landing',
     name: 'LandingEditor',
     component: LandingEditor
+  },
+  {
+    path: '/editor/landing2',
+    name: 'LandingEditor2',
+    component: LandingEditor2
   },
   {
     path: '/test',
