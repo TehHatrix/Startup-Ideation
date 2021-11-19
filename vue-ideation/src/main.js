@@ -9,10 +9,10 @@ import vsSelect  from 'vuesax'
 import 'vuesax/dist/vuesax.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
+import { faPlusSquare, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPlusSquare)
+library.add(faPlusSquare, faEdit, faTrashAlt)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 

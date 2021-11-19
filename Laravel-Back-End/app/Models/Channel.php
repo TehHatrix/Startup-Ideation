@@ -12,7 +12,7 @@ class Channel extends Model
     protected $fillable = ['topic', 'description', 'publisher_id'];
 
     public function canvas() {
-        return $this->belongsTo(FreeCanvas::class);
+        return $this->belongsTo(LeanCanvas::class);
     }
 
 }

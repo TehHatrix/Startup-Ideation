@@ -11,10 +11,11 @@
         <!-- {{tasks}} -->
         <div class="overflow-scroll">
             <div v-for="(task, index) in tasks" :key="index" >
-                <task :task="task" :collab="project.collaborator" >
-
-                </task>
-
+                    <task 
+                    :task="task" 
+                    :collab="project.collaborator"
+                    :projectId="project.id"
+                    @todoStatusChanged="updateTaskStatus($event)" ></task>
             </div>
         </div>
     </div>
@@ -66,7 +67,35 @@ export default {
             } catch(error) {
                 console.log(error)
             }
+        },
+
+        async updateTaskStatus(task) {
+            try {
+
+                const updatedTask = {
+                    'task': task.task,
+                    'assigned_to': task.assigned_to,
+                    'due_date': task.due_date,
+                    'completed': task.completed
+                }
+
+                let { data } = await api.updateTask({
+                    'projectId': this.project.id,
+                    'taskId': task.id
+                }, updatedTask)
+
+                console.log(data.task)
+
+                if(data.success) { 
+                    await this.$store.dispatch('getTodos', this.$route.params.projectId)
+                } else {
+                    console.log('task not updated')
+                }
+            } catch(errors) {
+                console.log(errors)
+            }
         }
+
     },
     computed: {
         ...mapGetters(['user', 'tasks'])

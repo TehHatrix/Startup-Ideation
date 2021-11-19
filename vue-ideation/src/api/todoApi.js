@@ -12,6 +12,13 @@ export default {
 
     async updateTask(params, payload) {
         return api.put(`api/projects/${params.projectId}/todos/${params.taskId}`, payload)
-    }
+    },
+
+    async deleteTask(params) {
+        return api.delete(`api/projects/${params.projectId}/todos/${params.taskId}`)
+    },
+
+    
+    
 
 }

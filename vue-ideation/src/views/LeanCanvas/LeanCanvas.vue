@@ -14,36 +14,7 @@
 
                     </lean-content>
                 </div>
-                <!-- <div id="customerSegment" class="card-white" >
-                    <h2>Customer Segment</h2>
-                    <div class="lean-body" >
-                        
-                    </div>
-                </div>
-                <div id="problem" class="card-white">
-                    <h2>Problem</h2>
-                </div>
-                <div id="revenue" class="card-white" >
-                    <h2>Revenue</h2>
-                </div>
-                <div id="solution" class="card-white">
-                    <h2>Solution</h2>
-                </div>
-                <div class="card-white">
-                    <h2>Unique Value Proposition</h2>
-                </div>
-                <div class="card-white">
-                    <h2>Channel</h2>
-                </div>
-                <div class="card-white">
-                    <h2>Key Metric</h2>
-                </div>
-                <div class="card-white">
-                    <h2>Cost Structure</h2>
-                </div>
-                <div class="card-white">
-                    <h2>Unfair Advantage</h2>
-                </div> -->
+
             </div>
         </section>
     </div>

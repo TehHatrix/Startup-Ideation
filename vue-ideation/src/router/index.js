@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Hypothesis from '../views/Hypothesis.vue'
-import store from '@/store'
 import middleware from './middleware'
 
 Vue.use(VueRouter)
@@ -18,53 +17,53 @@ const routes = [
     name: 'Hypothesis',
     component: Hypothesis
   },
-  {
-    path: '/login',
-    name: 'Login',
-    beforeEnter: middleware.user,
-    // beforeEnter: (to, from, next) => {
-    //   if(store.getters['authenticated']) {
-    //     next({name: 'ProjectsList'})
-    //   } else {
-    //     next()
-    //   }
-    // }
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import('../views/Register.vue'),
-    beforeEnter: middleware.guest
+  // {
+  //   path: '/login',
+  //   name: 'Login',
+  //   beforeEnter: middleware.user,
+  // },
+  // {
+  //   path: '/register',
+  //   name: 'Register',
+  //   component: () => import('../views/Register.vue'),
+  //   beforeEnter: middleware.guest
 
-  },
+  // },
   {
     path: '/projects',
     name: 'ProjectsList',
     component: () => import('../views/Project/ProjectsList.vue'),
-    beforeEnter: (to, from, next) => {
-      if(store.getters['authenticated']) {
-        next()
-      } else {
-        next({name: 'HomeGuest'})
-      }
-    }
+    beforeEnter: middleware.guest
+    // beforeEnter: (to, from, next) => {
+    //   if(store.getters['authenticated']) {
+    //     next()
+    //   } else {
+    //     next({name: 'HomeGuest'})
+    //   }
+    // }
   },
   {
     path: '/projects/:id',
     name: 'Project',
-    component: () => import('../views/Project/Project.vue')
+    component: () => import('../views/Project/Project.vue'),
+    beforeEnter: middleware.guest
   },
   {
     path: '/projects/:projectId/todos',
     name: 'Todo',
-    component: () => import('../views/Todo/Todo.vue')
+    component: () => import('../views/Todo/Todo.vue'),
+    beforeEnter: middleware.guest
+
   },
 
   {
     path: '/projects/:id/leancanvas',
     name: 'LeanCanvas',
     component: () => import('../views/LeanCanvas/LeanCanvas.vue'),
-  }
+    beforeEnter: middleware.guest
+
+  },
+
 
 ]
 

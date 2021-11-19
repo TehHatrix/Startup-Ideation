@@ -127,11 +127,19 @@ class TodoController extends Controller
 
         $data = $validator->validated();
 
-        $task = Todo::findOrFail($id)->where('project_id', $project)->update([
+        // $task = Todo::findOrFail($id)->where('project_id', $project)->update([
+        //     'task' => $data['task'],
+        //     'assigned_to' => $data['assigned_to'],
+        //     'due_date' => $data['due_date'],
+        //     'completed' => $data['completed']
+        // ]);
+
+        // $test = Todo::findOrFail($id)->where('project_id', $project);
+        $task = Todo::with('project')->where('id', $id)->update([
             'task' => $data['task'],
             'assigned_to' => $data['assigned_to'],
             'due_date' => $data['due_date'],
-            'completed' => $data['completed']
+            'completed' => $data['completed'] ? $data['completed'] : false
         ]);
 
         return response()->json([
@@ -149,7 +157,8 @@ class TodoController extends Controller
      */
     public function destroy($project, $id)
     {
-        $task = Todo::find($id)->where('project_id', $project)->delete();
+        // $task = Todo::find($id)->where('project_id', $project)->delete();
+        $task = Todo::find($id)->where('id', $id)->delete();
         return response()->json([
             'success' => true
         ], 200);
