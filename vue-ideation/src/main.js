@@ -4,17 +4,24 @@ import router from './router'
 import store from './store'
 import '@/assets/style.css'
 import Axios from 'axios'
-import vSelect from 'vue-select'
-import vsSelect  from 'vuesax'
-import 'vuesax/dist/vuesax.css'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlusSquare, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faStar,faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPlusSquare, faEdit, faTrashAlt)
 
+/* add icons to the library */
+library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt)
+
+/* add font awesome icon component */
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+// import { library } from '@fortawesome/fontawesome-svg-core'
+// import { faPlusSquare, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+// library.add(faPlusSquare, faEdit, faTrashAlt)
+
+// Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.component('v-select', vSelect)
 Vue.use(vsSelect)

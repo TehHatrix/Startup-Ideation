@@ -11,84 +11,36 @@
       </tr>
       <tr v-for="(item, index) in hypothesis_data" :key="index">
         <td>
-          <v-select
-            v-model="selected_custseg[index]"
-            v-bind:options="custseg_options()"
-          ></v-select>
+          <p id="cust_seg">{{ selected_custseg[index] }}</p>
         </td>
         <td>has a problems of</td>
         <td>
-          <v-select
-            v-model="selected_problems[index]"
-            v-bind:options="problems_options()"
-          ></v-select>
+          <p id="problems">{{ selected_problems[index] }}</p>
         </td>
-        <td>
+        <td id ="freqSliders" >
           <p>Problems Frequency</p>
-          <vue-slider
-            v-model="pain_value1[index]"
-            :adsorb="true"
-            :data="pain_data1"
-            :marks="true"
-          ></vue-slider>
+          <Slider type="Frequency" v-model="pain_value1[index]" ></Slider>
           <p>Problems Severity</p>
-          <vue-slider
-            v-model="pain_value2[index]"
-            :adsorb="true"
-            :data="pain_data2"
-            :marks="true"
-          ></vue-slider>
+          <Slider type="Severity" v-model="pain_value2[index]"></Slider>
         </td>
 
-        <td>
+        <td id = "feedSliders">
           <p>How long to interviews all the customer segments?</p>
-          <vue-slider
-            v-model="feedback_value[index]"
-            :adsorb="true"
-            :data="feedback_data"
-            :marks="true"
-          ></vue-slider>
+          <Slider type="Feedback" v-model="feedback_value[index]"></Slider>
         </td>
-        <Modal></Modal>
+        <Modal @routeInterview="routeInterview"></Modal>
       </tr>
     </table>
-    <!-- <vs-table>
-      <template #thead>
-        <vs-tr>
-          <vs-th> Customer Segment </vs-th>
-          <vs-th> Problems </vs-th>
-          <vs-th> Feedback Cycle </vs-th>
-          <vs-th> Pain </vs-th>
-          <vs-th> Action </vs-th>
-        </vs-tr>
-      </template>
-      <template #tbody>
-        <vs-tr v-for="(item, index) in hypothesis_data" :key="index">
-          <vs-td data-label="cust_seg"> {{ item[1] }} has a problems of {{ item[2] }}</vs-td>
-          <vs-td>
-            <vue-slider v-model="value1"></vue-slider>
-            <vue-slider v-model="value2"></vue-slider>
-          </vs-td>
-          <vs-td> </vs-td>
-          <vs-td> </vs-td>
-          <template #expand>
-            <div class="con-content">
-              <div>
-                <vs-button border danger> Remove Hypothesis </vs-button>
-              </div>
-            </div>
-          </template>
-        </vs-tr>
-      </template>
-    </vs-table> -->
   </div>
 </template>
 
 <script>
 import Modal from "@/components/GeneralModal.vue";
+import Slider from "@/components/HypothesisSlider.vue";
 export default {
-  components:{
-    Modal
+  components: {
+    Modal,
+    Slider,
   },
   data() {
     return {
@@ -104,20 +56,18 @@ export default {
     };
   },
   mounted() {
+    console.log(this.$router)
     this.$http
       .get("http://localhost:80/api/gethypothesisdata")
       .then((response) => {
         this.hypothesis_data = response.data;
-        console.log(this.hypothesis_data)
+        console.log(this.hypothesis_data);
         for (let item in this.hypothesis_data) {
           this.selected_custseg[item] = this.hypothesis_data[item][1];
           this.selected_problems[item] = this.hypothesis_data[item][2];
         }
       })
       .catch((error) => console.log(error));
-  },
-  mount(){
-    this.show();
   },
   methods: {
     custseg_options() {
@@ -140,6 +90,9 @@ export default {
     hide() {
       this.$modal.hide("pre-interview-modal");
     },
+    routeInterview(){
+      this.$router.push('interview')
+    }
   },
   computed: {
     setselected: function () {
@@ -150,4 +103,29 @@ export default {
 </script>
 
 <style scoped>
+
+*{
+  margin:auto;
+}
+#cust_seg,
+#problems {
+  font-weight: bold;
+  text-align: center;
+}
+
+p{
+  text-align: center;
+}
+
+#cust_seg{
+  margin-right: 30px;
+}
+#freqSliders,#feedSliders{
+  padding-right: 30px;
+}
+
+#problems {
+  margin-left: 30px;
+  margin-right: 30px;
+}
 </style>

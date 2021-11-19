@@ -18,7 +18,7 @@ class CreateRevenuesTable extends Migration
             $table->unsignedBigInteger('canvas_id');
             $table->foreign('canvas_id')->references('id')->on('lean_canvases');
             $table->string('topic');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('publisher_id');
             $table->timestamps();
         });

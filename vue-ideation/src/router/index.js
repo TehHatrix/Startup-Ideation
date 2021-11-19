@@ -2,6 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Hypothesis from '../views/Hypothesis.vue'
 import middleware from './middleware'
+import Interview from '../views/Interviews/Interview.vue'
+import store from '@/store'
+import Login from '../views/Login.vue'
+import Test from "../views/Test.vue"
+import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
+
 
 Vue.use(VueRouter)
 
@@ -15,7 +21,22 @@ const routes = [
   {
     path: '/hypothesis',
     name: 'Hypothesis',
-    component: Hypothesis
+    component: Hypothesis,
+  },
+  {
+    path: '/interview',
+    name: 'Interview',
+    component: Interview
+  },
+  {
+    path: '/editor/landing',
+    name: 'LandingEditor',
+    component: LandingEditor
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: Test
   },
   // {
   //   path: '/login',
