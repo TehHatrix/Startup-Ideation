@@ -56,12 +56,10 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$router)
     this.$http
       .get("http://localhost:80/api/gethypothesisdata")
       .then((response) => {
         this.hypothesis_data = response.data;
-        console.log(this.hypothesis_data);
         for (let item in this.hypothesis_data) {
           this.selected_custseg[item] = this.hypothesis_data[item][1];
           this.selected_problems[item] = this.hypothesis_data[item][2];

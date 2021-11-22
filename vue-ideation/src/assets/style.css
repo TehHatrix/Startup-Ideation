@@ -21,6 +21,16 @@
 	box-sizing: border-box;
 }
 
+html,body{
+	min-height:100%;
+	position: relative;
+}
+
+body{
+	height:100%;
+}
+
+
 html{
 	overflow: scroll;
 	overflow-x: hidden;

@@ -44,6 +44,7 @@ export default {
 </script>
 
 <style lang ='scss' scoped>
+
 .card {
   width: 220px;
   height: 220px;
@@ -77,11 +78,6 @@ p {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 99;
-
-  /* width: 100%;
-  max-width: 1000px; */
-  /* background-color: #fff;
-  border-radius: 16px; */
   padding: 25px;
 }
 
@@ -92,6 +88,8 @@ p {
   left: 0;
   bottom: 0;
   z-index: 98;
+  overflow:hidden;
+  height:110%;
   background-color: rgba(0, 0, 0, 0.3);
 }
 

@@ -1,6 +1,18 @@
 <template>
     <div class = "customerContainer">
         <customer-card> </customer-card>
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
+
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
+        <customer-card> </customer-card>
         <add-customer-card></add-customer-card>
         
 
@@ -22,6 +34,7 @@ export default {
 <style scoped>
 .customerContainer{
     display:flex;
+    flex-wrap: wrap;
     gap:150px;
 }
 
