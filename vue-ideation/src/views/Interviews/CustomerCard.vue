@@ -444,7 +444,7 @@ export default {
   left: 0;
   bottom: 0;
   z-index: 98;
-  height:110%;
+  height:150%;
   background-color: rgba(0, 0, 0, 0.3);
 }
 

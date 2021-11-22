@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1 :class="{ 'show-final': showFinal }">
-      Thank you for your registration, {{ registerSteps[0].value }}
+       {{ registerSteps[0].value }} Registered Successfully!
     </h1>
     <div
       class="register"
@@ -88,7 +88,7 @@ export default {
           pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         },
         {
-          label: "Create your Phone Number",
+          label: "What's Customer Phone Number",
           type: "phone",
           value: "",
           pattern: /^\d{10}$/,
@@ -99,6 +99,10 @@ export default {
   methods: {
     closeForm() {
       this.$emit("closeForm");
+    },
+    passAddCardParent(){
+      let customer = {name: this.registerSteps[0].value, occupation: this.registerSteps[1].value, email: this.registerSteps[2].value, phone:this.registerSteps[3].value}
+      this.$emit("addCard",customer)
     },
     setStep() {
       this.inputLabel = this.registerSteps[this.position].label;
@@ -149,6 +153,7 @@ export default {
             setTimeout(() => {
               this.showFinal = true;
             }, 1000);
+            this.passAddCardParent();
           });
         }
       }
@@ -264,6 +269,7 @@ export default {
 h1 {
   position: absolute;
   width: max-content;
+  margin-left: -200px;
   font-size: 2rem;
   color: #fff;
   opacity: 0;

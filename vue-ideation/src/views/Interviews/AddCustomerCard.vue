@@ -15,7 +15,7 @@
         class="addCustomerModal"
         v-if="addCustomerClicked"
       >
-          <register-form v-if="addCustomerClicked" @closeForm="setboolCustomerClicked" ></register-form>
+          <register-form v-if="addCustomerClicked" @closeForm="setboolCustomerClicked" @addCard="passAddParent"></register-form>
       </div>
     </transition>
     <p><strong>Add New Customer</strong></p>
@@ -38,6 +38,9 @@ export default {
   methods: {
     setboolCustomerClicked() {
       this.addCustomerClicked = false
+    },
+    passAddParent(customer_info){
+      this.$emit('addCard',customer_info)
     }
   },
 };
@@ -89,7 +92,7 @@ p {
   bottom: 0;
   z-index: 98;
   overflow:hidden;
-  height:110%;
+  height:150%;
   background-color: rgba(0, 0, 0, 0.3);
 }
 

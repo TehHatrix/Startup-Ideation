@@ -1,19 +1,9 @@
 <template>
     <div class = "customerContainer">
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <customer-card> </customer-card>
-        <add-customer-card></add-customer-card>
+        <div class="customerCards" v-for="(item,index) in customerCards" :key="index">
+            <customer-card> </customer-card>
+        </div>
+        <add-customer-card @addCard="addCardInterview" ></add-customer-card>
         
 
     </div>
@@ -23,10 +13,21 @@
 import CustomerCard from './CustomerCard.vue';
 import AddCustomerCard from './AddCustomerCard.vue';
 export default {
+    data() {
+        return {
+            customerCards:["card","card"]
+        }
+    },
     components:{
         CustomerCard,
         AddCustomerCard,
-    }
+    },
+
+    methods: {
+        addCardInterview() {
+            this.customerCards.push("cards")
+        }
+    },
     
 }
 </script>
