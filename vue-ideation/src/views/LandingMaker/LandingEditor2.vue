@@ -3,7 +3,7 @@
     <div id="navbar" class="sidenav">
       <span id="logo">Startup Ideation System</span>
       <div class="addPage">
-        <general-button> Add Page </general-button>
+        <!-- <general-button> Add Page </general-button> -->
       </div>
       <ul class="list-group pages"></ul>
       <div class="tabs">
@@ -49,14 +49,15 @@
 import "grapesjs/dist/css/grapes.min.css";
 import grapesjs from "grapesjs";
 import grapesjsBlocks from "grapesjs-blocks-basic";
-import GeneralButton from "../../components/GeneralButton.vue";
+import grapesjsTabs from "grapesjs-tabs";
+import grapesjsForms from "grapesjs-plugin-forms";
+import grapesjsNavbar from "grapesjs-navbar";
 import blocks from "../../components/icons/blocks.vue";
 import Layers from "../../components/icons/layers.vue";
 import styles from "../../components/icons/style.vue";
 
 export default {
   components: {
-    GeneralButton,
     blocks,
     styles,
     Layers,
@@ -67,9 +68,12 @@ export default {
       fromElement: true,
       width: "auto",
       storageManager: false,
-      plugins: [grapesjsBlocks],
+      plugins: [grapesjsBlocks, grapesjsTabs, grapesjsForms, grapesjsNavbar],
       pluginsOpts: {
         grapesjsBlocks: {},
+        grapesjsTabs: {},
+        grapesjsForms: {},
+        grapesjsNavbar: {},
       },
       blockManager: {
         appendTo: "#blocks",
@@ -81,43 +85,71 @@ export default {
         appendTo: "#style-view",
         sectors: [
           {
-            name: "Dimension",
+            name: "General",
             open: false,
-            // Use built-in properties
-            buildProps: ["width", "min-height", "padding"],
-            // Use `properties` to define/override single property
+            buildProps: [
+              "float",
+              "display",
+              "position",
+              "top",
+              "right",
+              "left",
+              "bottom",
+            ],
+          },
+          {
+            name: "Layout",
+            open: false,
+            buildProps: [
+              "width",
+              "height",
+              "max-width",
+              "min-height",
+              "margin",
+              "padding",
+            ],
+          },
+          {
+            name: "Typography",
+            open: false,
+            buildProps: [
+              "font-family",
+              "font-size",
+              "font-weight",
+              "letter-spacing",
+              "color",
+              "line-height",
+              "text-align",
+              "text-shadow",
+            ],
             properties: [
               {
-                // Type of the input,
-                // options: integer | radio | select | color | slider | file | composite | stack
-                type: "integer",
-                name: "The width", // Label for the property
-                property: "width", // CSS property (if buildProps contains it will be extended)
-                units: ["px", "%"], // Units, available only for 'integer' types
-                defaults: "auto", // Default value
-                min: 0, // Min value, available only for 'integer' types
+                property: "text-align",
+                list: [
+                  { value: "left", className: "fa fa-align-left" },
+                  { value: "center", className: "fa fa-align-center" },
+                  { value: "right", className: "fa fa-align-right" },
+                  { value: "justify", className: "fa fa-align-justify" },
+                ],
               },
+            ],
+          },
+          {
+            name: "Decorations",
+            open: false,
+            buildProps: [
+              "border-radius-c",
+              "background-color",
+              "border-radius",
+              "border",
+              "box-shadow",
+              "background",
             ],
           },
           {
             name: "Extra",
             open: false,
-            buildProps: ["background-color", "box-shadow", "custom-prop"],
-            properties: [
-              {
-                id: "custom-prop",
-                name: "Custom Label",
-                property: "font-size",
-                type: "select",
-                defaults: "32px",
-                // List of options, available only for 'select' and 'radio'  types
-                options: [
-                  { value: "12px", name: "Tiny" },
-                  { value: "18px", name: "Medium" },
-                  { value: "32px", name: "Big" },
-                ],
-              },
-            ],
+            buildProps: ["transition", "perspective", "transform"],
           },
         ],
       },
@@ -181,8 +213,24 @@ export default {
           className: "fa fa-repeat",
           command: (e) => e.runCommand("core:redo"),
         },
+        {
+          id: "canvas-clear",
+          className: "fa fa-trash",
+          command: (e) =>
+            e.runCommand(
+              "core:canvas-clear",
+              window.confirm("Clear the whole canvas?")
+            ),
+        },
+        {
+          id: "sw-visibility",
+          command: "sw-visibility",
+          context: "sw-visibility",
+          className: "fa fa-square-o",
+        },
       ],
     });
+    // const blockManager = editor.BlockManager;
   },
 };
 </script>
