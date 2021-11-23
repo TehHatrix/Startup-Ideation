@@ -8,7 +8,7 @@
 </transition>
 <transition name="slide" appear>
     <div class="modal" v-if="showModal">
-        <h1>Modal Form</h1>
+        <h1>Pre-Interview Form</h1>
         <p>Choose Learning Objectives</p>
         <p>Customize Interview Script</p>
         <button class="button" @click="showModal= false"> Close</button>

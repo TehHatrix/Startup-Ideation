@@ -175,7 +175,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.showModalCustomer);
   },
 };
 </script>

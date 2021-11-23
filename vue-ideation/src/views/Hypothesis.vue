@@ -1,35 +1,39 @@
 <template>
-  <div>
+  <div class="styled-table">
     <table>
-      <tr>
-        <th>Customer Segment</th>
-        <th></th>
-        <th>Problems</th>
-        <th>Pain</th>
-        <th>Feedback Cycle</th>
-        <th>Action</th>
-      </tr>
-      <tr v-for="(item, index) in hypothesis_data" :key="index">
-        <td>
-          <p id="cust_seg">{{ selected_custseg[index] }}</p>
-        </td>
-        <td>has a problems of</td>
-        <td>
-          <p id="problems">{{ selected_problems[index] }}</p>
-        </td>
-        <td id ="freqSliders" >
-          <p>Problems Frequency</p>
-          <Slider type="Frequency" v-model="pain_value1[index]" ></Slider>
-          <p>Problems Severity</p>
-          <Slider type="Severity" v-model="pain_value2[index]"></Slider>
-        </td>
+      <thead>
+        <tr>
+          <th>Customer Segment</th>
+          <th></th>
+          <th>Problems</th>
+          <th>Pain</th>
+          <th>Feedback Cycle</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in hypothesis_data" :key="index" >
+          <td>
+            <p id="cust_seg">{{ selected_custseg[index] }}</p>
+          </td>
+          <td>has a problems of</td>
+          <td>
+            <p id="problems">{{ selected_problems[index] }}</p>
+          </td>
+          <td id="freqSliders">
+            <p>Problems Frequency</p>
+            <Slider type="Frequency" v-model="pain_value1[index]"></Slider>
+            <p>Problems Severity</p>
+            <Slider type="Severity" v-model="pain_value2[index]"></Slider>
+          </td>
 
-        <td id = "feedSliders">
-          <p>How long to interviews all the customer segments?</p>
-          <Slider type="Feedback" v-model="feedback_value[index]"></Slider>
-        </td>
-        <Modal @routeInterview="routeInterview"></Modal>
-      </tr>
+          <td id="feedSliders">
+            <p>How long to interviews all the customer segments?</p>
+            <Slider type="Feedback" v-model="feedback_value[index]"></Slider>
+          </td>
+          <Modal @routeInterview="routeInterview"></Modal>
+        </tr>
+      </tbody>
     </table>
   </div>
 </template>
@@ -88,9 +92,9 @@ export default {
     hide() {
       this.$modal.hide("pre-interview-modal");
     },
-    routeInterview(){
-      this.$router.push('interview')
-    }
+    routeInterview() {
+      this.$router.push("interview");
+    },
   },
   computed: {
     setselected: function () {
@@ -101,24 +105,53 @@ export default {
 </script>
 
 <style scoped>
-
-*{
-  margin:auto;
+* {
+  margin: auto;
 }
+
+.styled-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  width: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border-radius: 5px 5px 0 0;
+}
+
+.styled-table thead tr {
+  background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+  color: #ffffff;
+  text-align: center;
+}
+
+.styled-table tbody tr {
+    border-bottom: thin  solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #8743ff;
+}
+
+
 #cust_seg,
 #problems {
   font-weight: bold;
   text-align: center;
 }
 
-p{
+p {
   text-align: center;
 }
 
-#cust_seg{
+#cust_seg {
   margin-right: 30px;
 }
-#freqSliders,#feedSliders{
+#freqSliders,
+#feedSliders {
   padding-right: 30px;
 }
 

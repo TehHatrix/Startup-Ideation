@@ -15,7 +15,7 @@ import AddCustomerCard from './AddCustomerCard.vue';
 export default {
     data() {
         return {
-            customerCards:["card","card"]
+            customerCards:["customer","customer","customer","customer","customer"]
         }
     },
     components:{
@@ -24,9 +24,12 @@ export default {
     },
 
     methods: {
-        addCardInterview() {
-            this.customerCards.push("cards")
+        addCardInterview(customer_info) {
+            this.customerCards.push(customer_info)
         }
+    },
+    mounted () {
+        console.log(this.customerCards);
     },
     
 }
