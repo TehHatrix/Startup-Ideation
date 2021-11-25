@@ -7,6 +7,7 @@ import Login from '../views/Login.vue'
 import Test from "../views/Test.vue"
 import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
 import LandingEditor2 from "../views/LandingMaker/LandingEditor2.vue"
+import LandingBuilder from "../views/LandingMaker/LandingBuilder.vue"
 
 
 Vue.use(VueRouter)
@@ -44,6 +45,11 @@ const routes = [
     path: '/editor/landing2',
     name: 'LandingEditor2',
     component: LandingEditor2
+  },
+  {
+    path: '/builder/landing',
+    name: 'LandingBuilder',
+    component: LandingBuilder
   },
   {
     path: '/test',
