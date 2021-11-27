@@ -230,7 +230,34 @@ export default {
         },
       ],
     });
-    // const blockManager = editor.BlockManager;
+    // This is our custom script (avoid using arrow functions)
+const script = function() {
+  alert('Hi');
+  // `this` is bound to the component element
+  console.log('the element', this);
+};
+
+// Define a new custom component
+editor.Components.addType('comp-with-js', {
+  model: {
+    defaults: {
+      script,
+      // Add some style, just to make the component visible
+      style: {
+        width: '100px',
+        height: '100px',
+        background: 'red',
+      }
+    }
+  }
+});
+
+// Create a block for the component, so we can drop it easily
+editor.Blocks.add('test-block', {
+  label: 'Test block',
+  attributes: { class: 'fa fa-text' },
+  content: { type: 'comp-with-js' },
+});
   },
 };
 </script>
@@ -292,7 +319,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  z-index: 99;
+  // z-index: 99;
 }
 
 #logo {
@@ -384,7 +411,7 @@ section .content {
 .main-content {
   position: relative;
   z-index: 100;
-  width: 85%;
+  width: 100%;
   left: 15%;
   .panel__top {
     padding: 0;
