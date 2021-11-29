@@ -77,6 +77,7 @@ export default {
       },
       blockManager: {
         appendTo: "#blocks",
+        custom: true,
       },
       layerManager: {
         appendTo: "#layer-container",
@@ -230,24 +231,33 @@ export default {
         },
       ],
     });
-    // This is our custom script (avoid using arrow functions)
-const script = function() {
-  alert('Hi');
-  // `this` is bound to the component element
-  console.log('the element', this);
-};
 
+const script = function() {
+  alert('hi');
+  console.log('the element', this);
+}
 // Define a new custom component
-editor.Components.addType('comp-with-js', {
+editor.DomComponents.addType('my-input-type', {
+  // Make the editor understand when to bind `my-input-type`
+  isComponent: el => el.tagName === 'INPUT',
+  // Model definition
   model: {
+    // Default properties
     defaults: {
       script,
-      // Add some style, just to make the component visible
-      style: {
-        width: '100px',
-        height: '100px',
-        background: 'red',
-      }
+      tagName: 'input',
+      draggable: 'form, form *', // Can be dropped only inside `form` elements
+      droppable: false, // Can't drop other elements inside
+      attributes: { // Default attributes
+        type: 'text',
+        name: 'default-name',
+        placeholder: 'Insert text here',
+      },
+      traits: [
+        'name',
+        'placeholder',
+        { type: 'checkbox', name: 'required' },
+      ],
     }
   }
 });
@@ -256,7 +266,7 @@ editor.Components.addType('comp-with-js', {
 editor.Blocks.add('test-block', {
   label: 'Test block',
   attributes: { class: 'fa fa-text' },
-  content: { type: 'comp-with-js' },
+  content: { type: 'my-input-type' },
 });
   },
 };
