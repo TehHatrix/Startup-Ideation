@@ -69,14 +69,20 @@ Route::group([
         'create',
         'edit'
     ]);
-
+    
     // lean canvas route
     Route::post('/projects/{projectID}/leancanvas', [LeanCanvasController::class, 'addContent']);
-    
+    Route::get('/projects/{projectID}/leancanvas', [LeanCanvasController::class, 'index']);
+    Route::delete('/projects/leancanvas/{contentType}/{contentId}', [LeanCanvasController::class, 'deleteContent']);
 
+    // get user username and id 
+    Route::post('/getUser', [ProjectController::class, 'getUser']);
+    
     // free canvas route
     Route::apiResource('projects.free-canvas', FreeCanvasController::class);
     
     Route::apiResource('free-canvas.content', FreeCanvasContentController::class);
-
+    
 });
+
+

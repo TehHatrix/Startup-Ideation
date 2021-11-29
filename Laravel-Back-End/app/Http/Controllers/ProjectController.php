@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+use function PHPUnit\Framework\isNull;
+
 class ProjectController extends Controller
 {
 
@@ -47,7 +49,7 @@ class ProjectController extends Controller
         ]);
 
         if($validator->fails()) {
-            return response()->json(['errors' => $validator->errors, 'success' => false]);
+            return response()->json(['errors' => $validator->errors(), 'success' => false]);
         }
 
         $data = $validator->validated();
@@ -139,7 +141,7 @@ class ProjectController extends Controller
         if($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors
+                'errors' => $validator->errors()
             ]);
         }
 
@@ -200,7 +202,6 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         $collaborator = $project->users()->get(array('id', 'name'))->toArray();
-        
         $tempId = array();
         foreach ($collaborator as $user) {
             array_push($tempId, $user['id']);
@@ -208,12 +209,50 @@ class ProjectController extends Controller
         if(!in_array(Auth::id(), $tempId)) {
             return response(['message' => 'you are not the collaborator for this project'], 401);
         } 
-
+        
+        $leanCanvas = LeanCanvas::where('project_id', $id)->delete();
+        
         $project->users()->detach();
         $project->delete();
 
         return response()->json(['success' => true, 'message' => 'successfully deleted']);
         
+    }
+
+    public function getUser(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required'
+        ]);
+
+
+        if($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+                'success' => false
+            ]);
+        }
+
+        $data = $validator->validated();
+        
+        $user = User::select('username', 'id', 'name')->where('username', strtolower($data['username']))->first();
+        
+        if(!$user) {
+            return response()->json([
+                'user' => $user,
+                'errors' => 'user does not exist',
+                'success' => false
+            ]);
+        }
+        return response()->json([
+            'user' => $user,
+            'success' => true,
+            'errors' => null
+        ]);
+
+    }
+
+    public function addCollab() {
+
     }
 }
 

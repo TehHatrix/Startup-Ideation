@@ -35,7 +35,7 @@ const actions = {
         let res = await api.getProjects()
         // console.log(res.data.projects + 'from getProject api')
         commit('SET_PROJECTS', res.data.projects)
-        return api.getProjects()
+        return res
     },
 
     async setProjects({ commit }, payload) {

@@ -80,8 +80,17 @@ export default {
     },
 
     methods: {
-        changeStatusTodo() {
-            this.$emit('todoStatusChanged', this.task)
+        async changeStatusTodo() {
+            try {
+                let taskForm = this.updatedTaskForm
+                taskForm.completed = true
+                let {data} = await api.updateTask(this.params, taskForm)
+                if(data.success) {
+                    this.$store.dispatch('getTodos', this.project.id)
+                }
+            } catch (error) {
+                console.log(error)
+            }
         },
 
         async deleteTodo() {
@@ -129,6 +138,7 @@ export default {
         justify-content: space-between;
         border-bottom: 1px solid #ccc;
         padding: 0.5rem 0.5rem;
+        flex: 1 1 0px
     }
 
     .task-checkbox {
@@ -141,5 +151,11 @@ export default {
 
     .line {
         text-decoration: line-through;
+    }
+
+    .task-topic {
+        background: #634d9a;
+        border-radius: 20px;
+        box-shadow: 30px 30px 30px 0px #dcd7e8;
     }
 </style>

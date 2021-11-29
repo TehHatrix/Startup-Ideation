@@ -19,5 +19,9 @@ export default {
 
     async updateProject(params, payload) {
         return api.put(`api/projects/${params}`, payload)
+    },
+
+    async getUser(payload) {
+        return api.post(`api/getUser`, payload)
     }
 }

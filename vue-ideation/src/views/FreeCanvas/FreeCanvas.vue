@@ -1,17 +1,14 @@
 <template lang="">
-  <div>
-    
-  </div>
+    <div>
+        
+    </div>
 </template>
 <script>
 export default {
-
-  mounted() {
-    console.log(process.env.TEST)
-  }
-  
+    name: 'FreeCanvas',
+    
 }
 </script>
 <style lang="">
-  
+    
 </style>

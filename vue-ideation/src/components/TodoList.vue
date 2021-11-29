@@ -1,12 +1,14 @@
 <template lang="">
     <div>
         <form @submit.prevent="addTask" >
-            <input type="text" v-model="form.task" >
-            <select v-model="form.assigned_to" >
-                <option v-for="(collaborator, index) in project.collaborator" :key="index" :value="collaborator.id" >{{ collaborator.name }}</option>
-            </select>
-            <input v-model="form.due_date" type="date" >
-            <button type="submit">create task</button>
+            <div class="grid grid-cols-5 form-todo">
+                <input type="text" v-model="form.task" placeholder="Add Task" class="col-span-2" >
+                <select v-model="form.assigned_to" >
+                    <option v-for="(collaborator, index) in project.collaborator"  :key="index" :value="collaborator.id" >{{ collaborator.name }}</option>
+                </select>
+                <input v-model="form.due_date" type="date" >
+                <button type="submit">create task</button>
+            </div>
         </form>
         <!-- {{tasks}} -->
         <div class="overflow-scroll">
@@ -63,38 +65,14 @@ export default {
                 let {data} = await api.addTask(this.project.id, this.form)
                 if(data.success) {
                     await this.$store.dispatch('getTodos', this.project.id)
+                    this.form.task = ''
+                    this.form.due_date = null
+                    this.form.assigned_to = null
                 } 
             } catch(error) {
                 console.log(error)
             }
         },
-
-        async updateTaskStatus(task) {
-            try {
-
-                const updatedTask = {
-                    'task': task.task,
-                    'assigned_to': task.assigned_to,
-                    'due_date': task.due_date,
-                    'completed': task.completed
-                }
-
-                let { data } = await api.updateTask({
-                    'projectId': this.project.id,
-                    'taskId': task.id
-                }, updatedTask)
-
-                console.log(data.task)
-
-                if(data.success) { 
-                    await this.$store.dispatch('getTodos', this.$route.params.projectId)
-                } else {
-                    console.log('task not updated')
-                }
-            } catch(errors) {
-                console.log(errors)
-            }
-        }
 
     },
     computed: {
@@ -103,9 +81,21 @@ export default {
     
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
     .overflow-scroll {
         overflow: auto;
         max-height: 15rem;
     }
+
+    .form-todo {
+        margin: 0.5rem 0px;
+
+        input{
+            padding: 0.25rem 0.10rem;
+        }
+    }
+
+
+    
+    
 </style>

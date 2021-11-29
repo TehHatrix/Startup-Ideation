@@ -9,14 +9,15 @@ class CustomerSegment extends Model
 {
     use HasFactory;
     // protected $table= 'CustomerProblem'; 
-    protected $primaryKey = 'cs_ID';
-    protected $fillable = [
-        'cs_ID',
-        'canvas_ID',
-        'topic',
-        'description',
-        'publisher',
-    ];
+    // protected $primaryKey = 'cs_ID';
+    // protected $fillable = [
+    //     'cs_ID',
+    //     'canvas_ID',
+    //     'topic',
+    //     'description',
+    //     'publisher',
+    // ];
+    protected $fillable = ['topic', 'description', 'publisher_id'];
 
     // TODO change back to default lean content
 

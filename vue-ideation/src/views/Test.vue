@@ -22,6 +22,7 @@ export default {
   },
   mounted() {
     console.log(this)
+    console.log(process.env.VUE_APP_TEST)
     // this.show();
     // function setTicks(slider) {
     //   let container = document.getElementById(slider.dataset.tickId);

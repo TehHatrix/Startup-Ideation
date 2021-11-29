@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import authRepository from './authRepository.js'
 import projectRepository from './projectRepository'
 import todosRepository from './todosRepository'
+import leanCanvasRepository from './leanCanvasRepository'
 
 Vue.use(Vuex)
 
@@ -22,7 +23,8 @@ export default new Vuex.Store( {
     modules: {
         authRepository,
         projectRepository,
-        todosRepository
+        todosRepository,
+        leanCanvasRepository
     }
     
 })
