@@ -1,10 +1,7 @@
 <template>
-  <div>
+  <div class="flexContainer">
     <div id="navbar" class="sidenav">
       <span id="logo">Startup Ideation System</span>
-      <div class="addPage">
-        <!-- <general-button> Add Page </general-button> -->
-      </div>
       <ul class="list-group pages"></ul>
       <div class="tabs">
         <div class="wrapper">
@@ -35,14 +32,18 @@
       <div></div>
     </div>
 
-    <div class="main-content">
+    <div class="main-content" :style="{width: fillMainContent ? '85%' : '70%'}">
       <div class="panel__top">
         <div class="panel__basic-actions"></div>
       </div>
-      <div class="mainNav"></div>
+      <!-- <div class="mainNav"></div> -->
       <div id="editor"></div>
     </div>
+    <div id="style-nav" :style="{width: styleComponents ? fillMainContent=false : fillMainContent=true, display: styleComponents ? 'block' : 'none'}">
+
+    </div>
   </div>
+  
 </template>
 
 <script>
@@ -61,6 +62,12 @@ export default {
     blocks,
     styles,
     Layers,
+  },
+  data() {
+    return {
+      styleComponents: false,
+      fillMainContent: true,
+    }
   },
   mounted() {
     const editor = grapesjs.init({
@@ -83,7 +90,7 @@ export default {
         appendTo: "#layer-container",
       },
       styleManager: {
-        appendTo: "#style-view",
+        appendTo: "#style-nav",
         sectors: [
           {
             name: "General",
@@ -159,6 +166,17 @@ export default {
       },
     });
     editor;
+    const handleOpen= () => {
+      this.styleComponents = true;      
+    }
+    const handleClose= () =>{
+      this.styleComponents = false;    
+    }
+
+    editor.on('component:selected',handleOpen)
+    editor.on('component:deselected',handleClose)
+    console.log(this.styleComponents)
+
     //Add Panels
     const panelManager = editor.Panels;
     panelManager.addPanel({
@@ -201,7 +219,8 @@ export default {
         {
           id: "preview",
           context: "preview",
-          command: (e) => e.runCommand("preview"),
+          // command: (e) => e.runCommand("preview"),
+          command: "preview",
           className: "fa fa-eye",
         },
         {
@@ -232,55 +251,86 @@ export default {
       ],
     });
 
-const script = function() {
-  alert('hi');
-  console.log('the element', this);
-}
-// Define a new custom component
-editor.DomComponents.addType('my-input-type', {
-  // Make the editor understand when to bind `my-input-type`
-  isComponent: el => el.tagName === 'INPUT',
-  // Model definition
-  model: {
-    // Default properties
-    defaults: {
-      script,
-      tagName: 'input',
-      draggable: 'form, form *', // Can be dropped only inside `form` elements
-      droppable: false, // Can't drop other elements inside
-      attributes: { // Default attributes
-        type: 'text',
-        name: 'default-name',
-        placeholder: 'Insert text here',
-      },
-      traits: [
-        'name',
-        'placeholder',
-        { type: 'checkbox', name: 'required' },
-      ],
-    }
-  }
-});
+    //LandingPage Header 1 Components
 
-// Create a block for the component, so we can drop it easily
-editor.Blocks.add('test-block', {
-  label: 'Test block',
-  attributes: { class: 'fa fa-text' },
-  content: { type: 'my-input-type' },
-});
+    editor.DomComponents.addType("landingpage-header-1", {
+      model: {
+        defaults: {
+          attributes: { class: "home" },
+          components: `
+          <section class="home" id="home">
+      <div class="content">
+        <h3>Product <span>Showcase</span></h3>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus
+          suscipit porro nam libero natus error consequatur sed repudiandae eos
+          quo?
+        </p>
+        <button class="buttonOrder">Pre-Order Now!</button>
+      </div>
+      <div class="image">
+        <img src="@/assets/img/home-img.png" alt="" />
+      </div>
+    </section>
+      `,
+          styles: `
+        section {
+  font-family: "Poppins";
+  padding-left: 5%;
+  padding-right: 5%;
+  background-color: #fff;
+  .content h3 {
+    font-size: 5.5rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+}
+
+.home {
+  display: flex;
+}
+
+.buttonOrder {
+  border-radius: 8px;
+  padding: 1em 2em;
+  -webkit-appearance: none;
+  appearance: none;
+  font-weight: bold;
+  background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+  color: #fff;
+  border: none;
+  cursor :pointer;
+}
+      `,
+        },
+      },
+    });
+
+
+    // Create a block for the component, so we can drop it easily
+    editor.Blocks.add("Landing-Page-Header-1", {
+      label: "Header",
+      attributes: { class: "fa fa-text" },
+      content: { type: "landingpage-header-1" },
+    });
   },
 };
 </script>
 
 <style lang="scss" scoped>
-#block {
-  height: 100%;
+.flexContainer{
+  max-width: 100%;
+  display:flex;
 }
 
-#block #blocks {
-  height: 100%;
-  width: 100%;
-}
+// #block {
+//   height: 100%;
+// }
+
+// #block #blocks {
+//   height: 100%;
+//   width: 100%;
+// }
 
 /* Theming */
 ::v-deep .gjs-one-bg {
@@ -324,19 +374,28 @@ editor.Blocks.add('test-block', {
   background-color: rgba(255, 255, 255, 0.95);
   transition: 0.5s;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
   // z-index: 99;
 }
 
-#logo {
-  margin-top: 10px;
+#style-nav{
+  position: fixed;
+  display:block;
+  top:0;
+  left:85%;
+  width:15%;
+  height:100vh;
+  overflow:scroll;
+  overflow-x: hidden;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
 }
 
-.addPage {
+
+#logo {
+  margin-top: 10px;
 }
 
 ::v-deep svg {
@@ -420,8 +479,7 @@ section .content {
 
 .main-content {
   position: relative;
-  z-index: 100;
-  width: 100%;
+  // width: 85%;
   left: 15%;
   .panel__top {
     padding: 0;
