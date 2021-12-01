@@ -6,14 +6,12 @@
       <div class="tabs">
         <div class="wrapper">
           <input type="radio" name="slider" checked id="blocksRadio" />
-          <input type="radio" name="slider" id="styles" />
           <input type="radio" name="slider" id="layers" />
           <nav>
             <label for="blocksRadio" class="blocksRadio"
               ><blocks></blocks
             ></label>
             <label for="layers" class="layers"><layers></layers></label>
-            <label for="styles" class="styles"><styles></styles></label>
             <div class="slider"></div>
           </nav>
           <section>
@@ -23,27 +21,34 @@
             <div class="content content-2">
               <div id="layer-container"></div>
             </div>
-            <div class="content content-3">
-              <div id="style-view"></div>
-            </div>
           </section>
         </div>
       </div>
       <div></div>
     </div>
 
-    <div class="main-content" :style="{width: fillMainContent ? '85%' : '70%'}">
+    <div
+      class="main-content"
+      :style="{ width: fillMainContent ? '85%' : '70%' }"
+    >
       <div class="panel__top">
         <div class="panel__basic-actions"></div>
       </div>
       <!-- <div class="mainNav"></div> -->
       <div id="editor"></div>
     </div>
-    <div id="style-nav" :style="{width: styleComponents ? fillMainContent=false : fillMainContent=true, display: styleComponents ? 'block' : 'none'}">
-
+    <div
+      id="style-nav"
+      :style="{
+        width: styleComponents
+          ? (fillMainContent = false)
+          : (fillMainContent = true),
+        display: styleComponents ? 'block' : 'none',
+      }"
+    >
+    <x-mark @click.native="closeStyleManager"></x-mark>
     </div>
   </div>
-  
 </template>
 
 <script>
@@ -55,18 +60,24 @@ import grapesjsForms from "grapesjs-plugin-forms";
 import grapesjsNavbar from "grapesjs-navbar";
 import blocks from "../../components/icons/blocks.vue";
 import Layers from "../../components/icons/layers.vue";
-import styles from "../../components/icons/style.vue";
+import XMark from '../../components/icons/x-mark.vue';
 
 export default {
   components: {
     blocks,
-    styles,
     Layers,
+    XMark,
   },
-  data() {
+    data() {
     return {
       styleComponents: false,
       fillMainContent: true,
+    };
+  },
+  methods: {
+    closeStyleManager() {
+      this.styleComponents = false;
+      this.fillMainContent = true;
     }
   },
   mounted() {
@@ -166,16 +177,16 @@ export default {
       },
     });
     editor;
-    const handleOpen= () => {
-      this.styleComponents = true;      
-    }
-    const handleClose= () =>{
-      this.styleComponents = false;    
-    }
+    const handleOpen = () => {
+      this.styleComponents = true;
+    };
+    const handleClose = () => {
+      this.styleComponents = false;
+    };
 
-    editor.on('component:selected',handleOpen)
-    editor.on('component:deselected',handleClose)
-    console.log(this.styleComponents)
+    editor.on("component:selected", handleOpen);
+    editor.on("component:deselected", handleClose);
+    console.log(this.styleComponents);
 
     //Add Panels
     const panelManager = editor.Panels;
@@ -306,7 +317,6 @@ export default {
       },
     });
 
-
     // Create a block for the component, so we can drop it easily
     editor.Blocks.add("Landing-Page-Header-1", {
       label: "Header",
@@ -318,10 +328,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.flexContainer{
-  max-width: 100%;
-  display:flex;
+.fa-xmark{
+  cursor:pointer;
 }
+.flexContainer {
+  max-width: 100%;
+  display: flex;
+}
+
+.closeStyle {
+  cursor: pointer;
+}
+
 
 // #block {
 //   height: 100%;
@@ -380,19 +398,18 @@ export default {
   // z-index: 99;
 }
 
-#style-nav{
+#style-nav {
   position: fixed;
-  display:block;
-  top:0;
-  left:85%;
-  width:15%;
-  height:100vh;
-  overflow:scroll;
+  display: block;
+  top: 0;
+  left: 85%;
+  width: 15%;
+  height: 100vh;
+  overflow: scroll;
   overflow-x: hidden;
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
 }
-
 
 #logo {
   margin-top: 10px;
@@ -472,8 +489,7 @@ section .content {
   background: #fff;
 }
 #blocksRadio:checked ~ section .content-1,
-#layers:checked ~ section .content-2,
-#styles:checked ~ section .content-3 {
+#layers:checked ~ section .content-2 {
   display: block;
 }
 

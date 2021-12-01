@@ -28,6 +28,7 @@
 export default {
   data() {
     return {
+      toggleHover: true,
       gradientBoolean: false,
       gradientColor: "url(#gradientColor)",
       defaultColor: "currentColor",
