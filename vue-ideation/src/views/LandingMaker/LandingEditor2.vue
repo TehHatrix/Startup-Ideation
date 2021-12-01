@@ -364,10 +364,13 @@ export default {
   color: white;
 }
 
-::v-deep .gjs-four-color,
-.gjs-four-color-h:hover {
-  color: #1e8fe1;
+::v-deep .gjs-four-color-h:hover {
+  color: #8743FF
 }
+// ::v-deep .gjs-four-color,
+// .gjs-four-color-h:hover {
+//   color: 
+// }
 
 ::v-deep .gjs-pn-panels {
   position: relative;
@@ -466,7 +469,7 @@ export default {
 nav .slider {
   position: absolute;
   height: 100%;
-  width: 30%;
+  width: 50%;
   left: 0;
   bottom: 0;
   z-index: 0;
@@ -478,10 +481,7 @@ input[type="radio"] {
   display: none;
 }
 #layers:checked ~ nav .slider {
-  left: 35%;
-}
-#styles:checked ~ nav .slider {
-  left: 70%;
+  left: 50%;
 }
 
 section .content {
