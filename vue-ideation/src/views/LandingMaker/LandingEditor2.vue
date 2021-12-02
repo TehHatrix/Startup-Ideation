@@ -33,6 +33,10 @@
     >
       <div class="panel__top">
         <div class="panel__basic-actions"></div>
+        <div class="panel-save">
+          <general-button @click.native = "handleSave">Save</general-button>
+          <general-button>Preview</general-button>
+        </div>
       </div>
       <!-- <div class="mainNav"></div> -->
       <div id="editor"></div>
@@ -61,17 +65,20 @@ import grapesjsNavbar from "grapesjs-navbar";
 import blocks from "../../components/icons/blocks.vue";
 import Layers from "../../components/icons/layers.vue";
 import XMark from "../../components/icons/x-mark.vue";
+import GeneralButton from "../../components/GeneralButton.vue";
 
 export default {
   components: {
     blocks,
     Layers,
     XMark,
+    GeneralButton,
   },
   data() {
     return {
       styleComponents: false,
       fillMainContent: true,
+      editor: "",
     };
   },
   methods: {
@@ -79,9 +86,13 @@ export default {
       this.styleComponents = false;
       this.fillMainContent = true;
     },
+    handleSave() {
+      console.log(this.editor.getHtml());
+      console.log(this.editor.getCss());
+    },
   },
   mounted() {
-    const editor = grapesjs.init({
+    this.editor = grapesjs.init({
       container: "#editor",
       fromElement: true,
       width: "auto",
@@ -176,7 +187,7 @@ export default {
         defaults: [{}],
       },
     });
-    editor;
+    const editor = this.editor;
     const handleOpen = () => {
       this.styleComponents = true;
     };
@@ -364,7 +375,7 @@ export default {
 
   .gjs-four-color {
     color: #8743ff;
-}
+  }
 
   .gjs-four-color-h:hover {
     color: #8743ff;
@@ -390,10 +401,9 @@ export default {
 
   // .gjs-field input, .gjs-field select, .gjs-field textarea{
   //   background-color: #272727;
-  
+
   // }
 }
-
 
 .sidenav {
   position: fixed;
@@ -510,12 +520,19 @@ section .content {
   // width: 85%;
   left: 15%;
   .panel__top {
-    padding: 0;
+    padding: 10;
     display: flex;
     position: initial;
     justify-content: center;
     justify-content: space-between;
+    .panel-save {
+      display: flex;
+      gap: 15px;
+      ::v-deep .button {
+      }
+    }
     .panel__basic-actions {
+      display: flex;
       position: initial;
     }
   }
