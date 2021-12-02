@@ -46,7 +46,7 @@
         display: styleComponents ? 'block' : 'none',
       }"
     >
-    <x-mark @click.native="closeStyleManager"></x-mark>
+      <x-mark @click.native="closeStyleManager"></x-mark>
     </div>
   </div>
 </template>
@@ -60,7 +60,7 @@ import grapesjsForms from "grapesjs-plugin-forms";
 import grapesjsNavbar from "grapesjs-navbar";
 import blocks from "../../components/icons/blocks.vue";
 import Layers from "../../components/icons/layers.vue";
-import XMark from '../../components/icons/x-mark.vue';
+import XMark from "../../components/icons/x-mark.vue";
 
 export default {
   components: {
@@ -68,7 +68,7 @@ export default {
     Layers,
     XMark,
   },
-    data() {
+  data() {
     return {
       styleComponents: false,
       fillMainContent: true,
@@ -78,7 +78,7 @@ export default {
     closeStyleManager() {
       this.styleComponents = false;
       this.fillMainContent = true;
-    }
+    },
   },
   mounted() {
     const editor = grapesjs.init({
@@ -280,7 +280,7 @@ export default {
         <button class="buttonOrder">Pre-Order Now!</button>
       </div>
       <div class="image">
-        <img src="@/assets/img/home-img.png" alt="" />
+        <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.smashingmagazine.com%2F2019%2F04%2Fdesign-landing-page-mobile-conversion%2F&psig=AOvVaw2KYRMmOH0VGeq-Kb9_unVV&ust=1638533272133000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCIjMj6CKxfQCFQAAAAAdAAAAABAD" alt="" />
       </div>
     </section>
       `,
@@ -328,8 +328,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.fa-xmark{
-  cursor:pointer;
+.fa-xmark {
+  cursor: pointer;
 }
 .flexContainer {
   max-width: 100%;
@@ -339,7 +339,6 @@ export default {
 .closeStyle {
   cursor: pointer;
 }
-
 
 // #block {
 //   height: 100%;
@@ -351,37 +350,50 @@ export default {
 // }
 
 /* Theming */
-::v-deep .gjs-one-bg {
-  background-color: #fff;
+::v-deep {
+  .gjs-one-bg {
+    background-color: #fff;
+  }
+  .gjs-two-color {
+    color: #222222;
+  }
+  .gjs-three-bg {
+    background-color: #8743ff;
+    color: white;
+  }
+
+  .gjs-four-color {
+    color: #8743ff;
 }
 
-::v-deep .gjs-two-color {
-  color: #9ca8bb;
+  .gjs-four-color-h:hover {
+    color: #8743ff;
+  }
+
+  .gjs-pn-panels {
+    position: relative;
+    display: none;
+  }
+  .gjs-cv-canvas {
+    width: 100%;
+    height: 100%;
+    top: 0;
+  }
+
+  .gjs-category-title,
+  .gjs-layer-title,
+  .gjs-block-category .gjs-title,
+  .gjs-sm-sector .gjs-sm-title,
+  .gjs-clm-tags .gjs-sm-title {
+    background-color: rgb(247 247 247);
+  }
+
+  // .gjs-field input, .gjs-field select, .gjs-field textarea{
+  //   background-color: #272727;
+  
+  // }
 }
 
-::v-deep .gjs-three-bg {
-  background-color: #1e8fe1;
-  color: white;
-}
-
-::v-deep .gjs-four-color-h:hover {
-  color: #8743FF
-}
-// ::v-deep .gjs-four-color,
-// .gjs-four-color-h:hover {
-//   color: 
-// }
-
-::v-deep .gjs-pn-panels {
-  position: relative;
-  display: none;
-}
-
-::v-deep .gjs-cv-canvas {
-  width: 100%;
-  height: 100%;
-  top: 0;
-}
 
 .sidenav {
   position: fixed;
