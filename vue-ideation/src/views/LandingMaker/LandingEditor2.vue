@@ -87,8 +87,14 @@ export default {
       this.fillMainContent = true;
     },
     handleSave() {
-      console.log(this.editor.getHtml());
-      console.log(this.editor.getCss());
+      this.$store.commit('setpageCSS',this.editor.getCss())
+      this.$store.commit('setpageHTML',this.editor.getHtml())
+      this.$router.push('/landingpage')
+      // console.log(this.$store.state.landingRepository.pageCSS);
+      // console.log(this.$store.state.landingRepository.pageHTML);
+
+      // console.log(this.editor.getHtml());
+      // console.log(this.editor.getCss());
       // this.pageHTML = this.editor.getHtml();
       // this.pageCSS = this.editor.getCss();
 
