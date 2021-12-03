@@ -89,6 +89,10 @@ export default {
     handleSave() {
       console.log(this.editor.getHtml());
       console.log(this.editor.getCss());
+      // this.pageHTML = this.editor.getHtml();
+      // this.pageCSS = this.editor.getCss();
+
+
     },
   },
   mounted() {
