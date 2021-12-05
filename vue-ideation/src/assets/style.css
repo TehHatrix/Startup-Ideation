@@ -43,9 +43,12 @@ html{
 }
 
 body {
-    background-image: url("./double-bubble-outline.png");
+    /* background-image: url("./double-bubble-outline.png");
 	background-size: 200px 200px;
-	background-repeat: repeat;
+	background-repeat: repeat; */
+	background-image: linear-gradient(#f7f7ff
+	, #e7e8fd);
+	/* background-color: #f8f7fc; */
 	font-family: 'Poppins';
 	margin:0;
 	padding:0;
