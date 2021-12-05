@@ -1,4 +1,5 @@
 const state = {
+    previewMode: false,
     pageHTML : "",
     pageCSS : "",
 };
@@ -24,6 +25,12 @@ const mutations = {
     },
     setpageHTML(state,html){
         state.pageHTML = html;
+    },
+    setPreviewTrue(state){
+        state.previewMode = true;
+    },
+    setPreviewFalse(state){
+        state.previewMode = false;
     },
     clearHTMLCSS(state){
         state.pageHTML = "";

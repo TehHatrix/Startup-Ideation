@@ -6,9 +6,9 @@ import store from '@/store'
 import Login from '../views/Login.vue'
 import Test from "../views/Test.vue"
 import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
-import LandingEditor2 from "../views/LandingMaker/LandingEditor2.vue"
 import LandingPage from "../views/LandingMaker/LandingPage.vue"
 import LandingPageTest from "../views/LandingMaker/LandingPageTest.vue"
+import LandingDashboard from "../views/LandingMaker/LandingDashboard.vue"
 
 
 Vue.use(VueRouter)
@@ -43,14 +43,14 @@ const routes = [
     component: LandingEditor
   },
   {
-    path: '/editor/landing2',
-    name: 'LandingEditor2',
-    component: LandingEditor2
-  },
-  {
     path: '/landingpage',
     name: 'LandingPage',
     component: LandingPage
+  },
+  {
+    path: '/landingpage/dashboard',
+    name: 'LandingDashboard',
+    component: LandingDashboard
   },
   {
     path: '/landingpagetest',
