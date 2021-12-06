@@ -1,40 +1,40 @@
 <template>
   <div>
     <div class="headerDashboard">
-      <h1>Landing Page Dashboard</h1>
-      <general-button @click.native="editLanding"> Edit Page</general-button>
-      <general-button @click.native="previewLanding">
-        Preview Page</general-button
+      <h1>Survey Dashboard</h1>
+      <general-button @click.native="surveyRoute"> Share Survey</general-button>
+      <general-button @click.native="showSummary">
+        Show Summary</general-button
       >
     </div>
     <div class="summary">
-      <h2>Landing Page Statistic</h2>
+      <h2>Survey Statistic</h2>
       <div class="cardFlexContainer">
         <dashboard-card>
           <template #logo>
             <sign-up :gradientBoolean="true"></sign-up
           ></template>
-          <template #title> <h3>Sign Ups</h3></template>
+          <template #title> <h3>Answered Survey</h3></template>
           <template #content> <h1>17</h1> </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo> <eyes :gradientBoolean="true"></eyes></template>
           <template #title> <h3>Total Unique Views</h3></template>
-          <template #content> <h1>10</h1> </template>
+          <template #content> <h1>130</h1> </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo>
             <revenue :gradientBoolean="true"> </revenue
           ></template>
-          <template #title> <h3>Expected Revenue</h3></template>
-          <template #content> <h1>RM 150</h1> </template>
+          <template #title> <h3>Follow Up Emails</h3></template>
+          <template #content> <h1>150</h1> </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo>
             <revenue-target :gradientBoolean="true"></revenue-target>
           </template>
-          <template #title> <h3>Goals Revenue</h3></template>
-          <template #content> <h1>RM 1000</h1> </template>
+          <template #title> <h3>Follow Up Goal Emails</h3></template>
+          <template #content> <h1>200</h1> </template>
         </dashboard-card>
       </div>
     </div>
@@ -139,11 +139,11 @@ export default {
     };
   },
   methods: {
-    editLanding() {
-      this.$router.push("/editor/landing");
+    surveyRoute() {
+      this.$router.push("/survey");
     },
-    previewLanding() {
-      this.$router.push("/landingpage");
+    showSummary() {
+      this.$router.push("summary");
     },
   },
 };

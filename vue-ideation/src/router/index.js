@@ -9,6 +9,10 @@ import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
 import LandingPage from "../views/LandingMaker/LandingPage.vue"
 import LandingPageTest from "../views/LandingMaker/LandingPageTest.vue"
 import LandingDashboard from "../views/LandingMaker/LandingDashboard.vue"
+import Survey from "@/views/Survey/Survey.vue"
+import SurveySummary from "@/views/Survey/SummarySurvey.vue"
+import SurveyDashboard from "@/views/Survey/SurveyDashboard.vue"
+
 
 
 Vue.use(VueRouter)
@@ -52,6 +56,22 @@ const routes = [
     name: 'LandingDashboard',
     component: LandingDashboard
   },
+  {
+    path: '/survey',
+    name: 'survey',
+    component: Survey
+  },
+  {
+    path: '/survey/summary',
+    name: 'SurveySummary',
+    component: SurveySummary
+  },
+  {
+    path: '/survey/dashboard',
+    name: 'SurveyDashboard',
+    component: SurveyDashboard
+  },
+
   {
     path: '/landingpagetest',
     name: 'LandingPageTest',
