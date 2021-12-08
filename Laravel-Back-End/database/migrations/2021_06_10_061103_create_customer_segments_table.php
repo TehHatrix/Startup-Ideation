@@ -14,12 +14,13 @@ class CreateCustomerSegmentsTable extends Migration
     public function up()
     {
         Schema::create('customer_segments', function (Blueprint $table) {
-            $table->id("cs_ID");
-            $table->unsignedBigInteger('canvas_ID');
-            $table->foreign('canvas_ID')->references('canvas_ID')->on('LeanCanvas')->nullable();
-            $table->string("topic");
-            $table->string("description");
-            $table->string('publisher');
+
+            $table->id(); 
+            $table->unsignedBigInteger('canvas_id');
+            $table->foreign('canvas_id')->references('id')->on('lean_canvases');
+            $table->string('topic');
+            $table->string('description')->nullable();
+            $table->integer('publisher_id');
             $table->timestamps();
         });
     }
@@ -31,6 +32,8 @@ class CreateCustomerSegmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customer_segments');
+        Schema::dropIfExists('customer_segments', function (Blueprint $table) {
+            $table->dropForeign('lean_canvases_canvas_id_foreign');
+        });
     }
 }

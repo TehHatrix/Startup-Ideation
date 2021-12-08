@@ -19,7 +19,7 @@ const actions = {
     async login ({ commit }, payload) {
         await auth.createSession()
         const { data } = await auth.login(payload)
-        console.log(data)
+
         commit('SET_USER', data.user)
 
         localStorage.user = JSON.stringify(data.user)
@@ -28,10 +28,13 @@ const actions = {
     },
 
     async logout({commit}) {
-        await auth.logout()
-        commit('SET_USER', null)
-
-        localStorage.removeItem('user')
+        let { data } = await auth.logout() 
+        if(data.success) {
+            commit('SET_USER', null)
+            localStorage.removeItem('user')
+        } else {
+            console.log('fail to logout')
+        }
     },
 
 }

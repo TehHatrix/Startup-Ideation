@@ -4,6 +4,7 @@ import authRepository from './authRepository.js'
 import projectRepository from './projectRepository'
 import todosRepository from './todosRepository'
 import landingRepository from './landingRepository'
+import leanCanvasRepository from './leanCanvasRepository'
 
 Vue.use(Vuex)
 
@@ -25,6 +26,7 @@ export default new Vuex.Store( {
         projectRepository,
         todosRepository,
         landingRepository,
+        leanCanvasRepository
     }
     
 })

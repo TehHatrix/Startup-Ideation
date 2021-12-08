@@ -6,19 +6,29 @@ import '@/assets/style.css'
 import Axios from 'axios'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faStar,faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight,faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faStar, faList, faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faBrain, faChalkboard, faUserEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueApexCharts from "vue-apexcharts";
 
 /* add icons to the library */
-library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight,faUserPlus)
-
-
+library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus)
 Vue.use(VueApexCharts);
+
 
 /* add font awesome icon component */
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('apexchart', VueApexCharts)
 
+// import { library } from '@fortawesome/fontawesome-svg-core'
+// import { faPlusSquare, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+// library.add(faPlusSquare, faEdit, faTrashAlt)
+
+// Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+// Vue.component('v-select', vSelect)
+// Vue.use(vsSelect)
 Vue.config.productionTip = false
 Vue.prototype.$http = Axios;
 

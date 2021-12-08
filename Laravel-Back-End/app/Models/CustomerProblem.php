@@ -18,6 +18,12 @@ class CustomerProblem extends Model
         'updated_at',
     ];
 
+    // TODO change back to default lean content
+
+    public function canvas() {
+        return $this->belongsTo(LeanCanvas::class);
+    }
+
     public function hypotheses(){
         return $this->hasOne(Hypotheses::class,'CustomerProblem_ID');
     }

@@ -15,5 +15,13 @@ export default {
 
     async deleteProject(params) {
         return api.delete(`api/projects/${params}`)
+    },
+
+    async updateProject(params, payload) {
+        return api.put(`api/projects/${params}`, payload)
+    },
+
+    async getUser(payload) {
+        return api.post(`api/getUser`, payload)
     }
 }

@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Hypothesis from '../views/Hypothesis.vue'
+import middleware from './middleware'
 import Interview from '../views/Interviews/Interview.vue'
-import store from '@/store'
-import Login from '../views/Login.vue'
-import Test from "../views/Test.vue"
 import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
 import LandingPage from "../views/LandingMaker/LandingPage.vue"
 import LandingPageTest from "../views/LandingMaker/LandingPageTest.vue"
@@ -21,15 +19,8 @@ const routes = [
   {
     path: '/',
     name: 'HomeGuest',
-    component: () => import('../views/Authentication/Authentication.vue')
-  },
-  {    
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import('../views/Authentication/Authentication.vue'),
+    beforeEnter: middleware.user
   },
   {
     path: '/hypothesis',
@@ -80,47 +71,55 @@ const routes = [
   {
     path: '/test',
     name: 'Test',
-    component: Test
+    component: () => import('../views/ProjectDashboard.vue')
   },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login,
-    beforeEnter: (to, from, next) => {
-      if(store.getters['authenticated']) {
-        next({name: 'ProjectsDashboard'})
-      } else {
-        next()
-      }
-    }
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import('../views/Register.vue')
-  },
+  // {
+  //   path: '/login',
+  //   name: 'Login',
+  //   beforeEnter: middleware.user,
+  // },
+  // {
+  //   path: '/register',
+  //   name: 'Register',
+  //   component: () => import('../views/Register.vue'),
+  //   beforeEnter: middleware.guest
+
+  // },
   {
     path: '/projects',
-    name: 'ProjectsDashboard',
-    component: () => import('../views/Project/ProjectsDashboard.vue'),
-    beforeEnter: (to, from, next) => {
-      if(store.getters['authenticated']) {
-        next()
-      } else {
-        next({name: 'Login'})
-      }
-    }
+    name: 'ProjectsList',
+    component: () => import('../views/Project/ProjectsList.vue'),
+    beforeEnter: middleware.guest
+    // beforeEnter: (to, from, next) => {
+    //   if(store.getters['authenticated']) {
+    //     next()
+    //   } else {
+    //     next({name: 'HomeGuest'})
+    //   }
+    // }
   },
   {
     path: '/projects/:id',
     name: 'Project',
-    component: () => import('../views/Project/Project.vue')
+    component: () => import('../views/Project/Project.vue'),
+    beforeEnter: middleware.guest
   },
   {
-    path: '/projects/:projectId/todos',
-    name: 'Todo',
-    component: () => import('../views/Todo/Todo.vue')
+    path: '/projects/:id/todos',
+    name: 'TodoPage',
+    component: () => import('../views/Todo/TodoPage.vue'),
+    beforeEnter: middleware.guest
+
   },
+
+  {
+    path: '/projects/:id/leancanvas',
+    name: 'LeanCanvas',
+    component: () => import('../views/LeanCanvas/LeanCanvas.vue'),
+    beforeEnter: middleware.guest
+
+  },
+
 
 ]
 

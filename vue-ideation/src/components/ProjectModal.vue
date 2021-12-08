@@ -7,6 +7,7 @@
         @click.self="close" >
             <div class="w-full max-w-2xl bg-white shadow-lg rounded-lg p-8 relative ">
                 <button
+                    id="projectModalClose"
                     aria-label="close"
                     class="absolute top-0 right-0 text-xl text-gray-500 my-2 mx-4" 
                     @click.prevent="close"
@@ -25,7 +26,8 @@ export default {
         showModal: {
             required: true,
             type: Boolean
-        }
+        },
+
     },
     methods: {
         close() {
@@ -53,4 +55,94 @@ export default {
     .fade-leave-to {
     opacity: 0;
     }
+
+
+    .w-full {
+        width: 100%;
+    }
+
+    .fixed {
+        position: fixed;
+    }
+
+    .items-center  {
+        align-items:  center; 
+    }
+
+    .inset-0 {
+        top: 0px;
+        right: 0px;
+        left: 0px;
+        bottom: 0px;
+    }
+
+    .h-screen {
+        height: 100vh;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .justify-center {
+        justify-content: center;
+    }
+
+    .bg-gray-100 {
+        background: rgba(0, 0, 0, 0.75);
+    }
+
+    .max-w-2xl {
+        max-width: 43rem;
+    }
+
+    .bg-white {
+        background-color: #fff;
+    }
+
+    .shadow-lg {
+        background-color: rgba(255, 255, 255, 1);
+    }
+
+    .relative {
+        position: relative;
+    }
+
+    .p-8 {
+        padding: 2rem;
+    }
+
+    .rounded-lg {
+        border-radius: 0.5rem;
+    }
+
+    .absolute {
+        position: absolute;
+    }
+
+    .top-0 {
+        top: 0px;
+    }
+
+    .right-0 {
+        right: 0px;
+    }
+
+    .text-gray-500 {
+        color: rgba(107, 114, 128, 1);
+    }
+
+    .my-2 {
+        margin-top: 0.5rem;        
+        margin-bottom: 0.5rem;
+    }
+
+    #projectModalClose {
+        background: none;
+        border: none;
+        cursor: pointer;
+        outline: inherit;
+    }
+    
+    
 </style>
