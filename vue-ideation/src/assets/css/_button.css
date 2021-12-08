@@ -1,0 +1,150 @@
+:root {
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    --tw-ring-color: rgba(165, 180, 252, 1);
+    --tw-ring-opacity: 0.8;
+}
+
+.c-btn-primary {
+    -moz-transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -ms-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out;
+    -webkit-appearance: none;
+    position: relative;
+    display: inline-block;
+    background: rgba(79, 70, 229, 1);
+    color: #fff !important;
+    text-transform: uppercase;
+    border-radius: 4px;
+    border: 0;
+    outline: 0;
+    font-size: 0.5em;
+    box-shadow: 0.125em 0.175em 0 0 rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.85em;
+    padding: 0.85em 1.75em 0.85em 1.75em;
+    cursor: pointer;
+    
+}
+
+.c-btn-primary:hover {
+    background-color: rgba(139, 92, 246, 1);
+}
+
+.c-btn-primary-outline {
+    -moz-transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -ms-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out;
+    -webkit-appearance: none;
+    position: relative;
+    display: inline-block;
+    color: rgba(79, 70, 229, 1);
+    background: #fff ;
+    text-transform: uppercase;
+    border-radius: 4px;
+    border: 1px solid rgba(79, 70, 229, 1);
+    outline: 0;
+    font-size: 0.5em;
+    box-shadow: 0.125em 0.175em 0 0 rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.85em;
+    padding: 0.85em 1.75em 0.85em 1.75em;
+    cursor: pointer;
+    
+}
+
+.c-btn-primary-outline:hover {
+    background-color: rgba(79, 70, 229, 1);
+    color: #fff;
+}
+
+.c-btn-danger {
+    -moz-transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -ms-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out;
+    -webkit-appearance: none;
+    position: relative;
+    display: inline-block;
+    background: rgb(220,98,128);
+    color: #fff;
+    border: 0;
+    text-transform: uppercase;
+    border-radius: 4px;
+    outline: 0;
+    font-size: 0.5em;
+    box-shadow: 0.125em 0.175em 0 0 rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.85em;
+    padding: 0.85em 1.75em 0.85em 1.75em;
+    cursor: pointer;
+    
+}
+
+.c-btn-danger:hover {
+    background-color: rgb(194, 41, 79);
+}
+
+.c-btn-danger-outline {
+    -moz-transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -ms-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out;
+    -webkit-appearance: none;
+    position: relative;
+    display: inline-block;
+    background: #fff;
+    color:rgb(220,98,128);
+    border: 1px solid rgb(220,98,128);
+    text-transform: uppercase;
+    border-radius: 4px;
+    outline: 0;
+    font-size: 0.5em;
+    box-shadow: 0.125em 0.175em 0 0 rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.85em;
+    padding: 0.85em 1.75em 0.85em 1.75em;
+    cursor: pointer;
+    
+}
+
+.c-btn-danger-outline:hover {
+    background-color: rgb(220,98,128,1);
+    color: #fff;
+}
+
+.general-button {
+
+    appearance: none;
+    outline: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    
+    display: inline-block;
+    padding: 10px 10px;
+    background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    
+    box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
+    transition: 0.4s ease-out;
+}
+
+.general-button:hover {
+    box-shadow: 6px 6px rgba(0, 0, 0, 0.6);
+}
+

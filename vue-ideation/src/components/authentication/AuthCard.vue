@@ -2,7 +2,7 @@
     <div>
         <div class="auth-container " :class="[isSignUp ? rightPanelOverlay : '']" id="container">
             <div class="form-container sign-up-container"  >
-                <form class="auth-form" >
+                <form @submit.prevent="signUp" class="auth-form" >
                     <h1 class="auth-h1">Create Account</h1>
                     <span class="auth-span">or use your email for registration</span>
                     <input class="auth-input" type="text" placeholder="Name" v-model="formSignUp.name" />
@@ -10,17 +10,17 @@
                     <input class="auth-input" type="email" placeholder="Email" v-model="formSignUp.email" />
                     <input class="auth-input" type="password" placeholder="Password" v-model="formSignUp.password"/>
                     <input class="auth-input" type="password" placeholder="Password Confirmation" v-model="formSignUp.password_confirmation" />
-                    <button class="auth-btn" @click="signUp" >Sign Up</button>
+                    <button class="auth-btn" >Sign Up</button>
                 </form>
             </div>
-            <div class="form-container sign-in-container">
+            <div @submit.prevent="signIn" class="form-container sign-in-container">
                 <form class="auth-form" >
                     <h1 class="auth-h1" >Sign in</h1>
                     <span class="auth-span">or use your account</span>
                     <input class="auth-input" type="email" placeholder="Email" v-model="formSignIn.email" />
                     <input class="auth-input" type="password" placeholder="Password" v-model="formSignIn.password" />
                     <a class="auth-a" href="#">Forgot your password?</a>
-                    <button class="auth-btn" @click="signIn" >Sign In</button>
+                    <button class="auth-btn" >Sign In</button>
                 </form>
             </div>
             <div class="overlay-container">
@@ -51,7 +51,7 @@ export default {
             isSignUp: false, 
             rightPanelOverlay: 'right-panel-active',
             formSignIn: { 
-                username: '',
+                email: '',
                 password: ''
             },
             formSignUp: {
@@ -90,10 +90,14 @@ export default {
         async signIn() {
             try {
                 let data = await this.$store.dispatch('login', this.formSignIn)
-                if(!data.success) console.log(data.message)
-                if(data.success) this.$router.push({name: 'ProjectsDashboard'})
+
+                if(!data.success) {console.log(data.message)}
+                if(data.success) this.$router.push({name: 'ProjectsList'})
+                this.formSignIn.email = ''
+                this.formSignIn.password = ''
             } catch (error) {
                 console.log(error)
+
             }
         }
 

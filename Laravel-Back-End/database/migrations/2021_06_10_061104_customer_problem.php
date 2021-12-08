@@ -16,9 +16,9 @@ class CustomerProblem extends Migration
         Schema::create('CustomerProblem', function (Blueprint $table) {
             $table->id("CustomerProblem_ID");
             $table->unsignedBigInteger('cs_ID');
-            $table->foreign('cs_ID')->references('cs_ID')->on('customer_segments');
+            $table->foreign('cs_ID')->references('id')->on('customer_segments');
             $table->unsignedBigInteger('problem_ID');
-            $table->foreign('problem_ID')->references('problem_ID')->on('problems');
+            $table->foreign('problem_ID')->references('id')->on('problems');
             $table->timestamps();
 
         });    }

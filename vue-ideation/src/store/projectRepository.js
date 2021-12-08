@@ -1,13 +1,15 @@
 import api from '@/api/projectApi'
 
 const state = {
-    projects: null,
-    project: null
+    projects: {},
+    project: sessionStorage.project ? JSON.parse(sessionStorage.project) : {},
+    collaborator: [],
 }
 
 const getters = {
     projects: state => state.projects,
-    project: state => state.project    
+    project: state => state.project,
+    collaborator: state => state.collaborator
 }
 
 const mutations = {
@@ -15,12 +17,27 @@ const mutations = {
         state.projects = payload
     },
 
+    SET_COLLABORATOR(state, payload) {
+        let tempArray = []
+        payload.forEach(user => {
+            let obj = {name: user.name, id: user.id, username: user.username}
+            tempArray.push(obj)
+        });
+
+        state.collaborator = tempArray
+    },
+
     SET_PROJECT_LOCALLY(state, payload) {
         state.project = payload
     },
 
+
     DESTROY_PROJECT_LOCALLY(state) {
-        state.project = null
+        state.project = {}
+    },
+
+    UPDATE_PROJECT(state) {
+        state.project
     }
 
     
@@ -31,7 +48,7 @@ const actions = {
         let res = await api.getProjects()
         // console.log(res.data.projects + 'from getProject api')
         commit('SET_PROJECTS', res.data.projects)
-        return api.getProjects()
+        return res
     },
 
     async setProjects({ commit }, payload) {
@@ -50,6 +67,15 @@ const actions = {
         // console.log(res)
         if(res.data.success === false) return res
         commit('SET_PROJECT_LOCALLY', res.data.project)
+        commit('SET_COLLABORATOR', res.data.project.collaborator)
+        sessionStorage.project = JSON.stringify(res.data.project)
+    },
+
+    async updateProject({commit}, payload) {
+        let {data} = await api.updateProject(payload.project_id, payload.updateProjectForm)
+        if(data.success) {
+            commit('UPDATE_PROJECT', data.project)
+        }
     }
 }
 

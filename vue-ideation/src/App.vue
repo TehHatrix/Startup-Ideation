@@ -1,5 +1,8 @@
 <template>
-  <div id="app">
+  <div id="app" >
+    <div v-if="authenticated" > 
+      <button @click="logout" >Logout</button>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -11,7 +14,7 @@ export default {
     async logout() {
       try {
         await this.$store.dispatch("logout");
-        await this.$router.push({ name: "Login" });
+        await this.$router.push({ name: "HomeGuest" });
       } catch (err) {
         console.log(err);
       }

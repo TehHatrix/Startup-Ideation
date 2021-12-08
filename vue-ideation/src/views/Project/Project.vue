@@ -1,169 +1,467 @@
 <template lang="">
-    <div class="flex justify-center">
-        <section class="container ">
-            <div class=" flex justify-between mb-3 py-3 ">
-                <h1 class="text-2xl font-bold text-gray-800 uppercase lg:text-3xl" >Project Dashboard</h1>
-                <div class="grid grid-cols-2 gap-2">
-                    <button class="c-btn-primary" @click="deleteProjectModal = true">delete</button>
-                    <button class="c-btn-primary" @click="updateProjectModal = true">update</button>
-                </div>
-            </div>
+    <div class="container">
+        <div class="dashboard-title">
+            <h1>Project Dashboard</h1>
 
-            <div class="grid grid-cols-2 gap-4" >
-        <!-- project with collaborator card -->
-                <div class="px-8 py-4 mx-auto bg-white rounded-lg shadow-md  w-full  ">
-                    <div v-if="project === null" class="bg-rose-600" >
-                        loading
-                    </div>
-                    <div v-else>
-                        <div class="flex justify-between mb-2 pb-2 border-b-2 border-purple-500">
-                            <h1 class="text-2xl font-bold text-gray-800 uppercase lg:text-3xl hover:text-gray-700">{{ project.project_name }}</h1>
-                            <button class="c-btn-primary" @click="showModal = true" >Add Collaborator</button>
+            <button id="setting-button" @click="openSettingModal">
+                Setting   
+                <font-awesome-icon icon="fa-cog" size="lg" ></font-awesome-icon>
+            </button>
+        </div>
+        <div class="grid grid-cols-2 gap-4" >
+            <section class="">
+                <!-- project card -->
+                <div id="project-card" class="card-white" >
+                    <h2> {{project.project_name}} </h2>
+                    <p> {{project.project_description}} </p>
+
+                    <div class="collab-container ">
+                        <div class="side">
+                            <p>Collaborator</p>
+                            <button @click="openCollabModal" ><font-awesome-icon icon="fa-user-edit"></font-awesome-icon></button>
                         </div>
 
-                        <div class="">
-                            <p class="text-md  text-gray-700 lg:text-xl mb-2">{{ project.project_description }}</p>
-                            <div v-for="user in project.collaborator" :key="user.id" class="bottom-0 " >
-                                <button class="block px-5 py-2 mt-4 font-medium leading-4 text-center text-white capitalize bg-purple-400 rounded-lg lg:mt-0  lg:w-auto ">
-                                    {{user.name}}
-                                </button>
+                        <div class="collab-list">
+                            <div v-for="(user, index) in collaborator" :key="index" >
+                                <div class="block" >
+                                    <div class="circle">
+                                        {{user.username[0]}}
+                                    </div>
+
+                                    <div>
+                                        {{user.username}}
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-                    </div>
-                </div>
-        <!-- end of project with collaborator card -->
-        <!-- announcement card -->
-                <div class="px-8 py-4 mx-auto bg-white rounded-lg shadow-md  w-full overscroll-contain  h-60 overflow-auto   ">
-                    <div class="mb-2 pb-2 border-b-2 border-purple-500">
-                        <h1 class="text-2xl font-bold text-gray-800 uppercase lg:text-3xl hover:text-gray-700">Announcement</h1>
-                    </div>
-                </div>
-        <!-- end of announcement card -->
-            </div>
-            <div class="grid grid-cols-3 gap-4 mt-3">
-                <!-- todo list card -->
-                <div class="px-8 py-4 mx-auto bg-white rounded-lg shadow-md  w-full col-span-2" >
-                    <div class="flex justify-between mb-2 pb-2 border-b-2 border-purple-500">
-                        <h1 class="text-2xl font-bold text-gray-800 uppercase lg:text-3xl hover:text-gray-700">Todo List</h1>
-                    </div>
-                    <todo-list
-                     >
 
-                    </todo-list>
-                </div>
-                <!-- end of todo list card -->
-                <!-- message card -->
-                <div class="px-8 py-4 mx-auto bg-white rounded-lg shadow-md  w-full">
-                    <div class="flex justify-between mb-2 pb-2 border-b-2 border-purple-500">
-                        <h1 class="text-2xl font-bold text-gray-800 uppercase lg:text-3xl hover:text-gray-700">Project Chat</h1>
                     </div>
                 </div>
-                <!-- end of message card -->
+
+            </section>
+
+
+            <section class="col-span-1 bg-gray" >
+                <!-- announcement card -->
+                <div>
+                    <div class="side">
+                        <h2>Announcement</h2>
+                        <button id="announcement-btn" class="general-button">Manage</button>
+                    </div>
+                    <div class="overflow-hidden">
+
+                        <shrink-card>
+                            <div class="notification" >
+                                <div class="notification-item">
+                                    <div class="notification-item-content">
+                                        <span class="notification-item-title">
+                                            something
+                                        </span>
+                                        <span class="notification-item-message">
+                                            date i guess
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </shrink-card>
+
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <section id="quick-access">
+            <h2>Quick Access</h2>
+            <div class="grid-cols-3 grid gap-4">
+
+                <router-link :to="{name: 'TodoPage', params: projectId}" class="card-white"  >
+                        <font-awesome-icon icon="fa-list" size="5x"></font-awesome-icon>
+                        <p>To Do List</p>
+                </router-link>
+
+                <router-link :to="{name: 'LeanCanvas', params: projectId}" class="card-white">
+                    <font-awesome-icon icon="fa-brain" size="5x"></font-awesome-icon>
+                    <p>Lean Canvas</p>
+                </router-link>
+
+                <router-link :to="{name: 'LeanCanvas', params: projectId}" class="card-white">
+                    <font-awesome-icon icon="fa-chalkboard" size="5x"></font-awesome-icon>
+                    <p>Free Canvas</p>
+                </router-link>
             </div>
+
         </section>
+        <!-- setting modal  -->
+        <modal
+         :showModal="showSettingModal"
+         @close="resetSettingModal">
+            <form @submit.prevent="updateProject" >
+                <h2 class="modal-title" >Update Project</h2>
+                <div class="input-container" >
+                    <input type="text" class="material-input" id="name" v-model="updatedProjectForm.project_name" required>
+                    <label class="material-label" for="name">Project Name</label>
+                </div>
 
-        <!-- add collaborator modal  -->
-        <project-modal :showModal="showModal" @close="showModal = false" > 
-              <h2 class="text-3xl font-bold  text-gray-700 ">Add New Collaborator</h2>
-              <form @submit.prevent="addCollaborator">
-                <div class="w-full mt-4">
-                  <input type="text"
-                  v-model="newCollaborator"
-                  class="c-form-control"
-                  placeholder="collaborator name"
-                  required >
+                <div class="input-container" >
+                    <input type="text" class="material-input" id="description" v-model="updatedProjectForm.project_description" required>
+                    <label class="material-label" for="description">Project Description</label>
                 </div>
-                <div class="justify-end flex">
-                  <button type="submit" class="c-btn-primary mt-4 text">Submit</button>
+
+                <div class="btn-container" >
+                    <button @click="confirmDelete" type="button" class="c-btn-danger-outline" >Delete</button>
+                    <button class="c-btn-primary" type="submit" >Update</button>
                 </div>
-              </form>
-        </project-modal>
-        <!-- delete modal  -->
-        <project-modal :showModal="deleteProjectModal" @close="deleteProjectModal = false" > 
-            <div class="justify-between flex">
-              <h2 class="text-3xl font-bold  text-gray-700 ">Confirm delete</h2>
-              <div class="grid grid-cols-2 gap-2">
-                  <button class="px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-red-500 rounded hover:bg-red-400 focus:outline-none" @click="deleteProject">Confirm</button>
-                  <button class="c-btn-primary" @click="deleteProjectModal = false">Cancel</button>
-              </div>
+            </form>
+        </modal>
+
+        <!-- confirm delete modal --> 
+        <modal
+         :showModal="showDeleteModal"
+         @close="showDeleteModal = false" >
+            <div class="delete-modal">
+                <h2>Confirm Delete</h2>
+                <div class="del-btn-container">
+                    <button class="c-btn-danger" @click="deleteProject" >Confirm</button>
+                    <button class="c-btn-primary-outline" @click="showDeleteModal = false">Cancel</button>
+                </div>
             </div>
-        </project-modal>
-        <!-- update modal -->
-        <project-modal :showModal="updateProjectModal" @close="updateProjectModal = false" > 
-              <h2 class="text-3xl font-bold  text-gray-700 ">Update Project Information</h2>
-              <form @submit.prevent="addCollaborator">
-                <div class="w-full mt-4">
-                  <input type="text"
-                  v-model="newCollaborator"
-                  class="c-form-control"
-                  placeholder="collaborator name"
-                  required >
+        </modal>
+
+        <!-- collaborator setting modal  -->
+        <modal :showModal="showCollabSettingModal" @close="closeCollabModal">
+            <div>
+                <h2 class="modal-title">Collaborator Setting</h2>
+
+                <form @submit.prevent="searchUser" class="">
+                    <div class="input-container">
+                        <input id="username" type="text" class="material-input" required>
+                        <label class="material-label" for="username">UserName</label>
+                        <p>Press "Enter" to search</p>
+                    </div>
+
+                </form>
+
+                <div>
+                    <h3>Collaborator</h3>
                 </div>
-                <div class="justify-end flex">
-                  <button type="submit" class="c-btn-primary mt-4 text">Submit</button>
+
+                <div class="side">
+                    <button class="c-btn-danger-outline">Cancel</button>
+                    <button class="c-btn-primary">Save</button>
                 </div>
-              </form>
-        </project-modal>
+            </div>
+        </modal>
+
     </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import ProjectModal from '@/components/ProjectModal.vue'
+import { mapGetters } from 'vuex'
 import api from '@/api/projectApi'
-import TodoList from '@/components/TodoList.vue'
+import ShrinkCardVue from '../../components/ShrinkCard.vue'
 
 export default {
     name: 'Project',
     data() {
         return {
             projectId: this.$route.params.id,
-            loading: false,
-            showModal: false,
-            newCollaborator: null,
-            updateProjectModal: false,
-            deleteProjectModal: false
+
+            showSettingModal: false,
+            updatedProjectForm: {
+                project_name: '',
+                project_description: '',
+            },
+
+            showDeleteModal: false,
+
+            showCollabSettingModal: false,
+
+
+
         }
     },
 
     components: {
-        'project-modal': ProjectModal,
-        'todo-list': TodoList
+        'modal': ProjectModal,
+        'shrink-card': ShrinkCardVue
     },
 
     async created() {
         try {
             await this.$store.dispatch('getProject', this.projectId)
-
             // console.log('after created')
         } catch (error) {
             console.log(error)
         }
     },
 
+    mounted() {
+
+        
+    },
+
     computed: {
         ...mapGetters([
-            'project'
+            'project',
+            'collaborator'
         ])
+
     },
 
     methods: {
-        updateProject() {
 
+        resetSettingModal() {
+            this.showSettingModal = false
+            this.updatedProjectForm.project_name = this.project.project_name
+            this.updatedProjectForm.project_description = this.project.project_description
+
+        },
+
+        openSettingModal() {
+            this.updatedProjectForm.project_name = this.project.project_name
+            this.updatedProjectForm.project_description = this.project.project_description
+            this.showSettingModal = true
+
+        },
+
+        openCollabModal() {
+            this.showCollabSettingModal = true
+        },
+
+        closeCollabModal() {
+            this.showCollabSettingModal = false;
+        },
+
+        confirmDelete() {
+            this.showDeleteModal = true
         },
 
         async deleteProject() {
             try {
-                let res = await api.deleteProject(this.projectId)
-                if(res.data.success) {
-                    this.$router.push({name: 'ProjectsDashboard'})
+                let {data} = await api.deleteProject(this.projectId)
+                if(data.success) {
+                    this.$router.push({name: 'ProjectsList'})
+                } else {
+                    alert("fail")
                 }
             } catch (error) {
                 console.log(error)
             }
+        },
+
+        async updateProject() {
+            try {
+                let {data} = await api.updateProject(this.projectId, this.updatedProjectForm)
+
+                if(data.success) {
+                    await this.$store.dispatch('getProject', this.projectId)
+                    // !!!! check this later thus performance gain significant
+                    this.$store.dispatch('getProjects')
+
+                    this.resetSettingModal()
+                } else {
+                    // !temp
+                    alert("unsuccessful")
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        searchUser() {
+            alert('test')
         }
+
+
     }
 }
 </script>
-<style lang="">
+<style lang="scss" scoped>
+    .dashboard-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+
+        h1 {
+            font-size: 3rem;
+            color: #212529;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        #projectSetting {
+            width: 3rem;
+            height: 2.5rem;
+            cursor: pointer;
+            background-color: #fff;
+            border: none;
+        }
+
+        #setting-button {
+            appearance: none;
+            outline: none;
+            border: none;
+            cursor: pointer;
+
+            display: inline-block;
+            padding: 10px 10px;
+            background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1rem;
+
+            box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
+            transition: 0.4s ease-out;
+            &:hover {
+                box-shadow: 6px 6px rgba(0, 0, 0, 0.6);
+            }
+        }
+    }
+
+    .bg-gray {
+        background-color: #ced4da;
+        padding: 0.25rem 1rem;
+        border-radius: 0.5rem;
+        max-height: 18rem;
+        overflow: auto;
+    }
+
+    .modal-title {
+        letter-spacing: 0.25rem;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .delete-modal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+    }
+
+    .c-btn-danger {
+        margin-right: 0.5rem;
+    }
+
+    #project-card {
+        background: linear-gradient(180deg, #4136f1 0%, #8743ff 100%);
+        color: white;
+        padding: 0.1rem 1rem;
+        height: 18rem;
+        h2 {
+            font-size: 2rem;
+            letter-spacing: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        p {
+            letter-spacing: 0.08rem;
+            font-weight: 500;
+        }
+
+    }
+
+
+    .side {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+
+        h2 {
+            letter-spacing: 2px;
+            color: #0b090a;
+        }
+    }
+
+
+
+
+    #quick-access {
+
+        margin-bottom: 7rem;
+        h2 {
+            text-align: center;
+            letter-spacing: 0.2rem;
+            font-size: 2rem;
+        }
+
+        .grid {
+            justify-items: center;
+
+        }
+
+        .grid > .card-white {
+            
+            padding: 0.5rem 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 10rem;
+            width: 15rem;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.2rem;
+
+            background: linear-gradient(90deg, hsla(276, 91%, 79%, 1) 0%, hsla(254, 74%, 65%, 1) 100%);
+
+            color: #fff;
+
+            text-decoration: none;
+        }
+    }
+
+    .collab-container {
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+        border-radius: 24px;
+        background-color: #fff;
+        color: #212529;
+        padding: 0 1rem 0 1rem;
+
+        .collab-list {
+            overflow: auto;
+            white-space: nowrap;
+            div {
+                display: inline-block;
+                padding: 0.5rem 0.5rem;
+            }
+        }
+
+    }
+
+
+    .circle {
+        color:#fff;
+        background: blue;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        text-align: center;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    .overflow-hidden {
+        height: 80%;
+        
+    }
+
+
+
+
+
+
+    
     
 </style>

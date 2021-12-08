@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HypothesisController;
 use App\Http\Controllers\InterviewController;
+use App\Http\Controllers\LeanCanvasController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TodoController;
 
@@ -69,8 +70,21 @@ Route::group([
         'edit'
     ]);
     
+    // lean canvas route
+    Route::post('/projects/{projectID}/leancanvas', [LeanCanvasController::class, 'addContent']);
+    Route::get('/projects/{projectID}/leancanvas', [LeanCanvasController::class, 'index']);
+    Route::delete('/projects/leancanvas/{contentType}/{contentId}', [LeanCanvasController::class, 'deleteContent']);
+    Route::put('/projects/leancanvas/{contentType}/{contentId}', [LeanCanvasController::class, 'updateContent']);
+
+
+    // get user username and id 
+    Route::post('/getUser', [ProjectController::class, 'getUser']);
+    
+    // free canvas route
     Route::apiResource('projects.free-canvas', FreeCanvasController::class);
     
     Route::apiResource('free-canvas.content', FreeCanvasContentController::class);
-
+    
 });
+
+

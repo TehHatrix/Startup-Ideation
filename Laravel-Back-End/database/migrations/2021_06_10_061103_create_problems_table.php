@@ -14,12 +14,12 @@ class CreateProblemsTable extends Migration
     public function up()
     {
         Schema::create('problems', function (Blueprint $table) {
-            $table->id("problem_ID");
-            $table->unsignedBigInteger('canvas_ID');
-            $table->foreign('canvas_ID')->references('canvas_ID')->on('LeanCanvas')->nullable();
+            $table->id();
+            $table->unsignedBigInteger('canvas_id');
+            $table->foreign('canvas_id')->references('id')->on('lean_canvases');
             $table->string("topic");
-            $table->string("description");
-            $table->string('publisher');
+            $table->string("description")->nullable();
+            $table->integer('publisher_id');
             $table->timestamps();
         });
     }
@@ -31,6 +31,8 @@ class CreateProblemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('problems');
+        Schema::dropIfExists('problems', function(Blueprint $table) { 
+            $table->dropForeign('lean_canvases_canvas_id_foreign');
+        });
     }
 }
