@@ -52,7 +52,7 @@ class AnnouncementController extends Controller
     }
 
     public function update(Request $request, $projectId, $id) {
-        $validator = Validator::make($reques->all(), [
+        $validator = Validator::make($request->all(), [
             'title' => 'required', 
             'description' => 'required'
         ]);

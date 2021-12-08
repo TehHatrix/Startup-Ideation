@@ -59,6 +59,7 @@ export default {};
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
+  border: 1px solid rgba(136, 67, 255, 0.425);
   }
 
 .button:hover {
