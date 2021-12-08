@@ -13,6 +13,10 @@ const mutations = {
     SET_CONTENTS(state, payload) {
         state.leanContent = payload
         // localStorage.setItem('leanContent', JSON.parse(payload))
+    },
+
+    DESTROY_CONTENT(state) {
+        state.leanContent = []
     }
 }
 

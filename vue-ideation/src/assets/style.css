@@ -28,6 +28,8 @@
 	box-sizing: border-box;
 }
 
+
+
 .shadow-lg {
 	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
@@ -86,13 +88,13 @@ body {
 }
 
 
-.auth-page {
+.auth-page   {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
 	font-family: 'Montserrat', sans-serif;
-
+	margin-top: 6rem;
 }
 
 .auth-container {
@@ -148,6 +150,7 @@ body {
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	transition: transform 80ms ease-in;
+	cursor: pointer;
 }
 
 .auth-btn:active {

@@ -2,7 +2,7 @@
     <div class="card-white" >
         <div class="card-title">
             <h2 class="inline-block" >{{ typeOfContent[type-1] }}</h2>
-            <font-awesome-icon icon="plus-square" class="plus-content" @click="showModalAddContent = true" />
+            <font-awesome-icon icon="plus-square"  class="plus-content" @click="showModalAddContent = true" />
         </div>
 
         <div class="card-body" >
@@ -10,7 +10,10 @@
             <div v-for="(content, index) in content[type-1]" :key="index" >
                 <div class="task-topic" >
                     <p >{{ content.topic }}</p>
-                    <font-awesome-icon icon="trash-alt" @click="deleteContent(content.id, type)" class="delete-icon" ></font-awesome-icon>
+                    <div class="inline-block">
+                        <font-awesome-icon id="edit" icon="fa-edit" @click="openUpdateModal(content.topic, content.description, content.id)"></font-awesome-icon>
+                        <font-awesome-icon icon="trash-alt"  @click="deleteContent(content.id, type)" class="delete-icon" ></font-awesome-icon>
+                    </div>
 
                 </div>
             </div>
@@ -43,6 +46,30 @@
                 </div>
             </form>
 
+        </modal>
+        <!-- update content modal -->
+        <modal 
+         :showModal="showUpdateModal" 
+         @close="showUpdateModal = false">
+            <div>
+                <h2 class="modal-title"> {{ typeOfContent[type-1] }} </h2>
+                <form @submit.prevent="updateContent">
+                    <div class="input-container">
+                        <input id="topic" type="text" class="material-input"  v-model="updatedContent.topic" >
+                        <label for="topic" class="material-label">Topic</label>
+                    </div>
+
+                    <div class="input-container">
+                        <input id="desc" type="text" class="material-input" v-model="updatedContent.description">
+                        <label for="desc" class="material-label">Description</label>
+                    </div>
+
+
+                    <div id="btn-container">
+                        <button class="c-btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
         </modal>
     </div>
 </template>
@@ -87,6 +114,12 @@ export default {
                 contentType: this.type,
             },
 
+            showUpdateModal: false,
+            updatedContent: {
+                topic: '',
+                description: ''
+            },
+            tempId: null,
             
         }
     },
@@ -123,14 +156,43 @@ export default {
             }
         },
 
-        updateContent() { 
+        async updateContent() { 
 
+            try {
+                let {data} = await api.updateContent(this.type, this.tempId, this.updatedContent)
+                if(data.success) {
+                    await this.$store.dispatch('getContents', this.$route.params.id)
+                    this.closeUpdateModal() 
+                } else {
+                    alert("not successful")
+                }
+            } catch (error) {
+                console.log(error)
+            }
+
+        },
+
+        openUpdateModal(topic, description, id) {
+            this.updatedContent.topic = topic
+            this.updatedContent.description = description
+            this.tempId = id
+            this.showUpdateModal = true
+
+
+        },
+
+        closeUpdateModal() {
+            this.showUpdateModal = false
+
+            this.updatedContent.topic = ''
+            this.updatedContent.description = ''
         }
     }
 
 }
 </script>
 <style lang="css" scoped>
+    
     .card-white {
         margin: 0.5rem 0.5rem;
         padding: 0.25rem 0.75rem;
@@ -143,24 +205,26 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        
     }
+
+   
 
     .plus-content:hover {
         cursor: pointer;
     }
 
     .plus-content {
-        height: 20px;
-        width: 20px;
+        height: 25px;
+        width: 25px;
         color: #560BAD;
     }
 
     .task-topic {
-        background: #634d9a;
+        border:1px solid #634d9a;
         border-radius: 20px;
-        box-shadow: 10px 10px 10px 0px #dcd7e8;
-        color: #fff;
         padding: 0px 0.75rem;
+        font-weight: 500;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -169,6 +233,14 @@ export default {
 
     .delete-icon {
         cursor:pointer;
+    }
+
+    #edit {
+        margin-right: 1rem;
+        cursor: pointer;
+    }
+    #btn-container {
+        text-align: right;
     }
     
     

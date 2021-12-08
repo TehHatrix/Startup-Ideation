@@ -2,7 +2,7 @@
     <div>
     
         <div v-if="task.completed === false" >
-            <div class="task-list" :class="task.completed ? 'line' : '' " >
+            <div class="task-list" @click="setTask(task)"  >
                 <input type="checkbox" v-model="task.completed" @change="changeStatusTodo" class="task-checkbox col-span-2" >
                 <span id="task" >{{ task.task }}</span>
                 <span>{{ task.due_date ? task.due_date : ' ' }}</span>
@@ -116,12 +116,17 @@ export default {
             } catch (error) {
                 console.log(error)
             }
-        }
+        },
+
+        setTask(task) {
+            this.$store.commit('SET_TASK', task)
+        },
     },
 
     computed: {
         ...mapGetters([
-            'project'
+            'project',
+            'todo'
         ])
     }
 
@@ -138,7 +143,8 @@ export default {
         justify-content: space-between;
         border-bottom: 1px solid #ccc;
         padding: 0.5rem 0.5rem;
-        flex: 1 1 0px
+        flex: 1 1 0px;
+        margin-bottom: 0.25rem;
     }
 
     .task-checkbox {
@@ -149,6 +155,11 @@ export default {
         text-align: center;
     }
 
+    .task-list:hover {
+        background: #f6f8ff;
+    }
+    
+
     .line {
         text-decoration: line-through;
     }
@@ -158,4 +169,18 @@ export default {
         border-radius: 20px;
         box-shadow: 30px 30px 30px 0px #dcd7e8;
     }
+
+    input[type=checkbox] {
+        cursor: pointer;
+    }
+
+    .selected-task {
+        background: #ecf1fe;
+    }
+
+    .selected-task:hover {
+        background: #ecf1fe;
+    }
+
+    
 </style>

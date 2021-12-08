@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import Hypothesis from '../views/Hypothesis.vue'
 import middleware from './middleware'
 import Interview from '../views/Interviews/Interview.vue'
-import Test from "../views/Test.vue"
 import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
 
 
@@ -34,7 +33,7 @@ const routes = [
   {
     path: '/test',
     name: 'Test',
-    component: Test
+    component: () => import('../views/ProjectDashboard.vue')
   },
   // {
   //   path: '/login',
@@ -68,9 +67,9 @@ const routes = [
     beforeEnter: middleware.guest
   },
   {
-    path: '/projects/:projectId/todos',
-    name: 'Todo',
-    component: () => import('../views/Todo/Todo.vue'),
+    path: '/projects/:id/todos',
+    name: 'TodoPage',
+    component: () => import('../views/Todo/TodoPage.vue'),
     beforeEnter: middleware.guest
 
   },

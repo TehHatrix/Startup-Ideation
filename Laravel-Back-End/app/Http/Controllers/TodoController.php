@@ -66,7 +66,7 @@ class TodoController extends Controller
 
         
 
-        $task->project()->associate($projectId);
+        // $task->project()->associate($projectId);
 
         // $task->project()->attach($projectId);
 

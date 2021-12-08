@@ -2,12 +2,14 @@ import api from '@/api/projectApi'
 
 const state = {
     projects: {},
-    project: sessionStorage.project ? JSON.parse(sessionStorage.project) : {}
+    project: sessionStorage.project ? JSON.parse(sessionStorage.project) : {},
+    collaborator: [],
 }
 
 const getters = {
     projects: state => state.projects,
-    project: state => state.project    
+    project: state => state.project,
+    collaborator: state => state.collaborator
 }
 
 const mutations = {
@@ -15,9 +17,20 @@ const mutations = {
         state.projects = payload
     },
 
+    SET_COLLABORATOR(state, payload) {
+        let tempArray = []
+        payload.forEach(user => {
+            let obj = {name: user.name, id: user.id, username: user.username}
+            tempArray.push(obj)
+        });
+
+        state.collaborator = tempArray
+    },
+
     SET_PROJECT_LOCALLY(state, payload) {
         state.project = payload
     },
+
 
     DESTROY_PROJECT_LOCALLY(state) {
         state.project = {}
@@ -54,6 +67,7 @@ const actions = {
         // console.log(res)
         if(res.data.success === false) return res
         commit('SET_PROJECT_LOCALLY', res.data.project)
+        commit('SET_COLLABORATOR', res.data.project.collaborator)
         sessionStorage.project = JSON.stringify(res.data.project)
     },
 

@@ -74,6 +74,8 @@ Route::group([
     Route::post('/projects/{projectID}/leancanvas', [LeanCanvasController::class, 'addContent']);
     Route::get('/projects/{projectID}/leancanvas', [LeanCanvasController::class, 'index']);
     Route::delete('/projects/leancanvas/{contentType}/{contentId}', [LeanCanvasController::class, 'deleteContent']);
+    Route::put('/projects/leancanvas/{contentType}/{contentId}', [LeanCanvasController::class, 'updateContent']);
+
 
     // get user username and id 
     Route::post('/getUser', [ProjectController::class, 'getUser']);

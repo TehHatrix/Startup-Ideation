@@ -1,16 +1,22 @@
 import api from '@/api/todoApi'
 
 const state = {
-    tasks: null
+    tasks: null,
+    todo: null,
 }
 
 const getters = {
-    tasks: state => state.tasks
+    tasks: state => state.tasks,
+    todo: state => state.todo,
 }
 
 const mutations = {
     GET_TASKS(state, payload) {
         state.tasks = payload
+    },
+
+    SET_TASK(state, payload) {
+        state.todo = payload
     }
 }
 

@@ -87,7 +87,7 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::findOrFail($id);
-        $collaborator = $project->users()->get(array('id', 'name'))->toArray();
+        $collaborator = $project->users()->get(array('id', 'name', 'username'))->toArray();
         
         // $project = User::find(Auth::id())->projects()->where('id', $id)->get();
         

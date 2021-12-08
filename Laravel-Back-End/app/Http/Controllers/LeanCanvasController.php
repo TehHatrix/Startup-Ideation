@@ -152,6 +152,53 @@ class LeanCanvasController extends Controller
             'success' => true
         ]);
     }
+
+    public function updateContent(Request $request, $type, $contentId) {
+
+        $validator = Validator::make($request->all(), [
+            'topic' => 'required',
+            'description' => 'nullable|string'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'success' => false
+            ]);
+        }
+
+        $data = $validator->validated();
+
+        $content = null;
+        if($type == 1) {
+            $content = CustomerSegment::find($contentId);
+        } else if ($type == 2) {
+            $content = Problem::find($contentId);
+        } else if ($type == 3) {
+            $content = Revenue::find($contentId);
+        } else if ($type == 4) {
+            $content = Solution::find($contentId);
+        } else if ($type == 5) {
+            $content = UniqueValueProposition::find($contentId);
+        } else if ($type == 6) {
+            $content = Channel::find($contentId);
+        } else if ($type == 7) {
+            $content = KeyMetric::find($contentId);
+        } else if ($type == 8) {
+            $content = CostStructure::find($contentId);
+        } else if ($type == 9) {
+            $content = UnfairAdvantage::find($contentId);
+        }
+
+        $content->topic = $data['topic'];
+        $content->description = $data['description'];
+        $content->save();
+
+        return response()->json([
+            'success' => true
+        ]);
+
+        
+    }
     
     
     
