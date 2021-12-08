@@ -8,8 +8,8 @@
     role="img"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 320 512"
-    @mouseover="gradientBoolean = true"
-    @mouseleave="gradientBoolean = false"
+    @mouseover="toggleHover ? gradientBoolean = true : null"
+    @mouseleave="toggleHover ? gradientBoolean = false : null"
   >
     <defs>
       <linearGradient id="gradientColor" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -26,9 +26,13 @@
 
 <script>
 export default {
+  props: {
+    toggleHover: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
-      toggleHover: true,
       gradientBoolean: false,
       gradientColor: "url(#gradientColor)",
       defaultColor: "currentColor",
@@ -36,7 +40,7 @@ export default {
   },
   computed: {
     currentColor() {
-      if (this.gradientBoolean) {
+      if (this.gradientBoolean || this.toggleHover === false) {
         return this.gradientColor;
       } else {
         return this.defaultColor;

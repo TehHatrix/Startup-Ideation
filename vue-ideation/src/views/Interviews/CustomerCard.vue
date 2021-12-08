@@ -102,7 +102,7 @@
               </div>
               <div class="concludeAnswer">
                 <div class="answerCard"><check></check> Yes</div>
-                <div class="answerCard"><x-Mark></x-Mark> No</div>
+                <div class="answerCard"><x-Mark :toggleHover = "false"></x-Mark> No</div>
               </div>
             </div>
           </transition>
@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import circularProgress from "./CircularProgress.vue";
+import circularProgress from "../../components/CircularProgress.vue";
 import xMark from "@/components/icons/x-mark.vue";
 import check from "@/components/icons/check.vue";
 

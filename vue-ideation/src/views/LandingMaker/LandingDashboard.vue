@@ -14,26 +14,26 @@
           <template #logo>
             <sign-up :gradientBoolean="true"></sign-up
           ></template>
-          <template #title> <h3>Sign Ups</h3></template>
+          <template #title> <h4>Sign Ups</h4></template>
           <template #content> <h1>17</h1> </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo> <eyes :gradientBoolean="true"></eyes></template>
-          <template #title> <h3>Total Unique Views</h3></template>
+          <template #title> <h4>Total Unique Views</h4></template>
           <template #content> <h1>10</h1> </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo>
             <revenue :gradientBoolean="true"> </revenue
           ></template>
-          <template #title> <h3>Expected Revenue</h3></template>
+          <template #title> <h4>Expected Revenue</h4></template>
           <template #content> <h1>RM 150</h1> </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo>
             <revenue-target :gradientBoolean="true"></revenue-target>
           </template>
-          <template #title> <h3>Goals Revenue</h3></template>
+          <template #title> <h4>Goals Revenue</h4></template>
           <template #content> <h1>RM 1000</h1> </template>
         </dashboard-card>
       </div>
