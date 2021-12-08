@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="containerCircular">
     <div class="outer">
       <div class="inner">
         <div id="number" v-bind="percentage">
@@ -41,7 +41,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.container {
+.containerCircular {
   height: 160px;
   width: 160px;
   position: relative;
