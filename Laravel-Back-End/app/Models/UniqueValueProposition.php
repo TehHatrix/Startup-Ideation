@@ -9,7 +9,7 @@ class UniqueValueProposition extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['topic', 'description', 'publisher_id'];
+    protected $fillable = ['topic', 'publisher_id', 'customer_segment_id'];
 
     public function canvas() {
         return $this->belongsTo(LeanCanvas::class);

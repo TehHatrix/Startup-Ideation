@@ -17,7 +17,7 @@ class CustomerSegment extends Model
     //     'description',
     //     'publisher',
     // ];
-    protected $fillable = ['topic', 'description', 'publisher_id'];
+    protected $fillable = ['topic', 'publisher_id'];
 
     // TODO change back to default lean content
 
@@ -27,5 +27,13 @@ class CustomerSegment extends Model
 
     public function custproblem(){
         return $this->hasMany(CustomerProblem::class,'cs_ID');
+    }
+
+    public function problem() {
+        return $this->hasMany(Problem::class);
+    }
+
+    public function solution() {
+        return $this->hasMany(Solution::class);
     }
 }

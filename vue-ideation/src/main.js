@@ -5,12 +5,12 @@ import store from './store'
 import '@/assets/style.css'
 import Axios from 'axios'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faStar, faList, faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faBrain, faChalkboard, faUserEdit,faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faStar, faList, faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faBrain, faChalkboard, faUserEdit,faUserPlus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueApexCharts from "vue-apexcharts";
 
 /* add icons to the library */
-library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus)
+library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus, faPlus)
 Vue.use(VueApexCharts);
 
 

@@ -12,7 +12,7 @@
                     class="absolute top-0 right-0 text-xl text-gray-500 my-2 mx-4" 
                     @click.prevent="close"
                 >
-                    ×
+                    <span class="close">Close</span>
                 </button>
                 <slot />
             </div>
@@ -142,6 +142,14 @@ export default {
         border: none;
         cursor: pointer;
         outline: inherit;
+    }
+
+    .close {
+        color: gray;
+    }
+
+    .close:hover {
+        color: black;
     }
     
     

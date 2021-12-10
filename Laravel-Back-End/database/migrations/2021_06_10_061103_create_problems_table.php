@@ -16,10 +16,11 @@ class CreateProblemsTable extends Migration
         Schema::create('problems', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('canvas_id');
-            $table->foreign('canvas_id')->references('id')->on('lean_canvases');
+            $table->foreign('canvas_id')->references('id')->on('lean_canvases')->onDelete('cascade');
             $table->string("topic");
-            $table->string("description")->nullable();
             $table->integer('publisher_id');
+            $table->unsignedBigInteger('customer_segment_id');
+            $table->foreign('customer_segment_id')->references('id')->on('customer_segments')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -33,6 +34,7 @@ class CreateProblemsTable extends Migration
     {
         Schema::dropIfExists('problems', function(Blueprint $table) { 
             $table->dropForeign('lean_canvases_canvas_id_foreign');
+            $table->dropForeign('customer_segments_customer_segment_id_foreign');
         });
     }
 }

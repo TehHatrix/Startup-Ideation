@@ -109,7 +109,8 @@ export default {
 </script>
 <style lang="scss" scoped>
   .project-title-h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
+    letter-spacing: 0.2rem;
   }
 
   .input-container {
