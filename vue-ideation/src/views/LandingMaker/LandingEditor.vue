@@ -50,7 +50,7 @@
         display: styleComponents ? 'block' : 'none',
       }"
     >
-      <x-mark @click.native="closeStyleManager"></x-mark>
+      <x-mark @click.native="closeStyleManager" :toggleHover='false'></x-mark>
     </div>
   </div>
 </template>
@@ -93,6 +93,7 @@ export default {
       this.$router.push('/landingpage');
     },
     handleSave(){
+      alert('Are you sure with this design?')
       this.$router.push('/landingpage/dashboard');
     },
   },
