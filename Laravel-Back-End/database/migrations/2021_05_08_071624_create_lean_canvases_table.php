@@ -15,7 +15,7 @@ class CreateLeanCanvasesTable extends Migration
     {
         Schema::create('lean_canvases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained();
+            $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

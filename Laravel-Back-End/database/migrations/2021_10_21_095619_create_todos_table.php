@@ -20,7 +20,7 @@ class CreateTodosTable extends Migration
             $table->integer('assigned_to')->nullable();
             $table->date('due_date')->nullable();
             $table->timestamps();
-            $table->foreignId('project_id')->constrained();
+            $table->foreignId('project_id')->constrained()->onDelete('cascade');
         });
     }
 

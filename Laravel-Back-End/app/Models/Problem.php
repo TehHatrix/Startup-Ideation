@@ -17,7 +17,7 @@ class Problem extends Model
     //     'publisher',
     // ];
 
-    protected $fillable = ['topic', 'description', 'publisher_id'];
+    protected $fillable = ['topic', 'publisher_id'];
 
     public function canvas() {
         return $this->belongsTo(LeanCanvas::class);
@@ -25,5 +25,9 @@ class Problem extends Model
 
     public function custproblem(){
         return $this->hasMany(CustomerProblem::class);
+    }
+
+    public function customerSegment() {
+        return $this->belongsTo(CustomerSegment::class);
     }
 }

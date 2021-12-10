@@ -7,6 +7,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use PharIo\Version\AndVersionConstraintGroup;
 
 class AnnouncementController extends Controller
 {
@@ -77,8 +78,22 @@ class AnnouncementController extends Controller
 
     }
 
-    public function destroy() {
+    public function destroy($id) {
+        $ann = Announcement::find($id);
+        if($ann->publisher_id == Auth::id()) {
+            $ann->delete();
+            return response()->json([
+                'success' => true,
+                'errors' => null
+            ]);
+        }
 
+        return response()->json([
+            'success' => false,
+            'errors' => 'not authorized'
+        ]);
+
+        
     }
     
 }

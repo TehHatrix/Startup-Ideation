@@ -30,22 +30,7 @@ class LeanCanvasController extends Controller
         $keyMetric = $canvas->keyMetric()->get();
         $cost = $canvas->costStructure()->get();
         $unfairAdvantage = $canvas->unfairAdvantage()->get();
-        // return response()->json([
-        //     'content' => [
-        //         'customerSegment' => $customerSegment,
-        //         'problem' => $problem,
-        //         'revenue' => $revenue,
-        //         'solution' => $solution,
-        //         'uniqueValueProposition' => $uva,
-        //         'channel' => $channel,
-        //         'keyMetric' => $keyMetric,
-        //         'costStructure' => $cost,
-        //         'unfairAdvantage' => $unfairAdvantage
-        //     ],
-        //     'success' => true,
-        //     'errors' => null
-            
-        // ]);
+
 
         return response()->json([
             'content' => [
@@ -67,9 +52,9 @@ class LeanCanvasController extends Controller
     public function addContent(Request $request, $projectId) {
         $validator = Validator::make($request->all(), [
             'topic' => 'required|string',
-            'description' => 'string|nullable',
             'publisher_id' => 'integer|required',
-            'contentType' => 'integer|required'
+            'contentType' => 'integer|required',
+            'customer_segment_id' => 'integer|nullable'
         ]);
 
         if($validator->fails()) {
@@ -78,16 +63,45 @@ class LeanCanvasController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
-
+        $data = $validator->validated();
         $project = Project::find($projectId);
         $canvas = $project->leanCanvases()->get();
-        $data = $validator->validated();
-        $content = $this->initializeContent($data['contentType']);
 
-        $content->topic = $data['topic'];
-        $content->description = $data['description'];
-        $content->publisher_id = $data['publisher_id'];
-        $content->canvas()->associate($canvas[0]->id)->save();
+        // * content type 1 is customer segment and in array position 0
+        if($data['contentType'] === 1) {
+            $content = $this->initializeContent($data['contentType']);
+
+            $content->topic = $data['topic'];
+            $content->publisher_id = $data['publisher_id'];
+            $content->canvas()->associate($canvas[0]->id)->save();
+
+        } else if($data['contentType'] === 2 || $data['contentType'] === 4) {
+            // * for mandatory depend on cust segment
+            $content = $this->initializeContent($data['contentType']);
+
+            $content->topic = $data['topic'];
+            $content->publisher_id = $data['publisher_id'];
+            $content->canvas()->associate($canvas[0]->id);
+            $content->customerSegment()->associate($data['customer_segment_id'])->save();
+
+        } else if ($data['contentType'] === 5 || $data['contentType'] === 9) {
+            // * for optional depend on cust Segment
+            $content = $this->initializeContent($data['contentType']);
+
+            $content->topic = $data['topic'];
+            $content->publisher_id = $data['publisher_id'];
+            $content->canvas()->associate($canvas[0]->id)->save();
+
+        } else {
+            // * for everything else which does not depend on cust segment
+            
+            $content = $this->initializeContent($data['contentType']);
+
+            $content->topic = $data['topic'];
+            $content->publisher_id = $data['publisher_id'];
+            $content->canvas()->associate($canvas[0]->id)->save();
+
+        }
 
         return response()->json([
             'content' => $content,
@@ -122,11 +136,7 @@ class LeanCanvasController extends Controller
 
 
         $content = null;
-        // return response()->json([
-        //     'success' => true,
-        //     'type' => $type,
-        //     'id' => $contentId
-        // ]);
+
         if($type == 1) {
             $content = CustomerSegment::find($contentId);
         } else if ($type == 2) {
@@ -157,7 +167,6 @@ class LeanCanvasController extends Controller
 
         $validator = Validator::make($request->all(), [
             'topic' => 'required',
-            'description' => 'nullable|string'
         ]);
 
         if($validator->fails()) {
@@ -190,15 +199,16 @@ class LeanCanvasController extends Controller
         }
 
         $content->topic = $data['topic'];
-        $content->description = $data['description'];
         $content->save();
 
         return response()->json([
             'success' => true
         ]);
-
-        
     }
+
+
+
+
     
     
     
