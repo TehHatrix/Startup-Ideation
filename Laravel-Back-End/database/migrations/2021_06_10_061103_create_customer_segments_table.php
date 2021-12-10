@@ -17,9 +17,8 @@ class CreateCustomerSegmentsTable extends Migration
 
             $table->id(); 
             $table->unsignedBigInteger('canvas_id');
-            $table->foreign('canvas_id')->references('id')->on('lean_canvases');
+            $table->foreign('canvas_id')->references('id')->on('lean_canvases')->onDelete('cascade');
             $table->string('topic');
-            $table->string('description')->nullable();
             $table->integer('publisher_id');
             $table->timestamps();
         });

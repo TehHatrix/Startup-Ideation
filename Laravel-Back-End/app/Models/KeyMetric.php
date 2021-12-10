@@ -9,7 +9,7 @@ class KeyMetric extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['topic', 'description', 'publisher_id'];
+    protected $fillable = ['topic', 'publisher_id'];
 
     public function canvas() {
         return $this->belongsTo(LeanCanvas::class);

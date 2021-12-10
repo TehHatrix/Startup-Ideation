@@ -6,7 +6,8 @@ const state = {
 }
 
 const getters = {
-    leanContent: state => state.leanContent
+    leanContent: state => state.leanContent,
+    customerSegment: state => state.leanContent[0]
 }
 
 const mutations = {

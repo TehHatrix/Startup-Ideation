@@ -3,7 +3,7 @@
         <div class="dashboard-title">
             <h1>Project Dashboard</h1>
 
-            <button id="setting-button" @click="openSettingModal">
+            <button class="general-button" @click="openSettingModal">
                 Setting   
                 <font-awesome-icon icon="fa-cog" size="lg" ></font-awesome-icon>
             </button>
@@ -300,28 +300,7 @@ export default {
             border: none;
         }
 
-        #setting-button {
-            appearance: none;
-            outline: none;
-            border: none;
-            cursor: pointer;
 
-            display: inline-block;
-            padding: 10px 10px;
-            background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 15px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1rem;
-
-            box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
-            transition: 0.4s ease-out;
-            &:hover {
-                box-shadow: 6px 6px rgba(0, 0, 0, 0.6);
-            }
-        }
     }
 
     .bg-gray {
