@@ -26,47 +26,56 @@ const routes = [
     path: '/hypothesis',
     name: 'Hypothesis',
     component: Hypothesis,
+    beforeEnter: middleware.guest
   },
   {
     path: '/interview',
     name: 'Interview',
-    component: Interview
+    component: Interview,
+    beforeEnter: middleware.guest
   },
   {
     path: '/editor/landing',
     name: 'LandingEditor',
-    component: LandingEditor
+    component: LandingEditor,
+    beforeEnter: middleware.guest
   },
   {
     path: '/landingpage',
     name: 'LandingPage',
-    component: LandingPage
+    component: LandingPage,
+    beforeEnter: middleware.guest
   },
   {
     path: '/landingpage/dashboard',
     name: 'LandingDashboard',
-    component: LandingDashboard
+    component: LandingDashboard,
+    beforeEnter: middleware.guest
   },
   {
     path: '/survey',
     name: 'survey',
-    component: Survey
+    component: Survey,
+    beforeEnter: middleware.guest
   },
   {
     path: '/survey/summary',
     name: 'SurveySummary',
-    component: SurveySummary
+    component: SurveySummary,
+    beforeEnter: middleware.guest
   },
   {
     path: '/survey/dashboard',
     name: 'SurveyDashboard',
-    component: SurveyDashboard
+    component: SurveyDashboard,
+    beforeEnter: middleware.guest
   },
 
   {
     path: '/landingpagetest',
     name: 'LandingPageTest',
-    component: LandingPageTest
+    component: LandingPageTest,
+    beforeEnter: middleware.guest
   },
   {
     path: '/test',
