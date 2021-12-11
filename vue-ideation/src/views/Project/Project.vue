@@ -95,8 +95,7 @@
 <div class = "validationContainer">
     <h2>Validation</h2>
         <div class = "validationCard">
-            <div class = "cardProgress">
-
+            <div class = "cardProgress" :class="validationProgress">
             </div>
             <div class = "cardContent">
                 <p><strong>Hypothesis Validation</strong> </p>
@@ -145,7 +144,7 @@
             <div class="delete-modal">
                 <h2>Confirm Delete</h2>
                 <div class="del-btn-container">
-                    <button class="c-btn-danger" @click="deleteProject" >Confirm</button>
+                    <button class="c-btn-danger" @click="deleteProject">Confirm</button>
                     <button class="c-btn-primary-outline" @click="showDeleteModal = false">Cancel</button>
                 </div>
             </div>
@@ -198,7 +197,7 @@ export default {
       },
       showDeleteModal: false,
       showCollabSettingModal: false,
-      validationPhase: "hypothesis"
+      validationPhase: "hypothesis",
     };
   },
 
@@ -222,6 +221,13 @@ export default {
 
   computed: {
     ...mapGetters(["project", "collaborator"]),
+    validationProgress(){
+      return{
+        'hypothesis': this.validationPhase == 'hypothesis',
+        'landing': this.validationPhase == 'landing',
+        'survey': this.validationPhase == 'survey'
+      }
+    }
   },
 
   methods: {
@@ -358,16 +364,29 @@ export default {
   }
 }
 
-.cardProgress {
+.cardProgress{
   position: relative;
   display: block;
   right: 0;
   top: 0;
   left: 5px;
-  width: 33.33%;
+  width: 0%;
   border-radius: 20px;
   height: 10px;
   background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+  
+}
+
+.hypothesis{
+  width: 33.33%;
+}
+
+.landing{
+  width: 66.66%;
+}
+
+.survey{
+  width: 99.99%;
 }
 
 .dashboard-title {
