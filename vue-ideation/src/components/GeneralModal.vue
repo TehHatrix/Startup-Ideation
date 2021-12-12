@@ -1,116 +1,99 @@
 <template>
-<div id = "modal-comp">
-<button class="button" @click="showModal = true">
-    Start Interview
-</button>
-<transition name="fade" appear>
-    <div class="modal-overlay" v-if="showModal" @click="showModal = false"></div>
-</transition>
-<transition name="slide" appear>
-    <div class="modal" v-if="showModal">
+  <div id="modal-comp">
+    <general-button class="button" @click.native="showModal = true">
+      Start Interview
+    </general-button>
+    <transition name="fade" appear>
+      <div
+        class="modal-overlay"
+        v-if="showModal"
+        @click="showModal = false"
+      ></div>
+    </transition>
+    <transition name="slide" appear>
+      <div class="modal" v-if="showModal">
         <h1>Pre-Interview Form</h1>
         <p>Choose Learning Objectives</p>
         <p>Customize Interview Script</p>
-        <button class="button" @click="showModal= false"> Close</button>
-        <button class="button" @click="routeInterview"> Start Interview</button>
-    </div>
-</transition>
-</div>
+        <general-button class="button" @click.native="showModal = false">
+          Close</general-button
+        >
+        <general-button class="button" @click.native="routeInterview">
+          Start Interview</general-button
+        >
+      </div>
+    </transition>
+  </div>
 </template>
 
 <script>
+import GeneralButton from "./GeneralButton.vue";
 export default {
-    data(){
-        return{
-            showModal: false
-        }
+  components: { GeneralButton },
+  data() {
+    return {
+      showModal: false,
+    };
+  },
+  methods: {
+    routeInterview() {
+      this.$emit("routeInterview");
     },
-    methods: {
-        routeInterview(){
-            this.$emit('routeInterview');
-        }
-    },
-}
+  },
+};
 </script>
 
 <style lang = 'scss' scoped>
-.button{
-    appearance: none;
-    outline: none;
-    border: none;
-    background: none;
-    cursor: pointer;
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
 
-    display: inline-block;
-    padding: 10px 10px;
-    margin-top: 40px;
-    background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
-    /* background-image: linear-gradient(to right, #CC2E5D, #FF5858); */
-    border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  background-color: #fff;
+  border-radius: 16px;
 
-    color: #FFF;
-    font-size: 15px;
-    font-weight: 600;
-    
-    box-shadow: 3px 3px rgba(0,0,0,0.4);
-    transition: 0.4s ease-out;
-    &:hover {
-        box-shadow: 6px 6px rgba(0,0,0,0.6);
-    }
+  padding: 25px;
+
+  p {
+    padding-top: 2px;
+    padding-bottom: 3px;
+  }
+  .button {
+    margin-right: 20px;
+  }
 }
 
-.modal{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    z-index: 99;
-
-    width: 100%;
-    max-width: 500px;
-    background-color: #FFF;
-    border-radius: 16px;
-
-    padding: 25px;
-
-    p{
-        padding-top: 2px;
-        padding-bottom: 3px;
-    }
-    .button{
-        margin-right: 20px;
-    }
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
-.modal-overlay{
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 99;
-    background-color: rgba(0,0,0,0.3);
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
 
-.fade-enter-active,.fade-leave-active{
-    transition: opacity 0.5s;
-}
-
-.fade-enter,.fade-leave-to{
-    opacity: 0;
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .slide-enter-active,
 .slide-leave-active {
- transition: transform .5s;
+  transition: transform 0.5s;
 }
 
 .slide-enter,
 .slide-leave-to {
- transform: translateY(-50%) translateX(100vw);
+  transform: translateY(-50%) translateX(100vw);
 }
-
-
-
-
 </style>

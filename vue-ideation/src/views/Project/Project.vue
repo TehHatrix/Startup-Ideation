@@ -98,15 +98,15 @@
             <div class = "cardProgress" :class="validationProgress">
             </div>
             <div class = "cardContent">
-                <p><strong>Hypothesis Validation</strong> </p>
-                <p>3 Hypothesis Validation to Complete</p>
+                <p><strong>{{ phaseUpperCase }} Validation</strong> </p>
+                <p>3 {{ phaseUpperCase }} Validation to Complete</p>
             </div>
             <div class = "cardFooter">
                 <div class = "logoCard">
                     <circle-check></circle-check>
                 </div>
                 
-                <p><strong>Validate Hypothesis Now</strong> <br> Complete the current validation phase to unlock new phase along the way.</p> 
+                <p><strong>Validate {{ phaseUpperCase }} Now</strong> <br> Complete the current validation phase to unlock new phase along the way.</p> 
                 <general-button @click.native="handleValidate">Validate Now!</general-button>
             </div>
 
@@ -227,6 +227,9 @@ export default {
         'landing': this.validationPhase == 'landing',
         'survey': this.validationPhase == 'survey'
       }
+    },
+    phaseUpperCase(){
+      return this.validationPhase.charAt(0).toUpperCase() + this.validationPhase.slice(1);
     }
   },
 
@@ -234,6 +237,12 @@ export default {
     handleValidate() {
         if(this.validationPhase == "hypothesis"){
             this.$router.push('/hypothesis')
+        }
+        else if(this.validationPhase == "landing"){
+          this.$router.push('/landing')
+        }
+        else if(this.validationPhase == "survey"){
+          this.$router.push('/survey')
         }
 
     },

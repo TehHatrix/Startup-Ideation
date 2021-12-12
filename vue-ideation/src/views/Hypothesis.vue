@@ -12,13 +12,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in hypothesis_data" :key="index" >
+        <tr v-for="(item, index) in hypothesis_data" :key="index">
           <td>
-            <p id="cust_seg">{{ selected_custseg[index] }}</p>
+            <p id="cust_seg">{{ item.customerSegment }}</p>
           </td>
           <td>has a problems of</td>
           <td>
-            <p id="problems">{{ selected_problems[index] }}</p>
+            <p id="problems">{{ item.problemsTopic }}</p>
           </td>
           <td id="freqSliders">
             <p>Problems Frequency</p>
@@ -48,29 +48,16 @@ export default {
   },
   data() {
     return {
-      hypothesis_data: null,
       pain_value1: [],
       pain_data1: ["1-Time", "Yearly", "Monthly", "Weekly", "Daily"],
       pain_value2: [],
       pain_data2: ["Mild", "Moderate", "Major", "Severe"],
       feedback_value: [],
       feedback_data: ["Months", "Weeks", "Few Days"],
-      selected_custseg: [],
-      selected_problems: [],
+      hypothesis_data: null,
     };
   },
-  mounted() {
-    this.$http
-      .get("http://localhost:80/api/gethypothesisdata")
-      .then((response) => {
-        this.hypothesis_data = response.data;
-        for (let item in this.hypothesis_data) {
-          this.selected_custseg[item] = this.hypothesis_data[item][1];
-          this.selected_problems[item] = this.hypothesis_data[item][2];
-        }
-      })
-      .catch((error) => console.log(error));
-  },
+  mounted() {},
   methods: {
     custseg_options() {
       const emptyarray = [];
@@ -95,11 +82,24 @@ export default {
     routeInterview() {
       this.$router.push("interview");
     },
+    async getHypothesisData() {
+      try {
+        const customersegWithproblems = await this.$http.get(
+          "http://localhost:80/api/gethypothesisdata"
+        );
+        this.hypothesis_data = customersegWithproblems.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   computed: {
     setselected: function () {
       return 0;
     },
+  },
+  created () {
+    this.getHypothesisData();
   },
 };
 </script>
@@ -125,17 +125,16 @@ export default {
 }
 
 .styled-table tbody tr {
-    border-bottom: thin  solid #dddddd;
+  border-bottom: thin solid #dddddd;
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
+  background-color: #f3f3f3;
 }
 
 .styled-table tbody tr:last-of-type {
-    border-bottom: 2px solid #8743ff;
+  border-bottom: 2px solid #8743ff;
 }
-
 
 #cust_seg,
 #problems {

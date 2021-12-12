@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\CustomerProblem;
@@ -8,58 +9,40 @@ use App\Models\Interview;
 use App\Models\Problem;
 use ArrayObject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HypothesisController extends Controller
 {
 
-     public function getHypothesisData(){
-         //joining the table
-         $customerproblemswithdata = CustomerProblem::with('customersegments','problems','hypotheses')->get();
-         $arrayobj = new ArrayObject(array());
-         //Access each records
-         foreach ($customerproblemswithdata as $record){
-            $customerProblemID = $record->CustomerProblem_ID;
-            $topic_custseg = $record->customersegments->topic;
-            $topic_problem = $record->problems->topic;
-            if($record->hypotheses != null){
-                $status = $record->hypotheses->status;
-                $arrayofobjects = array($customerProblemID,$topic_custseg,$topic_problem,$status);
+    public function getHypothesisData()
+    {
+        $problemswithcustSeg = DB::table('problems')->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
+        return $problemswithcustSeg;
+    }
+
+    public function getstatus($customerproblem_id)
+    {
+        $hypotheseswithcustprob = Hypotheses::where('CustomerProblem_ID', $customerproblem_id)->get();
+        if ($hypotheseswithcustprob) {
+            foreach ($hypotheseswithcustprob as $record) {
+                if ($record->status == true) {
+                    return true;
+                }
             }
-            else{
-                $status = false;
-                $arrayofobjects = array($customerProblemID,$topic_custseg,$topic_problem,$status);
-            }
-            $arrayobj->append($arrayofobjects);
-            // $arrayobj->append($customerProblemID);
-            // $arrayobj->append($topic_custseg);
-            // $arrayobj->append($topic_problem);
-         }
-         return $arrayobj;
-        //  return $customersegments;
-     }
+        }
+        return false;
+    }
 
-     public function getstatus($customerproblem_id){
-         $hypotheseswithcustprob = Hypotheses::where('CustomerProblem_ID',$customerproblem_id)->get();
-         if ($hypotheseswithcustprob){
-             foreach ($hypotheseswithcustprob as $record){
-                 if ($record->status == true){
-                     return true;
-                 }
-             }
-         }
-         return false;
-
-     }
-
-     public function getHypothesisID($customerproblem_id){
-        $hypotheseswithcustprob = Hypotheses::where('CustomerProblem_ID',$customerproblem_id)->get();
-        if ($hypotheseswithcustprob){
-            foreach ($hypotheseswithcustprob as $record){
+    public function getHypothesisID($customerproblem_id)
+    {
+        $hypotheseswithcustprob = Hypotheses::where('CustomerProblem_ID', $customerproblem_id)->get();
+        if ($hypotheseswithcustprob) {
+            foreach ($hypotheseswithcustprob as $record) {
                 return $record->hypothesis_ID;
             }
         }
-     }
-     
+    }
+
 
 
     public function getCustomerSegmentsTopic()
@@ -143,13 +126,13 @@ class HypothesisController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateCustomerProblem(Request $request, $customerproblem_id,$tablenumber,$table)
+    public function updateCustomerProblem(Request $request, $customerproblem_id, $tablenumber, $table)
     {
         $CustomerProblem = CustomerProblem::find($customerproblem_id);
-        if ($CustomerProblem && $tablenumber == 1){
-            $customersegment = CustomerSegment::where('topic',$table)->get();
-            if($customersegment){
-                foreach ($customersegment as $record){
+        if ($CustomerProblem && $tablenumber == 1) {
+            $customersegment = CustomerSegment::where('topic', $table)->get();
+            if ($customersegment) {
+                foreach ($customersegment as $record) {
                     $thenewid = $record->cs_ID;
                 }
                 $CustomerProblem->cs_ID = $thenewid;
@@ -157,12 +140,10 @@ class HypothesisController extends Controller
                 return $CustomerProblem;
             }
             return "Customer Segment not found";
-
-        }
-        elseif($CustomerProblem && $tablenumber == 2){
-            $problem = Problem::where('topic',$table)->get();
-            if($problem){
-                foreach ($problem as $record){
+        } elseif ($CustomerProblem && $tablenumber == 2) {
+            $problem = Problem::where('topic', $table)->get();
+            if ($problem) {
+                foreach ($problem as $record) {
                     $thenewprobid = $record->problem_ID;
                 }
                 $CustomerProblem->problem_ID = $thenewprobid;
@@ -183,14 +164,14 @@ class HypothesisController extends Controller
     public function destroy($customerproblem_id)
     {
         $CustomerProblem_item = CustomerProblem::find($customerproblem_id);
-        if($CustomerProblem_item){
+        if ($CustomerProblem_item) {
             $customersegmentcp_id = $CustomerProblem_item->cs_ID;
             $problemcp_id = $CustomerProblem_item->problem_ID;
             $customer_segment = CustomerSegment::find($customersegmentcp_id);
             $problem = Problem::find($problemcp_id);
-            $Hypotheses = Hypotheses::where('CustomerProblem_ID',$customerproblem_id);
+            $Hypotheses = Hypotheses::where('CustomerProblem_ID', $customerproblem_id);
             // $Interview = Interview::where('hypothesis_ID',)
-            if($Hypotheses){
+            if ($Hypotheses) {
                 $Hypotheses->delete();
             }
             $CustomerProblem_item->delete();
