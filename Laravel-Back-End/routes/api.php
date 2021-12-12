@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerProblemController;
 use App\Http\Controllers\FreeCanvasContentController;
@@ -82,8 +83,14 @@ Route::group([
     
     // free canvas route
     Route::apiResource('projects.free-canvas', FreeCanvasController::class);
-    
     Route::apiResource('free-canvas.content', FreeCanvasContentController::class);
+
+    // communication route
+    //   -> announcement 
+    Route::get('/projects/{projectId}/announcement', [AnnouncementController::class, 'index']);
+    Route::post('/projects/{projectId}/announcement', [AnnouncementController::class, 'store']);
+    Route::put('/projects/{projectId}/announcement/{announcementId}', [AnnouncementController::class, 'update']);
+
     
 });
 

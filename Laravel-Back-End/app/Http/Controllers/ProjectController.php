@@ -56,16 +56,17 @@ class ProjectController extends Controller
 
         $project = Project::create([
             'project_name' => $data['project_name'],
-            'project_description' => $data['project_description']
+            'project_description' => $data['project_description'],
+            'creator_id' => Auth::id()
         ]);
 
         $project->users()->attach(Auth::id());
 
         $leanCanvas = new LeanCanvas;
         $leanCanvas->project()->associate($project->id)->save();
-
         
         // $user = Auth::user();
+        
         // $project = $user->projects()->create([
         //     'project_name' => $data['project_name'],
         //     'project_description' => $data['project_description']
@@ -105,7 +106,13 @@ class ProjectController extends Controller
         //     'collaborator' => $collaborator], 200);
 
         return response()->json([
-            'project' => array('id' => $project['id'],'project_name' => $project['project_name'],'project_description' => $project['project_description'], 'collaborator' => $collaborator),
+            'project' => array(
+                'id' => $project['id'],
+                'project_name' => $project['project_name'],
+                'project_description' => $project['project_description'],
+                'creator_id' => $project['creator_id'],
+                'collaborator' => $collaborator
+            ),
             'success' => true,
             'message' => 'successfull'
         ]);

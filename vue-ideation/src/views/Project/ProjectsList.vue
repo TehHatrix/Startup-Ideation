@@ -79,7 +79,6 @@ export default {
       try {
         let res = await api.setProject(this.project);
         if (res.data.success) {
-          // alert(res.data.message)
           this.project.project_name = this.project.project_description = "";
           this.showModal = false;
           await this.$store.dispatch("getProjects");

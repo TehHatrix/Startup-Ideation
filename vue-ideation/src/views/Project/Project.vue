@@ -3,7 +3,7 @@
         <div class="dashboard-title">
             <h1>Project Dashboard</h1>
 
-            <button class="general-button" @click="openSettingModal">
+            <button class="general-button" @click="openSettingModal" v-if="user.id === project.creator_id" >
                 Setting   
                 <font-awesome-icon icon="fa-cog" size="lg" ></font-awesome-icon>
             </button>
@@ -15,28 +15,6 @@
                     <h2> {{project.project_name}} </h2>
                     <p> {{project.project_description}} </p>
 
-                    <div class="collab-container ">
-                        <div class="side">
-                            <p>Collaborator</p>
-                            <button @click="openCollabModal" ><font-awesome-icon icon="fa-user-edit"></font-awesome-icon></button>
-                        </div>
-
-                        <div class="collab-list">
-                            <div v-for="(user, index) in collaborator" :key="index" >
-                                <div class="block" >
-                                    <div class="circle">
-                                        {{user.username[0]}}
-                                    </div>
-
-                                    <div>
-                                        {{user.username}}
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
 
             </section>
@@ -47,24 +25,11 @@
                 <div>
                     <div class="side">
                         <h2>Announcement</h2>
-                        <button id="announcement-btn" class="general-button">Manage</button>
+                        <button id="announcement-btn" @click="showAnnounceModal = true" class="general-button" v-if="user.id === project.creator_id">Create</button>
                     </div>
                     <div class="overflow-hidden">
 
-                        <shrink-card>
-                            <div class="notification" >
-                                <div class="notification-item">
-                                    <div class="notification-item-content">
-                                        <span class="notification-item-title">
-                                            something
-                                        </span>
-                                        <span class="notification-item-message">
-                                            date i guess
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </shrink-card>
+                        <announcement-card></announcement-card>
 
                     </div>
 
@@ -153,6 +118,22 @@
                 </div>
             </div>
         </modal>
+        <!-- add announcement modal -->
+        <modal 
+         :showModal="showAnnounModal"
+         @close="closeAnnounModal">
+            <h2 class="modal-title" >Create Announcement</h2>
+            <form @submit.prevent="addAnnouncement">
+                <div class="input-container">
+                    <input type="text" id="title" class="material-input" v-model="announForm.title" required>
+                    <label for="title" class="material-label">Title</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="description" class="material-input" v-model="announForm.description">
+                    <label for="description" class="material-label" >Description</label>
+                </div>
+            </form>
+        </modal>
 
     </div>
 </template>
@@ -160,7 +141,7 @@
 import ProjectModal from '@/components/ProjectModal.vue'
 import { mapGetters } from 'vuex'
 import api from '@/api/projectApi'
-import ShrinkCardVue from '../../components/ShrinkCard.vue'
+import AnnouncementCardVue from '../../components/project/AnnouncementCard.vue'
 
 export default {
     name: 'Project',
@@ -178,6 +159,13 @@ export default {
 
             showCollabSettingModal: false,
 
+            showAnnounModal: false,
+            announForm: {
+                title: '',
+                description: '',
+                
+            }
+
 
 
         }
@@ -185,27 +173,27 @@ export default {
 
     components: {
         'modal': ProjectModal,
-        'shrink-card': ShrinkCardVue
+        'announcement-card': AnnouncementCardVue 
     },
 
     async created() {
         try {
             await this.$store.dispatch('getProject', this.projectId)
+            // console.log(this.announcement)
+            await this.$store.dispatch('getAnnouncement', this.projectId)
+
             // console.log('after created')
         } catch (error) {
             console.log(error)
         }
     },
 
-    mounted() {
-
-        
-    },
-
     computed: {
         ...mapGetters([
             'project',
-            'collaborator'
+            'collaborator',
+            'user',
+            'announcement'
         ])
 
     },
@@ -253,15 +241,15 @@ export default {
 
         async updateProject() {
             try {
-                let {data} = await api.updateProject(this.projectId, this.updatedProjectForm)
+                let res = await api.updateProject(this.projectId, this.updatedProjectForm)
 
-                if(data.success) {
+                if(res.data.success) {
                     await this.$store.dispatch('getProject', this.projectId)
                     // !!!! check this later thus performance gain significant
                     this.$store.dispatch('getProjects')
 
                     this.resetSettingModal()
-                } else {
+                } else if(!res.data.success || res.status !== 200) {
                     // !temp
                     alert("unsuccessful")
                 }
@@ -272,9 +260,17 @@ export default {
 
         searchUser() {
             alert('test')
-        }
+        },
 
+        closeAnnounModal() {
+            this.showAnnounModal = false
+            this.announForm.title = ''
+            this.announForm.description = ''
+        },
 
+        async addAnnouncement() {
+
+        },
     }
 }
 </script>
@@ -436,11 +432,4 @@ export default {
         
     }
 
-
-
-
-
-
-    
-    
 </style>

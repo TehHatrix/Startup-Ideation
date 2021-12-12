@@ -1,15 +1,63 @@
 <template lang="">
     <div>
-        <slot />
+        <div v-for="(ann, index) in announcement" :key="index">
+            <shrink-card>
+                <div class="notifications__item">
+                    <div class="notifications__item__content">
+                        <span class="notifications__item__title">{{ ann.title }}</span>
+                        <span class=" notifications__item__message">{{ ann.description }}</span>
+                    </div>
+                    <div v-if="project.creator_id === user.id">
+                        <div class="notifications__item__option edit">
+                            <font-awesome-icon icon="fa-edit" size="xs"></font-awesome-icon>
+                        </div>
+                        <div class="notifications__item__option delete" >
+                            <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
+                        </div>
+                    </div>
+                </div>      
+            </shrink-card>        
+        </div>
+
+        <modal
+        :showModal="showEditModal">
+
+        </modal>
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+import ProjectModalVue from '../ProjectModal.vue'
+import ShrinkCardVue from '../ShrinkCard.vue'
+
 export default {
-    
+    name: 'AnnouncementCard',
+    components:{
+        'shrink-card': ShrinkCardVue,
+        'modal': ProjectModalVue
+    },
+
+    computed: {
+        ...mapGetters([
+            'announcement',
+            'project',
+            'user'
+        ]),
+    },  
+
+    data() {
+        return{
+            showEditModal: false,
+        }
+    },
+
+    methods: {
+
+    },
 }
 </script>
-<style lang="scss" scoped>
-    .notifications__item {
+<style lang="css" scoped>
+        .notifications__item {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -21,8 +69,8 @@ export default {
 
         background-color: white;
         border-radius: 5px;
-        border: 1px solid #B983FF;
         transition: all .3s ease-in;
+        border: none;
     }
 
     .notifications__item__title,
@@ -180,5 +228,4 @@ export default {
         opacity: 0.5;
 
     }
-
 </style>

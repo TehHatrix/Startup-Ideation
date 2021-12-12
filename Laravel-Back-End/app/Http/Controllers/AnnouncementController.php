@@ -27,6 +27,7 @@ class AnnouncementController extends Controller
             'title' => 'required', 
             'description' => 'required'
         ]);
+
         if($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'success' => false]);
         }

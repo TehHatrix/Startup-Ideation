@@ -1,7 +1,8 @@
 import auth from '@/api/authApi'
 
 const state = {
-    user: localStorage.user ? JSON.parse(localStorage.getItem('user')) : null
+    user: localStorage.user ? JSON.parse(localStorage.getItem('user')) : null,
+    
 }
 
 const getters = {
