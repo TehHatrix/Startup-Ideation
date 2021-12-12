@@ -31,7 +31,14 @@
             <p>How long to interviews all the customer segments?</p>
             <Slider type="Feedback" v-model="feedback_value[index]"></Slider>
           </td>
-          <Modal @routeInterview="routeInterview"></Modal>
+          <Modal @routeInterview="routeInterview">
+            <template #hypothesisTitle>
+              <h2>
+                {{ item.customerSegment }} has a problems of
+                {{ item.problemsTopic }}
+              </h2>
+            </template>
+          </Modal>
         </tr>
       </tbody>
     </table>
@@ -39,7 +46,7 @@
 </template>
 
 <script>
-import Modal from "@/components/GeneralModal.vue";
+import Modal from "@/components/HypothesisModal.vue";
 import Slider from "@/components/HypothesisSlider.vue";
 export default {
   components: {
@@ -98,7 +105,7 @@ export default {
       return 0;
     },
   },
-  created () {
+  created() {
     this.getHypothesisData();
   },
 };
