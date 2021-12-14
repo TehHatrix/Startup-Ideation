@@ -119,6 +119,7 @@ export default {
 }
 
 .styled-table {
+  position:relative;
   border-collapse: collapse;
   margin: 25px 0;
   font-size: 0.9em;

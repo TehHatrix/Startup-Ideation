@@ -43,7 +43,7 @@ export default {
     },
     optionsValueSecond: {
       type: Array,
-      required: false
+      required: false,
     },
   },
   data() {
@@ -110,13 +110,16 @@ export default {
 
 <style scoped lang = 'scss'>
 .select-box {
+  position:relative;
   display: flex;
   width: 200px;
   flex-direction: column;
-  z-index: 99;
+  /* z-index: 99; */
 }
 
 .select-box .options-container {
+  position: absolute;
+  top:55px;
   background: #2f3640;
   color: #f5f6fa;
   max-height: 0;
@@ -126,6 +129,7 @@ export default {
   border-radius: 8px;
   overflow: hidden;
   order: 1;
+  z-index: 99;
 }
 
 .selected {
