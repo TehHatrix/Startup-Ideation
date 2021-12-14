@@ -21,15 +21,11 @@
             <p id="problems">{{ item.problemsTopic }}</p>
           </td>
           <td id="freqSliders">
-            <p>Problems Frequency</p>
-            <Slider type="Frequency" v-model="pain_value1[index]"></Slider>
-            <p>Problems Severity</p>
-            <Slider type="Severity" v-model="pain_value2[index]"></Slider>
+            <hypothesis-dropdown dropdownType="pain" :optionsValueFirst="frequency_data" :optionsValueSecond="severity_data"></hypothesis-dropdown>
           </td>
 
           <td id="feedSliders">
-            <p>How long to interviews all the customer segments?</p>
-            <Slider type="Feedback" v-model="feedback_value[index]"></Slider>
+            <hypothesis-dropdown dropdownType="feedback" :optionsValueFirst="feedback_data"></hypothesis-dropdown>
           </td>
           <Modal @routeInterview="routeInterview">
             <template #hypothesisTitle>
@@ -46,12 +42,12 @@
 </template>
 
 <script>
-import Modal from "@/components/HypothesisModal.vue";
-import Slider from "@/components/HypothesisSlider.vue";
+import Modal from "../components/HypothesisModal.vue";
+import HypothesisDropdown from '../components/HypothesisDropdown.vue';
 export default {
   components: {
     Modal,
-    Slider,
+    HypothesisDropdown,
   },
   data() {
     return {
@@ -60,7 +56,9 @@ export default {
       pain_value2: [],
       pain_data2: ["Mild", "Moderate", "Major", "Severe"],
       feedback_value: [],
-      feedback_data: ["Months", "Weeks", "Few Days"],
+      feedback_data: ["A few months", "One month", "A few weeks","One week","A few days","One day","A few hours"],
+      frequency_data: ["Non-Recurring (1-Time)","Yearly - Once or twice","Quarterly","Monthly - Once or twice","Weekly - Once or twice","Daily - Once or more"],
+      severity_data:["Mild - Nagging, Annoying","Moderate - Uncomfortable, Concerning","Major - Interferes Significantly", "Severe - Disabling"],
       hypothesis_data: null,
     };
   },
@@ -87,7 +85,11 @@ export default {
       this.$modal.hide("pre-interview-modal");
     },
     routeInterview() {
+      console.log(this.hypothesis_data)
       this.$router.push("interview");
+    },
+    getIndex(index){
+      console.log(index);
     },
     async getHypothesisData() {
       try {

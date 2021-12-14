@@ -41,7 +41,6 @@ export default {
     return {
       selectedValue: "Choose Options",
       selectedActive: false,
-    //   optionsValue: ["meow","test","automobile"],
     };
   },
   methods: {

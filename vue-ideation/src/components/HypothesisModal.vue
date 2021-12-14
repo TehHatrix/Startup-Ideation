@@ -49,7 +49,7 @@
         <transition name="fade" appear>
           <div class="notepadContent" v-if="showNotepad">
             <notepad>
-              <template #content>
+              <template #content >
                 {{ interviewScript }}
               </template>
             </notepad>
@@ -119,7 +119,7 @@ export default {
 }
 
 .outerButton {
-  margin-top: 30px;
+  margin-top:3px;
 }
 
 .modal {
