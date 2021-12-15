@@ -13,7 +13,7 @@
       <div
         class="modal-overlay"
         v-if="showModal"
-        @click.native="
+        @click="
           showModal = false;
           showPreInterview = false;
           showNotepad = false;
@@ -27,7 +27,10 @@
             <h1>Pre-Interview Form</h1>
             <slot name="hypothesisTitle"> </slot>
             <h3>Choose Learning Objectives</h3>
-            <dropdown :optionsValue="learningObjectives"></dropdown>
+            <dropdown
+              :optionsValue="learningObjectives"
+              @clicked="passOption"
+            ></dropdown>
             <h3>Customize Interview Script</h3>
             <general-button
               @click.native="
@@ -48,19 +51,14 @@
         </transition>
         <transition name="fade" appear>
           <div class="notepadContent" v-if="showNotepad">
-            <notepad>
-              <template #content >
-                {{ interviewScript }}
-              </template>
-            </notepad>
+            <notepad v-model="interviewScript"> </notepad>
             <general-button
               v-if="showNotepad"
               @click.native="
                 showNotepad = false;
                 showPreInterview = true;
               "
-            >
-              Back</general-button
+              >Back</general-button
             >
           </div>
         </transition>
@@ -107,6 +105,9 @@ export default {
     routeInterview() {
       this.$emit("routeInterview");
     },
+    passOption(value) {
+      this.$emit("clickedObjective", value);
+    },
   },
 };
 </script>
@@ -115,11 +116,11 @@ export default {
 ::v-deep .notepad {
   max-height: 600px;
   overflow: scroll;
-  margin:auto;
+  margin: auto;
 }
 
 .outerButton {
-  margin-top:3px;
+  margin-top: 3px;
 }
 
 .modal {
@@ -156,19 +157,21 @@ export default {
   grid-row: 1;
 }
 
-.notepadContent{
-  ::v-deep button{
-    margin-top: 30px; 
+.notepadContent {
+  ::v-deep button {
+    margin-top: 30px;
   }
 }
 
 .modal-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
+  overflow: auto;
   z-index: 99;
+  /* min-height: 100%; */
   background-color: rgba(0, 0, 0, 0.3);
 }
 

@@ -45,10 +45,14 @@ export default {
       type: Array,
       required: false,
     },
+    currentIndex:{
+      type: Number,
+    }
   },
   data() {
     return {
       selectedValue: {
+        index: this.currentIndex,
         frequency: "",
         severity: "",
         feedback: "",
@@ -103,6 +107,7 @@ export default {
         }, 230);
         this.selectedValue.severity = value;
       }
+      this.$emit('getHypothesisData',this.selectedValue)
     },
   },
 };

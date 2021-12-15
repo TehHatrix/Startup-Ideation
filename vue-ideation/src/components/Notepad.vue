@@ -2,18 +2,27 @@
   <div>
     <div class="notepad">
       <div class="top"></div>
-      <div class="paper" contenteditable="true">
-          <slot name = "content">
-
-          </slot>
-
+      <div class="paper" contenteditable="true" @blur="handleInput($event)">
+        {{ interviewScript }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      interviewScript: "",
+    };
+  },
+  methods: {
+    handleInput(e){
+      this.interviewScript = e.target.innerText;
+      console.log(this.interviewScript)
+    }
+  },
+};
 </script>
 
 <style lang="scss" scoped>

@@ -50,6 +50,7 @@ export default {
     handleOptions(value) {
         this.toggleSelected();
       this.selectedValue = value;
+      this.$emit('clicked',this.selectedValue)
     },
   },
 };

@@ -12,7 +12,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in hypothesis_data" :key="index">
+        <tr v-for="(item, index) in custseg_data" :key="index">
           <td>
             <p id="cust_seg">{{ item.customerSegment }}</p>
           </td>
@@ -21,13 +21,24 @@
             <p id="problems">{{ item.problemsTopic }}</p>
           </td>
           <td id="freqSliders">
-            <hypothesis-dropdown dropdownType="pain" :optionsValueFirst="frequency_data" :optionsValueSecond="severity_data"></hypothesis-dropdown>
+            <hypothesis-dropdown
+              dropdownType="pain"
+              :optionsValueFirst="frequency_data"
+              :optionsValueSecond="severity_data"
+              :currentIndex="index"
+              @getHypothesisData="appendFrequencySeverity"
+            ></hypothesis-dropdown>
           </td>
 
           <td id="feedSliders">
-            <hypothesis-dropdown dropdownType="feedback" :optionsValueFirst="feedback_data"></hypothesis-dropdown>
+            <hypothesis-dropdown
+              dropdownType="feedback"
+              :optionsValueFirst="feedback_data"
+              :currentIndex="index"
+              @getHypothesisData="appendFeedback"
+            ></hypothesis-dropdown>
           </td>
-          <Modal @routeInterview="routeInterview">
+          <Modal @routeInterview="routeInterview" @clickedObjective="appendLearningObjectives">
             <template #hypothesisTitle>
               <h2>
                 {{ item.customerSegment }} has a problems of
@@ -43,7 +54,7 @@
 
 <script>
 import Modal from "../components/HypothesisModal.vue";
-import HypothesisDropdown from '../components/HypothesisDropdown.vue';
+import HypothesisDropdown from "../components/HypothesisDropdown.vue";
 export default {
   components: {
     Modal,
@@ -56,28 +67,35 @@ export default {
       pain_value2: [],
       pain_data2: ["Mild", "Moderate", "Major", "Severe"],
       feedback_value: [],
-      feedback_data: ["A few months", "One month", "A few weeks","One week","A few days","One day","A few hours"],
-      frequency_data: ["Non-Recurring (1-Time)","Yearly - Once or twice","Quarterly","Monthly - Once or twice","Weekly - Once or twice","Daily - Once or more"],
-      severity_data:["Mild - Nagging, Annoying","Moderate - Uncomfortable, Concerning","Major - Interferes Significantly", "Severe - Disabling"],
-      hypothesis_data: null,
+      feedback_data: [
+        "A few months",
+        "One month",
+        "A few weeks",
+        "One week",
+        "A few days",
+        "One day",
+        "A few hours",
+      ],
+      frequency_data: [
+        "Non-Recurring (1-Time)",
+        "Yearly - Once or twice",
+        "Quarterly",
+        "Monthly - Once or twice",
+        "Weekly - Once or twice",
+        "Daily - Once or more",
+      ],
+      severity_data: [
+        "Mild - Nagging, Annoying",
+        "Moderate - Uncomfortable, Concerning",
+        "Major - Interferes Significantly",
+        "Severe - Disabling",
+      ],
+      custseg_data: null,
+      hypothesis: [],
     };
   },
   mounted() {},
   methods: {
-    custseg_options() {
-      const emptyarray = [];
-      for (var item in this.hypothesis_data) {
-        emptyarray.push(this.hypothesis_data[item][1]);
-      }
-      return emptyarray;
-    },
-    problems_options() {
-      const emptyarray = [];
-      for (var item in this.hypothesis_data) {
-        emptyarray.push(this.hypothesis_data[item][2]);
-      }
-      return emptyarray;
-    },
     show() {
       this.$modal.show("pre-interview-modal");
     },
@@ -85,18 +103,45 @@ export default {
       this.$modal.hide("pre-interview-modal");
     },
     routeInterview() {
-      console.log(this.hypothesis_data)
       this.$router.push("interview");
     },
-    getIndex(index){
-      console.log(index);
+    // initialiseHypothesis(index) {
+    //   if (this.hypothesis[index] === undefined) {
+    //     let hypothesisObject = {
+    //       customerSegment: "",
+    //       problems: "",
+    //       pain: {
+    //         frequency: "",
+    //         severity: "",
+    //       },
+    //       feedbackCycle: "",
+    //       learningObjectives: "",
+    //       script: "",
+    //     };
+    //     this.hypothesis[index] = hypothesisObject;
+    //   }
+    // },
+    appendFrequencySeverity(value) {
+      // this.$store.dispatch('checkHypothesisInitialized',value.index)
+      // this.initialiseHypothesis(value.index);
+      this.$store.dispatch('setPainValue',value)
+      // this.hypothesis[value.index].pain.frequency = value.frequency;
+      // this.hypothesis[value.index].pain.severity = value.severity;
+    },
+    appendFeedback(value) {
+      // this.initialiseHypothesis(value.index);
+      this.hypothesis[value.index].feedbackCycle = value.feedback;
+      console.log(this.hypothesis)
+    },
+    appendLearningObjectives(value){
+      console.log(value)
     },
     async getHypothesisData() {
       try {
         const customersegWithproblems = await this.$http.get(
           "http://localhost:80/api/gethypothesisdata"
         );
-        this.hypothesis_data = customersegWithproblems.data;
+        this.custseg_data = customersegWithproblems.data;
       } catch (error) {
         console.log(error);
       }
@@ -119,7 +164,7 @@ export default {
 }
 
 .styled-table {
-  position:relative;
+  /* position:relative; */
   border-collapse: collapse;
   margin: 25px 0;
   font-size: 0.9em;
