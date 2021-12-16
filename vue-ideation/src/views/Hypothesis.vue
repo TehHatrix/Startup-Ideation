@@ -1,58 +1,60 @@
 <template>
-  <div class="styled-table">
-    <table>
-      <thead>
-        <tr>
-          <th>Customer Segment</th>
-          <th></th>
-          <th>Problems</th>
-          <th>Pain</th>
-          <th>Feedback Cycle</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in custseg_data" :key="index">
-          <td>
-            <p id="cust_seg">{{ item.customerSegment }}</p>
-          </td>
-          <td>has a problems of</td>
-          <td>
-            <p id="problems">{{ item.problemsTopic }}</p>
-          </td>
-          <td id="freqSliders">
-            <hypothesis-dropdown
-              dropdownType="pain"
-              :optionsValueFirst="frequency_data"
-              :optionsValueSecond="severity_data"
-              :currentIndex="index"
-              @getHypothesisData="appendFrequencySeverity"
-            ></hypothesis-dropdown>
-          </td>
+  <div>
+    <div class="styled-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer Segment</th>
+            <th></th>
+            <th>Problems</th>
+            <th>Pain</th>
+            <th>Feedback Cycle</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in custseg_data" :key="index">
+            <td>
+              <p id="cust_seg">{{ item.customerSegment }}</p>
+            </td>
+            <td>has a problems of</td>
+            <td>
+              <p id="problems">{{ item.problemsTopic }}</p>
+            </td>
+            <td id="freqSliders">
+              <hypothesis-dropdown
+                dropdownType="pain"
+                :optionsValueFirst="frequency_data"
+                :optionsValueSecond="severity_data"
+                :currentIndex="index"
+                @getHypothesisData="appendFrequencySeverity"
+              ></hypothesis-dropdown>
+            </td>
 
-          <td id="feedSliders">
-            <hypothesis-dropdown
-              dropdownType="feedback"
-              :optionsValueFirst="feedback_data"
-              :currentIndex="index"
-              @getHypothesisData="appendFeedback"
-            ></hypothesis-dropdown>
-          </td>
-          <Modal
-            @routeInterview="routeInterview"
-            @clickedObjective="appendLearningObjectives"
-            @click="setModalCurrentIndex(index)"
-          >
-            <template #hypothesisTitle>
-              <h2>
-                {{ item.customerSegment }} has a problems of
-                {{ item.problemsTopic }}
-              </h2>
-            </template>
-          </Modal>
-        </tr>
-      </tbody>
-    </table>
+            <td id="feedSliders">
+              <hypothesis-dropdown
+                dropdownType="feedback"
+                :optionsValueFirst="feedback_data"
+                :currentIndex="index"
+                @getHypothesisData="appendFeedback"
+              ></hypothesis-dropdown>
+            </td>
+            <Modal
+              @routeInterview="routeInterview"
+              @clickedObjective="appendLearningObjectives"
+              @click="handleModal(index)"
+            >
+              <template #hypothesisTitle>
+                <h2>
+                  {{ item.customerSegment }} has a problems of
+                  {{ item.problemsTopic }}
+                </h2>
+              </template>
+            </Modal>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -94,11 +96,9 @@ export default {
         "Major - Interferes Significantly",
         "Severe - Disabling",
       ],
-      custseg_data: null, 
+      custseg_data: null,
       hypothesis: [],
     };
-  },
-  mounted() {
   },
   methods: {
     show() {
@@ -108,11 +108,15 @@ export default {
       this.$modal.hide("pre-interview-modal");
     },
     routeInterview() {
-      let cust_seg = this.custseg_data[this.$store.state.hypothesisRepository.currentIndex].customerSegment
-      let problem = this.custseg_data[this.$store.state.hypothesisRepository.currentIndex].problemsTopic
-      this.$store.commit("setCustomerSegment",cust_seg)
-      this.$store.commit("setProblems",problem)
-      console.log(this.$store.state.hypothesisRepository)
+      let cust_seg =
+        this.custseg_data[this.$store.state.hypothesisRepository.currentIndex]
+          .customerSegment;
+      let problem =
+        this.custseg_data[this.$store.state.hypothesisRepository.currentIndex]
+          .problemsTopic;
+      this.$store.commit("setCustomerSegment", cust_seg);
+      this.$store.commit("setProblems", problem);
+      console.log(this.$store.state.hypothesisRepository);
       this.$router.push("interview");
     },
     appendFrequencySeverity(value) {
@@ -121,11 +125,12 @@ export default {
     appendFeedback(value) {
       this.$store.dispatch("setFeedbackValue", value);
     },
-    setModalCurrentIndex(index) {
+    handleModal(index) {
+      
       this.$store.state.hypothesisRepository.currentIndex = index;
     },
     appendLearningObjectives(value) {
-      this.$store.dispatch("setLearningObjectives",value)
+      this.$store.dispatch("setLearningObjectives", value);
     },
     async getHypothesisData() {
       try {
@@ -133,8 +138,8 @@ export default {
           "http://localhost:80/api/gethypothesisdata"
         );
         this.custseg_data = customersegWithproblems.data;
-        for (let index in this.custseg_data){
-          this.$store.dispatch('checkHypothesisInitialized',index);
+        for (let index in this.custseg_data) {
+          this.$store.dispatch("checkHypothesisInitialized", index);
         }
       } catch (error) {
         console.log(error);
@@ -142,9 +147,6 @@ export default {
     },
   },
   computed: {
-    setselected: function () {
-      return 0;
-    },
   },
   created() {
     this.getHypothesisData();
