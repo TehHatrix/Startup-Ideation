@@ -4,17 +4,8 @@
     <div class="select-box">
       <div class="options-container" :class="{ active: selectedActive }">
         <div v-for="(option, index) in optionsValue" :key="index">
-          <div
-            class="option"
-            @click="
-              handleOptions(option);
-            "
-          >
-            <input
-              type="radio"
-              class="radio"
-              name="category"
-            />
+          <div class="option" @click="handleOptions(option)">
+            <input type="radio" class="radio" name="category" />
             <label :for="option">{{ option }}</label>
           </div>
         </div>
@@ -32,25 +23,35 @@
   
 <script>
 export default {
-    props: {
-        optionsValue: {
-            type: Array,
-        },
+  props: {
+    optionsValue: {
+      type: Array,
     },
+    passedValue: {
+      type: String,
+      default: "Choose Options"
+    }
+  },
   data() {
     return {
-      selectedValue: "Choose Options",
+      selectedValue: this.passedValue,
       selectedActive: false,
     };
+  },
+  mounted(){
+    console.log(typeof(this.passedValue))
+    if (this.selectedValue === ""){
+      this.selectedValue = "Choose Options"
+    }
   },
   methods: {
     toggleSelected() {
       this.selectedActive = !this.selectedActive;
     },
     handleOptions(value) {
-        this.toggleSelected();
+      this.toggleSelected();
       this.selectedValue = value;
-      this.$emit('clicked',this.selectedValue)
+      this.$emit("clicked", this.selectedValue);
     },
   },
 };
@@ -73,6 +74,11 @@ export default {
   border-radius: 8px;
   overflow: hidden;
   order: 1;
+  transition: all 0.3s ease 0s;
+  box-shadow: 0px 8px 15px rgb(0 0 0 / 21%);
+  &:hover {
+    transform: translateY(-7px);
+  }
 }
 
 .selected {

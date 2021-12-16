@@ -29,6 +29,7 @@
             <h3>Choose Learning Objectives</h3>
             <dropdown
               :optionsValue="learningObjectives"
+              :passedValue="currentLearningObjectives"
               @clicked="passOption"
             ></dropdown>
             <h3>Customize Interview Script</h3>
@@ -84,6 +85,7 @@ export default {
         "Does the customer think our solution solves the right problem?",
         "Does the customer think our solution is better than existing products/services?",
       ],
+      currentLearningObjectives: "",
       interviewScript:
         "1. Thanks for taking my call, I’m doing some research on [main activity related to problem]. Before we start, can you tell me a bit about yourself? \
   - Focus on learning about WHO your customer is before moving onto the problem.\
@@ -106,8 +108,17 @@ export default {
       this.$emit("routeInterview");
     },
     passOption(value) {
+      this.currentLearningObjectives = value
       this.$emit("clickedObjective", value);
     },
+  },
+  mounted () {
+    this.currentLearningObjectives = this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].learningObjectives
+  },
+  computed: {
+    getLearningObjState() {
+      return this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].learningObjectives
+    }
   },
 };
 </script>

@@ -23,8 +23,8 @@
         </transition>
       </div>
       <div class="selected" :value="selectedValue" @click="toggleSelected">
-        <div v-if="choosed == false">Define {{ dropdownType }}</div>
-        <div v-else-if="choosed">
+        <div v-if="defaultDisplayCondition">Define {{ dropdownType }}</div>
+        <div v-else>
           {{ selectedDisplay }}
         </div>
       </div>
@@ -45,9 +45,9 @@ export default {
       type: Array,
       required: false,
     },
-    currentIndex:{
+    currentIndex: {
       type: Number,
-    }
+    },
   },
   data() {
     return {
@@ -57,12 +57,32 @@ export default {
         severity: "",
         feedback: "",
       },
-      choosed: false,
       selectedActive: false,
       currentStep: 1,
     };
   },
-  mounted() {},
+  mounted() {
+    if (
+      this.$store.state.hypothesisRepository.hypothesis[this.currentIndex] !==
+      undefined
+    ) {
+      if (this.dropdownType == "pain") {
+        let stateFrequency =
+          this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
+            .pain.frequency;
+        let stateSeverity =
+          this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
+            .pain.severity;
+        this.selectedValue.frequency = stateFrequency;
+        this.selectedValue.severity = stateSeverity;
+      } else if (this.dropdownType == "feedback") {
+        let stateFeedback =
+          this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
+            .feedbackCycle;
+        this.selectedValue.feedback = stateFeedback;
+      }
+    }
+  },
   computed: {
     selectedDisplay() {
       if (this.dropdownType == "pain") {
@@ -81,13 +101,23 @@ export default {
         return this.selectedValue.feedback;
       }
     },
+    defaultDisplayCondition() {
+      if (this.dropdownType == "pain") {
+        return (
+          this.dropdownType == "pain" &&
+          this.selectedValue.frequency === "" &&
+          this.selectedValue.severity === ""
+        );
+      } else if (this.dropdownType == "feedback") {
+        return (
+          this.dropdownType == "feedback" && this.selectedValue.feedback === ""
+        );
+      } else return console.log("Define Dropdown");
+    },
   },
   methods: {
     toggleSelected() {
       this.selectedActive = !this.selectedActive;
-    },
-    toggleChoose() {
-      this.choosed = true;
     },
     handleOptions(value) {
       if (this.currentStep == 1) {
@@ -96,18 +126,16 @@ export default {
           this.selectedValue.frequency = value;
         } else if (this.dropdownType == "feedback") {
           this.toggleSelected();
-          this.toggleChoose();
           this.selectedValue.feedback = value;
         }
       } else if (this.currentStep == 2) {
         this.toggleSelected();
-        this.toggleChoose();
         setTimeout(() => {
           this.currentStep = 1;
         }, 230);
         this.selectedValue.severity = value;
       }
-      this.$emit('getHypothesisData',this.selectedValue)
+      this.$emit("getHypothesisData", this.selectedValue);
     },
   },
 };
@@ -115,16 +143,21 @@ export default {
 
 <style scoped lang = 'scss'>
 .select-box {
-  position:relative;
+  position: relative;
   display: flex;
   width: 200px;
   flex-direction: column;
+  transition: all 0.3s ease 0s;
+  /* &:hover {
+    transform: translateY(-7px);
+    z-index: 2;
+  } */
   /* z-index: 99; */
 }
 
 .select-box .options-container {
   position: absolute;
-  top:55px;
+  top: 55px;
   background: #2f3640;
   color: #f5f6fa;
   max-height: 0;
@@ -135,6 +168,11 @@ export default {
   overflow: hidden;
   order: 1;
   z-index: 99;
+  transition: all 0.3s ease 0s;
+  box-shadow: 0px 8px 15px rgb(0 0 0 / 21%);
+  &:hover {
+    transform: translateY(-7px);
+  }
 }
 
 .selected {

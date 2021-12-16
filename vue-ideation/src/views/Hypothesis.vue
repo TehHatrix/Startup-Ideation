@@ -38,7 +38,11 @@
               @getHypothesisData="appendFeedback"
             ></hypothesis-dropdown>
           </td>
-          <Modal @routeInterview="routeInterview" @clickedObjective="appendLearningObjectives">
+          <Modal
+            @routeInterview="routeInterview"
+            @clickedObjective="appendLearningObjectives"
+            @click="setModalCurrentIndex(index)"
+          >
             <template #hypothesisTitle>
               <h2>
                 {{ item.customerSegment }} has a problems of
@@ -90,11 +94,12 @@ export default {
         "Major - Interferes Significantly",
         "Severe - Disabling",
       ],
-      custseg_data: null,
+      custseg_data: null, 
       hypothesis: [],
     };
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
     show() {
       this.$modal.show("pre-interview-modal");
@@ -105,36 +110,17 @@ export default {
     routeInterview() {
       this.$router.push("interview");
     },
-    // initialiseHypothesis(index) {
-    //   if (this.hypothesis[index] === undefined) {
-    //     let hypothesisObject = {
-    //       customerSegment: "",
-    //       problems: "",
-    //       pain: {
-    //         frequency: "",
-    //         severity: "",
-    //       },
-    //       feedbackCycle: "",
-    //       learningObjectives: "",
-    //       script: "",
-    //     };
-    //     this.hypothesis[index] = hypothesisObject;
-    //   }
-    // },
     appendFrequencySeverity(value) {
-      // this.$store.dispatch('checkHypothesisInitialized',value.index)
-      // this.initialiseHypothesis(value.index);
-      this.$store.dispatch('setPainValue',value)
-      // this.hypothesis[value.index].pain.frequency = value.frequency;
-      // this.hypothesis[value.index].pain.severity = value.severity;
+      this.$store.dispatch("setPainValue", value);
     },
     appendFeedback(value) {
-      // this.initialiseHypothesis(value.index);
-      this.hypothesis[value.index].feedbackCycle = value.feedback;
-      console.log(this.hypothesis)
+      this.$store.dispatch("setFeedbackValue", value);
     },
-    appendLearningObjectives(value){
-      console.log(value)
+    setModalCurrentIndex(index) {
+      this.$store.state.hypothesisRepository.currentIndex = index;
+    },
+    appendLearningObjectives(value) {
+      this.$store.dispatch("setLearningObjectives",value)
     },
     async getHypothesisData() {
       try {
@@ -142,6 +128,9 @@ export default {
           "http://localhost:80/api/gethypothesisdata"
         );
         this.custseg_data = customersegWithproblems.data;
+        for (let index in this.custseg_data){
+          this.$store.dispatch('checkHypothesisInitialized',index);
+        }
       } catch (error) {
         console.log(error);
       }
