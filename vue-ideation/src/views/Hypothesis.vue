@@ -40,7 +40,7 @@
               ></hypothesis-dropdown>
             </td>
             <div v-if="modaldisabled[index]">
-              <general-button>Disabled</general-button>
+              <disabled-button>Disabled</disabled-button>
             </div>
             <div v-else>
               <Modal
@@ -66,12 +66,12 @@
 <script>
 import Modal from "../components/HypothesisModal.vue";
 import HypothesisDropdown from "../components/HypothesisDropdown.vue";
-import GeneralButton from '../components/GeneralButton.vue';
+import DisabledButton from "../components/DisabledButton.vue";
 export default {
   components: {
     Modal,
     HypothesisDropdown,
-    GeneralButton,
+    DisabledButton,
   },
   created() {
     this.getHypothesisData();
@@ -111,8 +111,7 @@ export default {
       hypothesis: [],
     };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     show() {
       this.$modal.show("pre-interview-modal");
@@ -140,16 +139,29 @@ export default {
           "Pain is not enough, try defining a more specific segment or problem"
         );
         this.$store.commit("showToast");
-        this.$set(this.modaldisabled,value.index,true)
-        // this.modaldisabled[value.index] = true;
+        this.$set(this.modaldisabled, value.index, true);
+      } else {
+        this.$set(this.modaldisabled, value.index, false);
+        this.$store.dispatch("setPainValue", value);
       }
-      this.$store.dispatch("setPainValue", value);
     },
     appendFeedback(value) {
-      this.$store.dispatch("setFeedbackValue", value);
+      if (value.feedback == "A few months") {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "Feedback Cycle is too slow, focus on a segment you can reach"
+        );
+        this.$store.commit("showToast");
+        this.$set(this.modaldisabled, value.index, true);
+      }
+      else{
+        this.$set(this.modaldisabled, value.index, false);
+        this.$store.dispatch("setFeedbackValue", value);
+      }
+      
     },
     checkPainValue(value) {
-      // var firstWord = codeLine.substr(0, codeLine.indexOf(" "));
       let frequencyFirstWord = value.frequency
         .substr(0, value.frequency.indexOf(" "))
         .replace("-", "");

@@ -1,4 +1,5 @@
 Primary color : background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
 Green-color : background: linear-gradient(180deg, #36F1A2 0%, #4136F1 100%, #36F1A2 100%);
 Star-color : background: #E67100;
+Danger-color :background: linear-gradient(180deg, #FF3156 0%, #B10404 100%);
 
