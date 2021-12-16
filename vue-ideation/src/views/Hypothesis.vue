@@ -108,6 +108,11 @@ export default {
       this.$modal.hide("pre-interview-modal");
     },
     routeInterview() {
+      let cust_seg = this.custseg_data[this.$store.state.hypothesisRepository.currentIndex].customerSegment
+      let problem = this.custseg_data[this.$store.state.hypothesisRepository.currentIndex].problemsTopic
+      this.$store.commit("setCustomerSegment",cust_seg)
+      this.$store.commit("setProblems",problem)
+      console.log(this.$store.state.hypothesisRepository)
       this.$router.push("interview");
     },
     appendFrequencySeverity(value) {

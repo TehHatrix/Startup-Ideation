@@ -11,15 +11,20 @@
 
 <script>
 export default {
+  props: {
+    passedValue: {
+      type: String,
+    },
+  },
   data() {
     return {
-      interviewScript: "",
+      interviewScript: this.passedValue,
     };
   },
   methods: {
     handleInput(e){
       this.interviewScript = e.target.innerText;
-      console.log(this.interviewScript)
+      this.$emit("updateScript",this.interviewScript)
     }
   },
 };

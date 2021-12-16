@@ -39,7 +39,6 @@ export default {
     };
   },
   mounted(){
-    console.log(typeof(this.passedValue))
     if (this.selectedValue === ""){
       this.selectedValue = "Choose Options"
     }

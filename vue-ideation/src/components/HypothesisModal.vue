@@ -52,7 +52,7 @@
         </transition>
         <transition name="fade" appear>
           <div class="notepadContent" v-if="showNotepad">
-            <notepad v-model="interviewScript"> </notepad>
+            <notepad :passedValue="interviewScript" @updateScript="updateInterview"> </notepad>
             <general-button
               v-if="showNotepad"
               @click.native="
@@ -111,9 +111,18 @@ export default {
       this.currentLearningObjectives = value
       this.$emit("clickedObjective", value);
     },
+    updateInterview(scriptPassed){
+      this.interviewScript = scriptPassed;
+      this.$store.dispatch('setScripts',scriptPassed);
+    },
   },
   mounted () {
-    this.currentLearningObjectives = this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].learningObjectives
+    this.currentLearningObjectives = this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].learningObjectives;
+    if(this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].script !== ""){
+      this.interviewScript = this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].script;
+    }
+
+    
   },
   computed: {
     getLearningObjState() {

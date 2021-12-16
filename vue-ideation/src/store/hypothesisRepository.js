@@ -21,6 +21,9 @@ const actions = {
   setLearningObjectives({ commit }, learningObjectives) {
     commit("setLearningObjectives", learningObjectives);
   },
+  setScripts({ commit }, interviewScript) {
+    commit("setInterviewScript", interviewScript);
+  },
 };
 
 const mutations = {
@@ -35,6 +38,15 @@ const mutations = {
   },
   setLearningObjectives(state, learningObjectives) {
     state.hypothesis[state.currentIndex].learningObjectives = learningObjectives
+  },
+  setInterviewScript(state,interviewScript){
+    state.hypothesis[state.currentIndex].script = interviewScript
+  },
+  setCustomerSegment(state,custSeg){
+    state.hypothesis[state.currentIndex].customerSegment = custSeg
+  },
+  setProblems(state,prob){
+    state.hypothesis[state.currentIndex].problems = prob
   },
   checkInitialiseHypothesis(state, index) {
     if (state.hypothesis[index] === undefined) {
