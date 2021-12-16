@@ -39,18 +39,23 @@
                 @getHypothesisData="appendFeedback"
               ></hypothesis-dropdown>
             </td>
-            <Modal
-              @routeInterview="routeInterview"
-              @clickedObjective="appendLearningObjectives"
-              @click="handleModal(index)"
-            >
-              <template #hypothesisTitle>
-                <h2>
-                  {{ item.customerSegment }} has a problems of
-                  {{ item.problemsTopic }}
-                </h2>
-              </template>
-            </Modal>
+            <div v-if="modaldisabled[index]">
+              <general-button>Disabled</general-button>
+            </div>
+            <div v-else>
+              <Modal
+                @routeInterview="routeInterview"
+                @clickedObjective="appendLearningObjectives"
+                @click="handleModal(index)"
+              >
+                <template #hypothesisTitle>
+                  <h2>
+                    {{ item.customerSegment }} has a problems of
+                    {{ item.problemsTopic }}
+                  </h2>
+                </template>
+              </Modal>
+            </div>
           </tr>
         </tbody>
       </table>
@@ -61,13 +66,19 @@
 <script>
 import Modal from "../components/HypothesisModal.vue";
 import HypothesisDropdown from "../components/HypothesisDropdown.vue";
+import GeneralButton from '../components/GeneralButton.vue';
 export default {
   components: {
     Modal,
     HypothesisDropdown,
+    GeneralButton,
+  },
+  created() {
+    this.getHypothesisData();
   },
   data() {
     return {
+      modaldisabled: [],
       pain_value1: [],
       pain_data1: ["1-Time", "Yearly", "Monthly", "Weekly", "Daily"],
       pain_value2: [],
@@ -85,7 +96,7 @@ export default {
       frequency_data: [
         "Non-Recurring (1-Time)",
         "Yearly - Once or twice",
-        "Quarterly",
+        "Quarterly - Once or twice",
         "Monthly - Once or twice",
         "Weekly - Once or twice",
         "Daily - Once or more",
@@ -99,6 +110,8 @@ export default {
       custseg_data: null,
       hypothesis: [],
     };
+  },
+  computed: {
   },
   methods: {
     show() {
@@ -120,13 +133,44 @@ export default {
       this.$router.push("interview");
     },
     appendFrequencySeverity(value) {
+      if (this.checkPainValue(value)) {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "Pain is not enough, try defining a more specific segment or problem"
+        );
+        this.$store.commit("showToast");
+        this.$set(this.modaldisabled,value.index,true)
+        // this.modaldisabled[value.index] = true;
+      }
       this.$store.dispatch("setPainValue", value);
     },
     appendFeedback(value) {
       this.$store.dispatch("setFeedbackValue", value);
     },
+    checkPainValue(value) {
+      // var firstWord = codeLine.substr(0, codeLine.indexOf(" "));
+      let frequencyFirstWord = value.frequency
+        .substr(0, value.frequency.indexOf(" "))
+        .replace("-", "");
+      let severityFirstWord = value.severity
+        .substr(0, value.severity.indexOf(" "))
+        .replace("-", "");
+      let negligiblePain = {
+        NonRecurring: ["Mild", "Moderate"],
+        Yearly: ["Mild", "Moderate"],
+        Quarterly: ["Mild", "Moderate"],
+        Monthly: ["Mild"],
+      };
+      if (negligiblePain[frequencyFirstWord] !== undefined) {
+        for (var i = 0; i < negligiblePain[frequencyFirstWord].length; i++) {
+          if (negligiblePain[frequencyFirstWord][i] === severityFirstWord) {
+            return true;
+          }
+        }
+      }
+    },
     handleModal(index) {
-      
       this.$store.state.hypothesisRepository.currentIndex = index;
     },
     appendLearningObjectives(value) {
@@ -140,17 +184,14 @@ export default {
         this.custseg_data = customersegWithproblems.data;
         for (let index in this.custseg_data) {
           this.$store.dispatch("checkHypothesisInitialized", index);
+          this.modaldisabled[index] = false;
         }
       } catch (error) {
         console.log(error);
       }
     },
   },
-  computed: {
-  },
-  created() {
-    this.getHypothesisData();
-  },
+  mounted() {},
 };
 </script>
 

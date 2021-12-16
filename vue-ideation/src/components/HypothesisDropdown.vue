@@ -127,6 +127,7 @@ export default {
         } else if (this.dropdownType == "feedback") {
           this.toggleSelected();
           this.selectedValue.feedback = value;
+          this.$emit("getHypothesisData", this.selectedValue);
         }
       } else if (this.currentStep == 2) {
         this.toggleSelected();
@@ -134,8 +135,8 @@ export default {
           this.currentStep = 1;
         }, 230);
         this.selectedValue.severity = value;
+        this.$emit("getHypothesisData", this.selectedValue);
       }
-      this.$emit("getHypothesisData", this.selectedValue);
     },
   },
 };

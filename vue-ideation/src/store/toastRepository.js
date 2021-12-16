@@ -1,15 +1,12 @@
 const state = {
   showToast: false,
   type: "Error",
-  message: "Your hypothesis is too mild!",
+  message: "",
 };
 
 const getters = {};
 
 const actions = {
-  //   checkHypothesisInitialized({ commit }, index) {
-  //     commit("checkInitialiseHypothesis", index);
-  //   },
 };
 
 const mutations = {
@@ -19,6 +16,12 @@ const mutations = {
   closeToast(state) {
     state.showToast = false;
   },
+  setTypeToast(state,type){
+    state.type = type;
+  },
+  setMessage(state,message){
+    state.message = message
+  }
 };
 
 export default {
