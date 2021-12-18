@@ -14,11 +14,24 @@ use Illuminate\Support\Facades\DB;
 class HypothesisController extends Controller
 {
 
-    public function getHypothesisData()
+    public function getproblemswithcustSeg()
     {
-        $problemswithcustSeg = DB::table('problems')->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
+        $problemswithcustSeg = DB::table('problems')->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.id','problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
         return $problemswithcustSeg;
     }
+
+    public function gethypothesisdata()
+    {
+        $hypothesis = DB::table('hypotheses')->get();
+        return $hypothesis;
+    }
+
+    public function getproblemHypothesis()
+    {
+        $hypothesisProblem = DB::table('hypotheses')->join('problems','problems.id','=','hypotheses.problem_id')->select('problems.id','hypotheses.pain_level_severity','hypotheses.pain_level_freq','hypotheses.feedback_cycle')->get();
+        return $hypothesisProblem;
+    }
+
 
     public function getstatus($customerproblem_id)
     {
@@ -79,21 +92,31 @@ class HypothesisController extends Controller
      */
     public function store(Request $request)
     {
-        $newhypothesis = new Hypotheses;
-        $newhypothesis->CustomerProblem_ID = $request->hypothesis['customerproblem_id'];
-        $newhypothesis->pain_level_severity = $request->hypothesis['pain_level_severity'];
-        $newhypothesis->pain_level_freq = $request->hypothesis['pain_level_freq'];
-        $newhypothesis->feedback_cycle = $request->hypothesis['feedback_cycle'];
-        $newhypothesis->status = $request->hypothesis['status'];
-        $newhypothesis->save();
+        $matchingProblemTopicandID = DB::table('problems')->where('topic','=',$request->problems)->value('id');
+        $insertHypothesis = DB::table('hypotheses')->insert([
+            'problem_id'=> $matchingProblemTopicandID,
+            'pain_level_severity' => $request->pain['severity'],
+            'pain_level_freq' => $request->pain['frequency'],
+            'feedback_cycle' => $request->feedbackCycle,
+            'status' => true
+        ]);
+        if($insertHypothesis){
+            return "Insert Successful";
+        } else {
+            return "Error inserting to table";
+        }
 
-        // $newcustomerSegment = new CustomerSegment;
-        // $newcustomerSegment->topic = $request->customersegment['topic'];
-        // $newcustomerSegment->description = $request->customersegment['description'];
-        // $newcustomerSegment->publisher = $request->customersegment['publisher'];
-        // $newcustomerSegment->save();
+        // $newhypothesis = new Hypotheses;
+        // $newhypothesis->problem_id = $request->cus
+        // $newhypothesis = new Hypotheses;
+        // $newhypothesis->CustomerProblem_ID = $request->hypothesis['problem_id'];
+        // $newhypothesis->pain_level_severity = $request->hypothesis['pain_level_severity'];
+        // $newhypothesis->pain_level_freq = $request->hypothesis['pain_level_freq'];
+        // $newhypothesis->feedback_cycle = $request->hypothesis['feedback_cycle'];
+        // $newhypothesis->status = $request->hypothesis['status'];
+        // $newhypothesis->save();
 
-        return $newhypothesis;
+        // return $newhypothesis;
         //
     }
 

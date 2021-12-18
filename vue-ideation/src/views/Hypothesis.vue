@@ -23,6 +23,16 @@
             </td>
             <td id="freqSliders">
               <hypothesis-dropdown
+                v-if="item.definedStatus"
+                dropdownType="pain"
+                :passedFrequency="item.painFrequency"
+                :passedSeverity="item.painSeverity"
+                :disableDropdown="true"
+                :currentIndex="index"
+                @getHypothesisData="appendFrequencySeverity"
+              ></hypothesis-dropdown>
+              <hypothesis-dropdown
+                v-else
                 dropdownType="pain"
                 :optionsValueFirst="frequency_data"
                 :optionsValueSecond="severity_data"
@@ -33,20 +43,34 @@
 
             <td id="feedSliders">
               <hypothesis-dropdown
+                v-if="item.definedStatus"
+                dropdownType="feedback"
+                :passedFeedback="item.feedback"
+                :disableDropdown="true"
+                :currentIndex="index"
+                @getHypothesisData="appendFrequencySeverity"
+              ></hypothesis-dropdown>
+              <hypothesis-dropdown
+                v-else
                 dropdownType="feedback"
                 :optionsValueFirst="feedback_data"
                 :currentIndex="index"
                 @getHypothesisData="appendFeedback"
               ></hypothesis-dropdown>
             </td>
-            <div v-if="modaldisabled[index]">
+            <div v-if="item.definedStatus">
+              <general-button @click.native="handleResume"
+                >Resume Interview</general-button
+              >
+            </div>
+            <div v-else-if="modaldisabled[index]">
               <disabled-button>Disabled</disabled-button>
             </div>
             <div v-else>
               <Modal
                 @routeInterview="routeInterview"
                 @clickedObjective="appendLearningObjectives"
-                @click="handleModal(index)"
+                @click.native="handleModal(index)"
               >
                 <template #hypothesisTitle>
                   <h2>
@@ -67,11 +91,14 @@
 import Modal from "../components/HypothesisModal.vue";
 import HypothesisDropdown from "../components/HypothesisDropdown.vue";
 import DisabledButton from "../components/DisabledButton.vue";
+import api from "@/api/hypothesisApi";
+import GeneralButton from "../components/GeneralButton.vue";
 export default {
   components: {
     Modal,
     HypothesisDropdown,
     DisabledButton,
+    GeneralButton,
   },
   created() {
     this.getHypothesisData();
@@ -79,6 +106,8 @@ export default {
   data() {
     return {
       modaldisabled: [],
+      paindefined: [],
+      feedbackdefined: [],
       pain_value1: [],
       pain_data1: ["1-Time", "Yearly", "Monthly", "Weekly", "Daily"],
       pain_value2: [],
@@ -108,10 +137,15 @@ export default {
         "Severe - Disabling",
       ],
       custseg_data: null,
+      defined_hypothesis: null,
       hypothesis: [],
     };
   },
-  computed: {},
+  computed: {
+    // modalCondition(index){
+    //   return this.paindefined[index] && this.feedbackdefined[index]
+    // }
+  },
   methods: {
     show() {
       this.$modal.show("pre-interview-modal");
@@ -119,17 +153,30 @@ export default {
     hide() {
       this.$modal.hide("pre-interview-modal");
     },
-    routeInterview() {
-      let cust_seg =
-        this.custseg_data[this.$store.state.hypothesisRepository.currentIndex]
-          .customerSegment;
-      let problem =
-        this.custseg_data[this.$store.state.hypothesisRepository.currentIndex]
-          .problemsTopic;
-      this.$store.commit("setCustomerSegment", cust_seg);
-      this.$store.commit("setProblems", problem);
-      console.log(this.$store.state.hypothesisRepository);
+    handleResume() {
       this.$router.push("interview");
+    },
+    async routeInterview() {
+      try {
+        let cust_seg =
+          this.custseg_data[this.$store.state.hypothesisRepository.currentIndex]
+            .customerSegment;
+        let problem =
+          this.custseg_data[this.$store.state.hypothesisRepository.currentIndex]
+            .problemsTopic;
+        this.$store.commit("setCustomerSegment", cust_seg);
+        this.$store.commit("setProblems", problem);
+        const hypothesisData =
+          this.$store.state.hypothesisRepository.hypothesis[
+            this.$store.state.hypothesisRepository.currentIndex
+          ];
+        let data = await api.addHypothesis(hypothesisData);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.$router.push("interview");
+      }
     },
     appendFrequencySeverity(value) {
       if (this.checkPainValue(value)) {
@@ -139,10 +186,14 @@ export default {
           "Pain is not enough, try defining a more specific segment or problem"
         );
         this.$store.commit("showToast");
+        this.$set(this.paindefined, value.index, false);
         this.$set(this.modaldisabled, value.index, true);
       } else {
-        this.$set(this.modaldisabled, value.index, false);
+        this.$set(this.paindefined, value.index, true);
         this.$store.dispatch("setPainValue", value);
+        if (this.feedbackdefined[value.index]) {
+          this.$set(this.modaldisabled, value.index, false);
+        }
       }
     },
     appendFeedback(value) {
@@ -153,13 +204,15 @@ export default {
           "Feedback Cycle is too slow, focus on a segment you can reach"
         );
         this.$store.commit("showToast");
+        this.$set(this.feedbackdefined, value.index, false);
         this.$set(this.modaldisabled, value.index, true);
-      }
-      else{
-        this.$set(this.modaldisabled, value.index, false);
+      } else {
+        this.$set(this.feedbackdefined, value.index, true);
         this.$store.dispatch("setFeedbackValue", value);
+        if (this.paindefined[value.index]) {
+          this.$set(this.modaldisabled, value.index, false);
+        }
       }
-      
     },
     checkPainValue(value) {
       let frequencyFirstWord = value.frequency
@@ -188,15 +241,39 @@ export default {
     appendLearningObjectives(value) {
       this.$store.dispatch("setLearningObjectives", value);
     },
+
+    findIndexMatchingID(object1, object2) {
+      return object1.findIndex((h) => h.id == object2.id);
+    },
     async getHypothesisData() {
       try {
         const customersegWithproblems = await this.$http.get(
-          "http://localhost:80/api/gethypothesisdata"
+          "http://localhost:80/api/getproblemswithcustSeg"
+        );
+        const hypothesisData = await this.$http.get(
+          "http://localhost:80/api/getproblemHypothesis"
         );
         this.custseg_data = customersegWithproblems.data;
+        this.defined_hypothesis = hypothesisData.data;
         for (let index in this.custseg_data) {
+          // //if problem id in cust seg inside hypothesis
+          let hypothesisIndex = this.findIndexMatchingID(
+            this.defined_hypothesis,
+            this.custseg_data[index]
+          );
+          if (hypothesisIndex != -1) {
+            this.custseg_data[index].painSeverity =
+              this.defined_hypothesis[hypothesisIndex].pain_level_severity;
+            this.custseg_data[index].painFrequency =
+              this.defined_hypothesis[hypothesisIndex].pain_level_freq;
+            this.custseg_data[index].feedback =
+              this.defined_hypothesis[hypothesisIndex].feedback_cycle;
+            this.custseg_data[index].definedStatus = true;
+          } else {
+            this.custseg_data[index].definedStatus = false;
+          }
           this.$store.dispatch("checkHypothesisInitialized", index);
-          this.modaldisabled[index] = false;
+          this.modaldisabled[index] = true;
         }
       } catch (error) {
         console.log(error);

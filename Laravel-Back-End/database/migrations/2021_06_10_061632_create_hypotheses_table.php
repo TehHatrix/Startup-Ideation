@@ -15,10 +15,8 @@ class CreateHypothesesTable extends Migration
     {
         Schema::create('hypotheses', function (Blueprint $table) {
             $table->id("hypothesis_ID");
-            $table->unsignedBigInteger('CustomerProblem_ID');
-            $table->foreign('CustomerProblem_ID')->references('CustomerProblem_ID')->on('CustomerProblem');
-            // $table->unsignedBigInteger('problemID');
-            // $table->foreign('problemID')->references('problemID')->on('problems');
+            $table->unsignedBigInteger('problem_id');
+            $table->foreign('problem_id')->references('id')->on('problems')->onDelete('cascade');
             $table->string("pain_level_severity");
             $table->integer("pain_level_freq");
             $table->integer("feedback_cycle");

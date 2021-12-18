@@ -11,14 +11,14 @@ class Hypotheses extends Model
     protected $primaryKey = 'hypothesis_ID';
     protected $fillable = [
         'hypothesis_ID',
-        'CustomerProblem_ID',
+        'problem_id',
         'pain_level_severity',
         'pain_level_freq',
         'feedback_cycle',
         'status',
     ];
 
-    public function customerproblem(){
-        return $this->belongsTo(CustomerProblem::class,'CustomerProblem_ID');
+    public function problem(){
+        return $this->belongsTo(Problem::class,'id');
     }
 }

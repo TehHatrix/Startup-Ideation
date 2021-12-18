@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card" @click="showModalCustomer = true">
+    <div class="card" @click="showModalCustomer">
       <div class="card_image">
         <img
           src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
@@ -14,26 +14,16 @@
     </div>
 
     <transition name="fade" appear>
-      <div
-        class="modal-overlay"
-        v-if="showModalCustomer"
-        @click="
-          showModalCustomer = false;
-          showModalConclude = false;
-          showInterviewLogs = false;
-        "
-      ></div>
+      <div class="modal-overlay" v-if="modalCustomer" @click="closeModal"></div>
     </transition>
     <transition name="slide" appear>
-      <div class="customerInfoModal" v-if="showModalCustomer">
+      <div class="customerInfoModal" v-if="modalCustomer">
         <div class="modalContentContainer">
           <transition name="fade" appear>
             <div
               class="customerContent"
               v-if="
-                showModalCustomer &&
-                showModalConclude == false &&
-                showInterviewLogs == false
+                modalCustomer && modalConclude == false && modalScript == false
               "
             >
               <div class="customerInfo">
@@ -63,10 +53,10 @@
                   <span class="interviewlogs_title">
                     <strong>Interview Logs</strong></span
                   >
-                  <button class="button" @click="showModalConclude = true">
+                  <button class="button" @click="showModalConclude">
                     Conclude Interview
                   </button>
-                  <button class="button" @click="showInterviewLogs = true">
+                  <button class="button" @click="showInterviewScript">
                     Open Interview Logs
                   </button>
                 </div>
@@ -85,7 +75,7 @@
           <transition name="fade" appear>
             <div
               class="concludeContent"
-              v-if="showModalCustomer && showModalConclude == true"
+              v-if="modalCustomer && modalConclude == true"
             >
               <div class="concludeHeader">
                 <circular-progress></circular-progress>
@@ -102,7 +92,9 @@
               </div>
               <div class="concludeAnswer">
                 <div class="answerCard"><check></check> Yes</div>
-                <div class="answerCard"><x-Mark :toggleHover = "false"></x-Mark> No</div>
+                <div class="answerCard">
+                  <x-Mark :toggleHover="false"></x-Mark> No
+                </div>
               </div>
             </div>
           </transition>
@@ -110,9 +102,7 @@
             <div
               class="interviewLogs"
               v-if="
-                showModalCustomer &&
-                showModalConclude == false &&
-                showInterviewLogs == true
+                modalCustomer && modalConclude == false && modalScript == true
               "
             >
               <div class="notepad">
@@ -127,26 +117,14 @@
           </transition>
         </div>
 
-        <button
-          class="button"
-          style="margin-top: 10px"
-          @click="
-            showModalCustomer = false;
-            showModalConclude = false;
-            showInterviewLogs = false;
-          "
-        >
+        <button class="button" style="margin-top: 10px" @click="closeModal">
           Close
         </button>
         <button
-          v-if="showModalConclude || showInterviewLogs"
+          v-if="(modalConclude || modalScript) && fromCustomerProfile"
           class="button"
           style="margin-top: 10px"
-          @click="
-            showModalCustomer = true;
-            showModalConclude = false;
-            showInterviewLogs = false;
-          "
+          @click="showCustomerContent"
         >
           Back
         </button>
@@ -168,11 +146,41 @@ export default {
   },
   data() {
     return {
-      showModalCustomer: false,
-      showModalConclude: false,
-      showInterviewLogs: false,
       interviewLogsContent: "",
     };
+  },
+  computed: {
+    modalCustomer() {
+      return this.$store.state.interviewRepository.showModalCustomer;
+    },
+    modalConclude() {
+      return this.$store.state.interviewRepository.showModalConclude;
+    },
+    modalScript() {
+      return this.$store.state.interviewRepository.showInterviewLogs;
+    },
+    fromCustomerProfile(){
+      return this.$store.state.interviewRepository.fromCustomer;
+    }
+  },
+  methods: {
+    showModalCustomer() {
+      this.$store.commit("showModalCustomer");
+    },
+    closeModal() {
+      this.$store.commit("closeModal");
+    },
+    showCustomerContent() {
+      this.$store.commit("showCustomerContent");
+    },
+    showModalConclude() {
+      this.$store.commit("fromCustomerProfile")
+      this.$store.commit("showModalConclude");
+    },
+    showInterviewScript() {
+      this.$store.commit("fromCustomerProfile")
+      this.$store.commit("showInterviewNotepad");
+    },
   },
   mounted() {
   },
@@ -443,7 +451,7 @@ export default {
   left: 0;
   bottom: 0;
   z-index: 98;
-  height:150%;
+  height: 150%;
   background-color: rgba(0, 0, 0, 0.3);
 }
 

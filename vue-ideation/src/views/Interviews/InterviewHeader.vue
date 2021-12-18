@@ -5,9 +5,9 @@
     </div>
     <div class="ratingStar">
       <span class="starsContainer">
-        <h2 class="rating">4.4 <stars class="star"></stars></h2>
+        <h2 class="rating">{{ rating }} <stars class="star"></stars></h2>
       </span>
-      <p class="totalInterview">10 Interviews</p>
+      <p class="totalInterview">{{ interviewGoals }} Interviews</p>
     </div>
     <div class="ratingCustomers">
       <span class="fiveStar">
@@ -32,21 +32,20 @@
       <span class="problemSegment">
         <p>
           <font-awesome-icon icon="fa-solid fa-circle-exclamation" />
-          <strong> Current Problem</strong> : Problem 1
+          <strong> Current Problem</strong> : {{ currentProblem }}
         </p>
         <p style="margin-left: 10px">
           <font-awesome-icon icon="fa-solid fa-users" />
-          <strong> Customer Segment</strong> : Customer Segment 1
+          <strong> Customer Segment</strong> : {{ currentCustomerSegment }}
         </p>
       </span>
       <p class="customer-segment">
         <font-awesome-icon icon="fa-solid fa-bullseye" />
-        <strong> Learning Objectives</strong> : Does the customer care enough
-        about this problem?
+        <strong> Learning Objectives</strong> : {{ currentLearningObjectives }}
       </p>
       <p>
         <font-awesome-icon icon="fa-solid fa-scroll" />
-        <strong> Interview Script </strong> : Click to see & edit
+        <strong> Interview Script </strong> : <span class ="scriptLink" @click="handleScriptLink">Click to see & edit</span>
       </p>
     </div>
     <div class="progress">
@@ -71,11 +70,32 @@ export default {
     Stars,
     ProgressBar,
   },
+  data() {
+    return {
+      rating: 0.0,
+      interviewGoals: 10,
+      currentProblem: "Managing their organisation",
+      currentCustomerSegment: "Shopper",
+      currentLearningObjectives: "Does the customer care enough about this problem?"
+    }
+  },
+
+  methods: {
+    handleScriptLink() {
+      this.$store.commit("fromInterviewHeader")
+      return this.$store.commit("showInterviewNotepad");
+    }
+  },
 };
 </script>
 <style lang = 'scss' scoped>
 * {
   font-family: "Poppins";
+}
+
+.scriptLink{
+  cursor:pointer;
+  text-decoration: underline;
 }
 .rating {
   font-size: 35px;

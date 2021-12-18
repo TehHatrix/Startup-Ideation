@@ -7,6 +7,7 @@ import landingRepository from './landingRepository'
 import leanCanvasRepository from './leanCanvasRepository'
 import hypothesisRepository from "./hypothesisRepository"
 import toastRepository from "./toastRepository"
+import interviewRepository from "./interviewRepository"
 
 Vue.use(Vuex)
 
@@ -31,6 +32,7 @@ export default new Vuex.Store( {
         leanCanvasRepository,
         hypothesisRepository,
         toastRepository,
+        interviewRepository,
     }
     
 })

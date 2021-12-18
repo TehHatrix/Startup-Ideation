@@ -28,7 +28,10 @@ use App\Http\Controllers\TodoController;
 // });
 
 
-Route::get('/gethypothesisdata', [HypothesisController::class, 'getHypothesisData']);
+Route::get('/getproblemswithcustSeg', [HypothesisController::class, 'getproblemswithcustSeg']);
+Route::get('/gethypothesis', [HypothesisController::class, 'gethypothesisdata']);
+Route::get('/getproblemHypothesis', [HypothesisController::class, 'getproblemHypothesis']);
+
 Route::get('/getcustomersegmentstopic', [HypothesisController::class, 'getCustomerSegmentsTopic']);
 Route::get('/getproblemstopic', [HypothesisController::class, 'getProblemsTopic']);
 Route::get('/getstatus/{customerproblem_id}', [HypothesisController::class, 'getstatus']);

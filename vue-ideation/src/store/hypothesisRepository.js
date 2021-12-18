@@ -60,6 +60,7 @@ const mutations = {
         feedbackCycle: "",
         learningObjectives: "",
         script: "",
+        status: false,
       };
       state.hypothesis[index] = hypothesisObject;
     }

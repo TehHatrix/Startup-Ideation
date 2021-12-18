@@ -1,9 +1,9 @@
 
 <template>
   <div class="container">
-    <div class="select-box">
+    <div class="select-box" :class="{disable: disabled}">
       <div class="options-container" :class="{ active: selectedActive }">
-        <div v-if="currentStep == 1">
+        <div v-if="currentStep == 1 && disabled == false">
           <div v-for="(option, index) in optionsValueFirst" :key="index">
             <div class="option" @click="handleOptions(option)">
               <input type="radio" class="radio" name="category" />
@@ -12,7 +12,11 @@
           </div>
         </div>
         <transition name="fade" appear>
-          <div v-if="currentStep == 2 && dropdownType == 'pain'">
+          <div
+            v-if="
+              currentStep == 2 && dropdownType == 'pain' && disabled == false
+            "
+          >
             <div v-for="(option, index) in optionsValueSecond" :key="index">
               <div class="option" @click="handleOptions(option)">
                 <input type="radio" class="radio" name="category" />
@@ -22,7 +26,7 @@
           </div>
         </transition>
       </div>
-      <div class="selected" :value="selectedValue" @click="toggleSelected">
+      <div class="selected" :class="{disable: disabled}" :value="selectedValue" @click="toggleSelected">
         <div v-if="defaultDisplayCondition">Define {{ dropdownType }}</div>
         <div v-else>
           {{ selectedDisplay }}
@@ -40,6 +44,7 @@ export default {
     },
     optionsValueFirst: {
       type: Array,
+      required: false,
     },
     optionsValueSecond: {
       type: Array,
@@ -48,40 +53,61 @@ export default {
     currentIndex: {
       type: Number,
     },
+    disableDropdown: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+    passedFrequency: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    passedSeverity: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    passedFeedback: {
+      type: String,
+      required: false,
+      default: "",
+    },
   },
   data() {
     return {
       selectedValue: {
         index: this.currentIndex,
-        frequency: "",
-        severity: "",
-        feedback: "",
+        frequency: this.passedFrequency,
+        severity: this.passedSeverity,
+        feedback: this.passedFeedback,
       },
+      disabled: this.disableDropdown,
       selectedActive: false,
       currentStep: 1,
     };
   },
   mounted() {
-    if (
-      this.$store.state.hypothesisRepository.hypothesis[this.currentIndex] !==
-      undefined
-    ) {
-      if (this.dropdownType == "pain") {
-        let stateFrequency =
-          this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
-            .pain.frequency;
-        let stateSeverity =
-          this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
-            .pain.severity;
-        this.selectedValue.frequency = stateFrequency;
-        this.selectedValue.severity = stateSeverity;
-      } else if (this.dropdownType == "feedback") {
-        let stateFeedback =
-          this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
-            .feedbackCycle;
-        this.selectedValue.feedback = stateFeedback;
-      }
-    }
+    // if (
+    //   this.$store.state.hypothesisRepository.hypothesis[this.currentIndex] !==
+    //   undefined
+    // ) {
+    //   if (this.dropdownType == "pain") {
+    //     let stateFrequency =
+    //       this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
+    //         .pain.frequency;
+    //     let stateSeverity =
+    //       this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
+    //         .pain.severity;
+    //     this.selectedValue.frequency = stateFrequency;
+    //     this.selectedValue.severity = stateSeverity;
+    //   } else if (this.dropdownType == "feedback") {
+    //     let stateFeedback =
+    //       this.$store.state.hypothesisRepository.hypothesis[this.currentIndex]
+    //         .feedbackCycle;
+    //     this.selectedValue.feedback = stateFeedback;
+    //   }
+    // }
   },
   computed: {
     selectedDisplay() {
@@ -117,7 +143,9 @@ export default {
   },
   methods: {
     toggleSelected() {
-      this.selectedActive = !this.selectedActive;
+      if (this.disabled == false) {
+        this.selectedActive = !this.selectedActive;
+      }
     },
     handleOptions(value) {
       if (this.currentStep == 1) {
@@ -228,6 +256,11 @@ export default {
   cursor: pointer;
 }
 
+.disable{
+  cursor:default;
+  opacity: 0.9;
+}
+
 .select-box .option:hover {
   background: #414b57;
 }
@@ -235,6 +268,7 @@ export default {
 .select-box label {
   cursor: pointer;
 }
+
 
 .select-box .option .radio {
   display: none;
