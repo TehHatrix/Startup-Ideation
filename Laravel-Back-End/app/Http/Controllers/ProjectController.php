@@ -241,7 +241,7 @@ class ProjectController extends Controller
 
         $data = $validator->validated();
         
-        $user = User::select('username', 'id', 'name')->where('username', strtolower($data['username']))->first();
+        $user = User::select('username', 'id')->where('username', strtolower($data['username']))->first();
         
         if(!$user) {
             return response()->json([
@@ -258,9 +258,60 @@ class ProjectController extends Controller
 
     }
 
-    public function addCollab() {
+    public function addCollab(Request $request, $projectId) {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required'
+        ]);
 
+        if($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+                'success' => false
+            ]);
+        }
+
+        $data = $validator->validated();
+        $user = User::select('username', 'id')->where('username', strtolower($data['username']))->first();
+        if(!$user) {
+            return response()->json([
+                'user' => $user,
+                'errors' => 'user does not exist',
+                'success' => false
+            ]);
+        }
+
+        $project = Project::find($projectId);
+        $project->users()->attach($user->id);
+
+        return response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
     }
+
+    public function removeCollab(Request $request, $projectId) {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+                'success' => false
+            ]);
+        }
+
+        $data = $validator->validated();
+        $project = Project::find($projectId);
+        $project->users()->detach($data['id']);
+
+        return response()->json([
+            'success' => true,
+            'errors' => null,
+
+        ]);
+
+    } 
 }
 
 

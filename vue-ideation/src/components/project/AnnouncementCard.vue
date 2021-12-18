@@ -8,11 +8,18 @@
                         <span class=" notifications__item__message">{{ ann.description }}</span>
                     </div>
                     <div v-if="project.creator_id === user.id">
-                        <div class="notifications__item__option edit">
+                        <div class="notifications__item__option edit"  @click="openEditModal(ann.id, ann.title, ann.description)">
                             <font-awesome-icon icon="fa-edit" size="xs"></font-awesome-icon>
                         </div>
-                        <div class="notifications__item__option delete" >
+                        <div class="notifications__item__option delete" @click="openDeleteModal(ann.id)" >
                             <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="notifications__item__option " style="cursor: auto;" >
+                        </div>
+                        <div class="notifications__item__option " style="cursor: auto;" >
+                            
                         </div>
                     </div>
                 </div>      
@@ -20,8 +27,32 @@
         </div>
 
         <modal
-        :showModal="showEditModal">
-
+        :showModal="showEditModal"
+        @close="closeEditModal">
+            <h2 class="modal-title">Update Modal</h2>
+            <form @submit.prevent="updateAnnouncement">
+                <div class="input-container">
+                    <input type="text" id="title" class="material-input" v-model="editForm.title" required>
+                    <label for="title" class="material-label">Title</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="description" class="material-input" v-model="editForm.description" required>
+                    <label for="description" class="material-label">Description</label>
+                </div>
+                <div>
+                    <button class="general-button">Update</button>
+                </div>
+            </form>
+        </modal>
+        <!-- delete modal -->
+        <modal 
+         :showModal="showDeleteModal"
+         @close="closeDeleteModal">
+            <h2 class="modal-title">Confirm Delete</h2>
+            <div class="btn-container">
+                <button class="c-btn-danger" @click="deleteAnnouncement">Confirm</button>
+                <button class="c-btn-primary-outline" @click="closeDeleteModal">Cancel</button>
+            </div>
         </modal>
     </div>
 </template>
@@ -29,6 +60,7 @@
 import { mapGetters } from 'vuex'
 import ProjectModalVue from '../ProjectModal.vue'
 import ShrinkCardVue from '../ShrinkCard.vue'
+import api from '@/api/communicationApi'
 
 export default {
     name: 'AnnouncementCard',
@@ -48,16 +80,71 @@ export default {
     data() {
         return{
             showEditModal: false,
+
+            showDeleteModal: false,
+
+            tempId: '',
+            editForm: {
+                title: '',
+                description: ''
+            },
         }
     },
 
     methods: {
+        openEditModal(id, title, description) {
+            this.tempId = id
+            this.editForm.title = title
+            this.editForm.description = description
+            this.showEditModal = true
+        },
 
+        closeEditModal() {
+            this.showEditModal = false
+            this.editForm.title = ''
+            this.editForm.description = ''
+            this.tempId = ''
+        },
+
+        async updateAnnouncement() {
+            try {
+                let { data } = await api.updateAnnouncement(this.project.id, this.tempId, this.editForm)
+                if(data.success) {
+                    this.showEditModal = false
+                    await this.$store.dispatch('getAnnouncement', this.project.id)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        openDeleteModal(annId) {
+            this.tempId = annId
+            this.showDeleteModal = true
+        },
+
+        closeDeleteModal() {
+            this.tempId = '',
+            this.showDeleteModal = false
+        },
+
+        async deleteAnnouncement() {
+            try {
+                let { data } = await api.deleteAnnouncement(this.project.id, this.tempId)
+                if(data.success) {
+                    await this.$store.dispatch('getAnnouncement', this.project.id)
+                    this.showDeleteModal = false 
+                    
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
     },
 }
 </script>
 <style lang="css" scoped>
-        .notifications__item {
+    .notifications__item {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -227,5 +314,10 @@ export default {
         pointer-events: none;
         opacity: 0.5;
 
+    }
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 </style>

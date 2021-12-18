@@ -35,11 +35,6 @@ const mutations = {
     DESTROY_PROJECT_LOCALLY(state) {
         state.project = {}
     },
-
-    UPDATE_PROJECT(state) {
-        state.project
-    }
-
     
 }
 
@@ -71,12 +66,7 @@ const actions = {
         sessionStorage.project = JSON.stringify(res.data.project)
     },
 
-    async updateProject({commit}, payload) {
-        let {data} = await api.updateProject(payload.project_id, payload.updateProjectForm)
-        if(data.success) {
-            commit('UPDATE_PROJECT', data.project)
-        }
-    }
+
 }
 
 

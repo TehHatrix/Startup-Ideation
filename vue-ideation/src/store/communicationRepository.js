@@ -24,7 +24,9 @@ const actions = {
         // }
         
         commit('SET_ANNOUNCEMENT', res.data.announcements)
-    }
+    },
+
+    
 
 }
 

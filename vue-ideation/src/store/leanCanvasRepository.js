@@ -24,13 +24,12 @@ const mutations = {
 const actions = {
     async getContents({commit}, payload) {
         // payload === project id 
-        let {data} = await api.getAllContent(payload);
-        if(data.success) {
-            commit('SET_CONTENTS', data.content)
+        let res = await api.getAllContent(payload);
+        if(res.data.success) {
+            commit('SET_CONTENTS', res.data.content)
         } 
         
-        
-        console.log()
+        return res
 
     }
 }

@@ -2,12 +2,20 @@ import api from '@/api/todoApi'
 
 const state = {
     tasks: null,
-    todo: null,
 }
 
 const getters = {
     tasks: state => state.tasks,
-    todo: state => state.todo,
+    completedTask: state => {
+        let tempArr = []
+        state.tasks.forEach(task => {
+            if(task.completed) {
+                tempArr.push(task)
+            }
+        })
+
+        return tempArr 
+    }
 }
 
 const mutations = {
@@ -15,9 +23,6 @@ const mutations = {
         state.tasks = payload
     },
 
-    SET_TASK(state, payload) {
-        state.todo = payload
-    }
 }
 
 const actions = {
@@ -26,15 +31,6 @@ const actions = {
         // console.log(res)
         commit('GET_TASKS', res.data.tasks)
     },
-
-    // async addTask(payload) {
-    //     let {data} = await api.addTask(payload.projectId, payload.form)
-    //     if(data.success) {
-    //         this.getTodos
-    //     } else {
-    //         console.log(data.errors)
-    //     }
-    // },
 
 
 

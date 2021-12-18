@@ -10,13 +10,15 @@ export default {
         return api.post(`api/projects/${projectId}/todos`, payload)
     },
 
-    async updateTask(params, payload) {
-        return api.put(`api/projects/${params.projectId}/todos/${params.taskId}`, payload)
+    async updateTask(projectId, todoId, payload) {
+        return api.put(`api/projects/${projectId}/todos/${todoId}`, payload)
     },
 
-    async deleteTask(params) {
-        return api.delete(`api/projects/${params.projectId}/todos/${params.taskId}`)
+    async deleteTask(projectId, taskId) {
+        return api.delete(`api/projects/${projectId}/todos/${taskId}`)
     },
+
+
 
     
     

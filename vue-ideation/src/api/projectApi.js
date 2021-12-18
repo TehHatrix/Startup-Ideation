@@ -21,7 +21,12 @@ export default {
         return api.put(`api/projects/${params}`, payload)
     },
 
-    async getUser(payload) {
-        return api.post(`api/getUser`, payload)
+    async addUser(projectId, payload) {
+        return api.put(`api/getUser/${projectId}`, payload)
+    },
+
+    async deleteCollab(projectId, payload) {
+        return api.put(`api/deleteUser/${projectId}`, payload)
+
     }
 }

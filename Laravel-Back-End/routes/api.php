@@ -2,10 +2,8 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CustomerProblemController;
 use App\Http\Controllers\FreeCanvasContentController;
 use App\Http\Controllers\FreeCanvasController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HypothesisController;
 use App\Http\Controllers\InterviewController;
@@ -65,7 +63,7 @@ Route::group([
         'create',
         'edit'
     ]);
-    
+    // To do List Route
     Route::resource('projects.todos', TodoController::class)->except([
         'create',
         'edit'
@@ -78,8 +76,9 @@ Route::group([
     Route::put('/projects/leancanvas/{contentType}/{contentId}', [LeanCanvasController::class, 'updateContent']);
 
 
-    // get user username and id 
-    Route::post('/getUser', [ProjectController::class, 'getUser']);
+    // collaborator
+    Route::put('/getUser/{projectId}', [ProjectController::class, 'addCollab']);
+    Route::put('/deleteUser/{projectId}', [ProjectController::class, 'removeCollab']);
     
     // free canvas route
     Route::apiResource('projects.free-canvas', FreeCanvasController::class);
@@ -90,6 +89,7 @@ Route::group([
     Route::get('/projects/{projectId}/announcement', [AnnouncementController::class, 'index']);
     Route::post('/projects/{projectId}/announcement', [AnnouncementController::class, 'store']);
     Route::put('/projects/{projectId}/announcement/{announcementId}', [AnnouncementController::class, 'update']);
+    Route::delete('projects/{projectId}/announcement/{announcementId}', [AnnouncementController::class, 'destroy']);
 
     
 });

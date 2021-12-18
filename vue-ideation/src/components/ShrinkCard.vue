@@ -21,7 +21,6 @@ export default {
 
         background-color: white;
         border-radius: 5px;
-        border: 1px solid #B983FF;
         transition: all .3s ease-in;
     }
 
