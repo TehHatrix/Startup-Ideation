@@ -24,6 +24,9 @@ const actions = {
   setScripts({ commit }, interviewScript) {
     commit("setInterviewScript", interviewScript);
   },
+  setGoal({commit}, goal){
+    commit("setGoal", goal);
+  }
 };
 
 const mutations = {
@@ -48,6 +51,9 @@ const mutations = {
   setProblems(state,prob){
     state.hypothesis[state.currentIndex].problems = prob
   },
+  setGoal(state,goalValue){
+    state.hypothesis[state.currentIndex].goal = goalValue
+  },
   checkInitialiseHypothesis(state, index) {
     if (state.hypothesis[index] === undefined) {
       let hypothesisObject = {
@@ -59,6 +65,7 @@ const mutations = {
         },
         feedbackCycle: "",
         learningObjectives: "",
+        goal: 0,
         script: "",
         status: false,
       };

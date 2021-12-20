@@ -20,7 +20,7 @@ export default {};
 
 .progress_bar {
   height: 100%;
-  width: 50%;
+  width: 0%;
   border-radius: 4px;
   background: linear-gradient(270deg, #8743ff 0%, #4136f1 100%);
   transition: 0.3s;

@@ -16,12 +16,13 @@ class CreateCustomerTable extends Migration
         Schema::create('customer', function (Blueprint $table) {
             $table->id('cust_ID');
             $table->unsignedBigInteger('interview_ID');
-            $table->foreign('interview_ID')->references('interview_ID')->on('interviews');
+            $table->foreign('interview_ID')->references('interview_ID')->on('interview');
             $table->string('custname');
             $table->decimal('custscore',2,1)->nullable();
             $table->string('custocc');
             $table->string('cust_phone_num');
             $table->string('custemail');
+            $table->text('logs')->nullable();
             $table->timestamps();
         });
     }

@@ -28,8 +28,8 @@ export default {
       type: Array,
     },
     passedValue: {
-      type: String,
-      default: "Choose Options"
+      default: "Choose Options",
+      required: false,
     }
   },
   data() {
@@ -39,7 +39,7 @@ export default {
     };
   },
   mounted(){
-    if (this.selectedValue === ""){
+    if (this.selectedValue === "" || this.selectedValue === null){
       this.selectedValue = "Choose Options"
     }
   },

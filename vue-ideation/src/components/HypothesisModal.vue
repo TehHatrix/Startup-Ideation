@@ -32,6 +32,12 @@
               :passedValue="currentLearningObjectives"
               @clicked="passOption"
             ></dropdown>
+            <h3>Interview Goals</h3>
+            <dropdown
+              :optionsValue="interviewGoals"
+              :passedValue="currentInterviewGoals"
+              @clicked="passGoal"
+            ></dropdown>
             <h3>Customize Interview Script</h3>
             <general-button
               @click.native="
@@ -52,7 +58,11 @@
         </transition>
         <transition name="fade" appear>
           <div class="notepadContent" v-if="showNotepad">
-            <notepad :passedValue="interviewScript" @updateScript="updateInterview"> </notepad>
+            <notepad
+              :passedValue="interviewScript"
+              @updateScript="updateInterview"
+            >
+            </notepad>
             <general-button
               v-if="showNotepad"
               @click.native="
@@ -85,6 +95,8 @@ export default {
         "Does the customer think our solution solves the right problem?",
         "Does the customer think our solution is better than existing products/services?",
       ],
+      interviewGoals: [5,10,15,20],
+      currentInterviewGoals: null,
       currentLearningObjectives: "",
       interviewScript:
         "1. Thanks for taking my call, I’m doing some research on [main activity related to problem]. Before we start, can you tell me a bit about yourself? \
@@ -108,26 +120,40 @@ export default {
       this.$emit("routeInterview");
     },
     passOption(value) {
-      this.currentLearningObjectives = value
+      this.currentLearningObjectives = value;
       this.$emit("clickedObjective", value);
     },
-    updateInterview(scriptPassed){
+    passGoal(value){
+      this.currentInterviewGoals = value;
+      this.$emit("clickedGoal",value)
+    },
+    updateInterview(scriptPassed) {
       this.interviewScript = scriptPassed;
-      this.$store.dispatch('setScripts',scriptPassed);
+      this.$store.dispatch("setScripts", scriptPassed);
     },
   },
-  mounted () {
-    this.currentLearningObjectives = this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].learningObjectives;
-    if(this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].script !== ""){
-      this.interviewScript = this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].script;
+  mounted() {
+    this.currentLearningObjectives =
+      this.$store.state.hypothesisRepository.hypothesis[
+        this.$store.state.hypothesisRepository.currentIndex
+      ].learningObjectives;
+    if (
+      this.$store.state.hypothesisRepository.hypothesis[
+        this.$store.state.hypothesisRepository.currentIndex
+      ].script !== ""
+    ) {
+      this.interviewScript =
+        this.$store.state.hypothesisRepository.hypothesis[
+          this.$store.state.hypothesisRepository.currentIndex
+        ].script;
     }
-
-    
   },
   computed: {
     getLearningObjState() {
-      return this.$store.state.hypothesisRepository.hypothesis[this.$store.state.hypothesisRepository.currentIndex].learningObjectives
-    }
+      return this.$store.state.hypothesisRepository.hypothesis[
+        this.$store.state.hypothesisRepository.currentIndex
+      ].learningObjectives;
+    },
   },
 };
 </script>

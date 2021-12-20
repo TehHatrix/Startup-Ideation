@@ -7,9 +7,13 @@
         />
       </div>
       <div class="customer_data">
-        <p><strong>Customer Name</strong></p>
-        <p class="occupation">Occupation</p>
-        <p class="rating">3<font-awesome-icon icon="fa-solid fa-star" /></p>
+        <p>
+          <strong>{{ customerName }}</strong>
+        </p>
+        <p class="occupation">{{ customerOcc }}</p>
+        <p class="rating">
+          {{ customerScore }}<font-awesome-icon icon="fa-solid fa-star" />
+        </p>
       </div>
     </div>
 
@@ -30,23 +34,58 @@
                 <img
                   src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
                 />
-                <p class="custName"><strong>Elizabeth Tan</strong></p>
+                <p class="custName">
+                  <strong>{{ customerName }}</strong>
+                </p>
                 <p class="custRating">
                   <strong>Current Rating</strong>
                   <span class="rating">
-                    3<font-awesome-icon icon="fa-solid fa-star"
+                    {{ customerScore
+                    }}<font-awesome-icon icon="fa-solid fa-star"
                   /></span>
                 </p>
                 <p class="custOcc">
-                  <strong>Occupation</strong> <span>Teacher</span>
+                  <strong>Occupation</strong>
+                  <span
+                    :contentEditable="contenteditable"
+                    @blur="editOcc($event)"
+                    >{{ customerOcc }}</span
+                  >
                 </p>
                 <p class="custPhone">
-                  <strong>Phone Number</strong> <span>+6019-5153880</span>
+                  <strong>Phone Number</strong>
+                  <span
+                    :contentEditable="contenteditable"
+                    @blur="editPhone($event)"
+                    >{{ customerPhone }}</span
+                  >
                 </p>
                 <p class="custEmail">
-                  <strong>Email Address</strong> <span>elitan@gmail.com</span>
+                  <strong>Email Address</strong>
+                  <span
+                    :contentEditable="contenteditable"
+                    @blur="editEmail($event)"
+                  >
+                    {{ customerEmail }}</span
+                  >
                 </p>
-                <button class="button">Edit Profile</button>
+                <button
+                  class="button"
+                  v-if="this.editable"
+                  @click="
+                    editableToggle();
+                    saveEditedData();
+                  "
+                >
+                  Save Profile
+                </button>
+                <button
+                  class="button"
+                  v-if="this.editable == false"
+                  @click="editableToggle()"
+                >
+                  Edit Profile
+                </button>
               </div>
               <div class="interviewdata">
                 <div class="interviewdata_header">
@@ -107,10 +146,17 @@
             >
               <div class="notepad">
                 <div class="top"></div>
-                <div class="paper" contenteditable="true">
-                  Hello, this is a paper.<br />
-                  Click to write your Interview Script.
-                  {{ interviewLogsContent }}
+                <div
+                  class="paper"
+                  contenteditable="true"
+                  @blur="handleNotepad($event)"
+                >
+                  <div v-if="script">
+                    {{ interviewScript }}
+                  </div>
+                  <div v-else-if="customerlog">
+                    {{ interviewLogsContent }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -137,6 +183,9 @@
 import circularProgress from "../../components/CircularProgress.vue";
 import xMark from "@/components/icons/x-mark.vue";
 import check from "@/components/icons/check.vue";
+import interviewApi from "@/api/interviewApi.js";
+import customerApi from "@/api/customerApi.js";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -144,12 +193,45 @@ export default {
     xMark,
     check,
   },
+  props: {
+    passedID: {
+      type: Number,
+    },
+    passedName: {
+      type: String,
+    },
+    passedOcc: {
+      type: String,
+    },
+    passedPhone: {
+      type: String,
+    },
+    passedEmail: {
+      type: String,
+    },
+    passedScore: {
+      type: String,
+    },
+  },
   data() {
     return {
-      interviewLogsContent: "",
+      customerID: this.passedID,
+      customerName: this.passedName,
+      customerOcc: this.passedOcc,
+      customerPhone: this.passedPhone,
+      customerEmail: this.passedEmail,
+      customerScore: this.passedScore,
+      editable: false,
     };
   },
   computed: {
+    contenteditable() {
+      if (this.editable) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     modalCustomer() {
       return this.$store.state.interviewRepository.showModalCustomer;
     },
@@ -159,31 +241,74 @@ export default {
     modalScript() {
       return this.$store.state.interviewRepository.showInterviewLogs;
     },
-    fromCustomerProfile(){
+    fromCustomerProfile() {
       return this.$store.state.interviewRepository.fromCustomer;
-    }
+    },
+    ...mapGetters([
+      "interviewLogsContent",
+      "script",
+      "customerlog",
+      "interviewScript",
+      "interviewIndex",
+      "customer",
+      "currentID",
+    ]),
   },
   methods: {
+    editableToggle() {
+      this.editable = !this.editable;
+    },
+    async saveEditedData() {
+      console.log(this.currentID);
+      let saveProfile = await customerApi.updateCustomer(
+        this.currentID,
+        this.customer
+      );
+      console.log(saveProfile.data);
+    },
+    editOcc(e) {
+      this.$store.commit("setEditedOcc", e.target.innerText);
+    },
+    editPhone(e) {
+      this.$store.commit("setEditedPhone", e.target.innerText);
+    },
+    editEmail(e) {
+      this.$store.commit("setEditedEmail", e.target.innerText);
+    },
     showModalCustomer() {
+      this.$store.commit("setcurrentID", this.customerID);
       this.$store.commit("showModalCustomer");
     },
     closeModal() {
+      this.$store.commit("setScriptFalse");
+      this.$store.commit("setCustomerLogFalse");
       this.$store.commit("closeModal");
     },
     showCustomerContent() {
       this.$store.commit("showCustomerContent");
     },
     showModalConclude() {
-      this.$store.commit("fromCustomerProfile")
+      this.$store.commit("fromCustomerProfile");
       this.$store.commit("showModalConclude");
     },
     showInterviewScript() {
-      this.$store.commit("fromCustomerProfile")
+      this.$store.commit("setCustomerLogTrue");
+      this.$store.commit("fromCustomerProfile");
       this.$store.commit("showInterviewNotepad");
     },
+    async handleNotepad(e) {
+      let textObject = {
+        text: e.target.innerText,
+      };
+      if (this.script) {
+        this.$store.commit("setinterviewScript", textObject.text);
+        await interviewApi.updateScript(this.interviewIndex, textObject);
+      } else {
+        this.$store.commit("setInterviewLogs", textObject.text);
+      }
+    },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 

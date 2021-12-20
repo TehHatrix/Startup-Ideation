@@ -59,7 +59,7 @@
               ></hypothesis-dropdown>
             </td>
             <div v-if="item.definedStatus">
-              <general-button @click.native="handleResume"
+              <general-button @click.native="handleResume(item.hypothesisID)"
                 >Resume Interview</general-button
               >
             </div>
@@ -70,6 +70,7 @@
               <Modal
                 @routeInterview="routeInterview"
                 @clickedObjective="appendLearningObjectives"
+                @clickedGoal="appendGoal"
                 @click.native="handleModal(index)"
               >
                 <template #hypothesisTitle>
@@ -91,8 +92,10 @@
 import Modal from "../components/HypothesisModal.vue";
 import HypothesisDropdown from "../components/HypothesisDropdown.vue";
 import DisabledButton from "../components/DisabledButton.vue";
-import api from "@/api/hypothesisApi";
+import hypothesisApi from "@/api/hypothesisApi";
+import interviewApi from "@/api/interviewApi";
 import GeneralButton from "../components/GeneralButton.vue";
+import { mapGetters } from "vuex";
 export default {
   components: {
     Modal,
@@ -142,9 +145,7 @@ export default {
     };
   },
   computed: {
-    // modalCondition(index){
-    //   return this.paindefined[index] && this.feedbackdefined[index]
-    // }
+    ...mapGetters(["interviewIndex"]),
   },
   methods: {
     show() {
@@ -153,8 +154,15 @@ export default {
     hide() {
       this.$modal.hide("pre-interview-modal");
     },
-    handleResume() {
-      this.$router.push("interview");
+    async handleResume(hypothesisID) {
+      let interviewID = await hypothesisApi.getinterviewbyHypothesis(
+        hypothesisID
+      );
+      this.$store.commit("setInterviewIndex", interviewID.data);
+      this.$router.push({
+        name: "Interview",
+        params: { id: interviewID.data },
+      });
     },
     async routeInterview() {
       try {
@@ -166,16 +174,59 @@ export default {
             .problemsTopic;
         this.$store.commit("setCustomerSegment", cust_seg);
         this.$store.commit("setProblems", problem);
-        const hypothesisData =
-          this.$store.state.hypothesisRepository.hypothesis[
+        const hypothesisData = {
+          problems:
+            this.$store.state.hypothesisRepository.hypothesis[
+              this.$store.state.hypothesisRepository.currentIndex
+            ].problems,
+          pain: {
+            frequency:
+              this.$store.state.hypothesisRepository.hypothesis[
+                this.$store.state.hypothesisRepository.currentIndex
+              ].pain.frequency,
+            severity:
+              this.$store.state.hypothesisRepository.hypothesis[
+                this.$store.state.hypothesisRepository.currentIndex
+              ].pain.severity,
+          },
+          feedbackCycle:
+            this.$store.state.hypothesisRepository.hypothesis[
+              this.$store.state.hypothesisRepository.currentIndex
+            ].feedbackCycle,
+        };
+        let hypothesisResult = await hypothesisApi.addHypothesis(
+          hypothesisData
+        );
+        let hypothesisIDdata = hypothesisResult.data.hypothesisID;
+        const interviewData = {
+          hypothesisID: hypothesisIDdata,
+          script:
+            this.$store.state.hypothesisRepository.hypothesis[
+              this.$store.state.hypothesisRepository.currentIndex
+            ].script,
+          objective:
+            this.$store.state.hypothesisRepository.hypothesis[
+              this.$store.state.hypothesisRepository.currentIndex
+            ].learningObjectives,
+          goal: this.$store.state.hypothesisRepository.hypothesis[
             this.$store.state.hypothesisRepository.currentIndex
-          ];
-        let data = await api.addHypothesis(hypothesisData);
-        console.log(data);
+          ].goal,
+          overallScore: 0.0,
+          progress: 0,
+        };
+        let interviewResult = await interviewApi.createInterview(interviewData);
+        if (hypothesisResult.data.success && interviewResult.data.success) {
+          this.$store.commit(
+            "setInterviewIndex",
+            interviewResult.data.interviewID
+          );
+          this.$router.push({
+            name: "Interview",
+            params: { id: interviewResult.data.interviewID },
+          });
+        }
       } catch (error) {
         console.log(error);
-      } finally {
-        this.$router.push("interview");
       }
     },
     appendFrequencySeverity(value) {
@@ -241,6 +292,9 @@ export default {
     appendLearningObjectives(value) {
       this.$store.dispatch("setLearningObjectives", value);
     },
+    appendGoal(value) {
+      this.$store.dispatch("setGoal", value);
+    },
 
     findIndexMatchingID(object1, object2) {
       return object1.findIndex((h) => h.id == object2.id);
@@ -262,6 +316,8 @@ export default {
             this.custseg_data[index]
           );
           if (hypothesisIndex != -1) {
+            this.custseg_data[index].hypothesisID =
+              this.defined_hypothesis[hypothesisIndex].hypothesis_ID;
             this.custseg_data[index].painSeverity =
               this.defined_hypothesis[hypothesisIndex].pain_level_severity;
             this.custseg_data[index].painFrequency =

@@ -197,7 +197,7 @@ export default {
       },
       showDeleteModal: false,
       showCollabSettingModal: false,
-      validationPhase: "hypothesis",
+      validationPhase: "survey",
     };
   },
 
@@ -211,7 +211,6 @@ export default {
   async created() {
     try {
       await this.$store.dispatch("getProject", this.projectId);
-      // console.log('after created')
     } catch (error) {
       console.log(error);
     }
@@ -239,10 +238,10 @@ export default {
             this.$router.push('/hypothesis')
         }
         else if(this.validationPhase == "landing"){
-          this.$router.push('/landing')
+          this.$router.push({name: 'LandingEditor'})
         }
         else if(this.validationPhase == "survey"){
-          this.$router.push('/survey')
+          this.$router.push({name : 'SurveyDashboard'})
         }
 
     },

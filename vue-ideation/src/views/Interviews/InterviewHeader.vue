@@ -45,7 +45,10 @@
       </p>
       <p>
         <font-awesome-icon icon="fa-solid fa-scroll" />
-        <strong> Interview Script </strong> : <span class ="scriptLink" @click="handleScriptLink">Click to see & edit</span>
+        <strong> Interview Script </strong> :
+        <span class="scriptLink" @click="handleScriptLink"
+          >Click to see & edit</span
+        >
       </p>
     </div>
     <div class="progress">
@@ -63,6 +66,8 @@
 import Stars from "@/views/Interviews/Stars.vue";
 import StarBar from "@/views/Interviews/StarBar.vue";
 import ProgressBar from "@/views/Interviews/ProgressBar.vue";
+import interviewApi from "@/api/interviewApi.js";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -74,17 +79,35 @@ export default {
     return {
       rating: 0.0,
       interviewGoals: 10,
-      currentProblem: "Managing their organisation",
+      currentProblem: "",
       currentCustomerSegment: "Shopper",
-      currentLearningObjectives: "Does the customer care enough about this problem?"
-    }
+      currentLearningObjectives:
+        "Does the customer care enough about this problem?",
+    };
   },
-
   methods: {
     handleScriptLink() {
-      this.$store.commit("fromInterviewHeader")
-      return this.$store.commit("showInterviewNotepad");
-    }
+      this.$store.commit("setScriptTrue")
+      this.$store.commit("fromInterviewHeader");
+      this.$store.commit("showInterviewNotepad");
+    },
+    async getInterviewData(id) {
+      let interviewData = await interviewApi.getInterview(id);
+      this.rating = interviewData.data.interviewData[0].overall_score;
+      this.interviewGoals = interviewData.data.interviewData[0].goal;
+      this.currentProblem = interviewData.data.interviewData[0].problems;
+      this.currentCustomerSegment =
+        interviewData.data.interviewData[0].custsegment;
+      this.currentLearningObjectives =
+        interviewData.data.interviewData[0].objective;
+    },
+  },
+  computed: {
+    ...mapGetters(["interviewIndex"]),
+  },
+  mounted() {},
+  created() {
+    this.getInterviewData(this.interviewIndex);
   },
 };
 </script>
@@ -93,8 +116,8 @@ export default {
   font-family: "Poppins";
 }
 
-.scriptLink{
-  cursor:pointer;
+.scriptLink {
+  cursor: pointer;
   text-decoration: underline;
 }
 .rating {

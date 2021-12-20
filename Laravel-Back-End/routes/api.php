@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerProblemController;
 use App\Http\Controllers\FreeCanvasContentController;
 use App\Http\Controllers\FreeCanvasController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\TodoController;
 Route::get('/getproblemswithcustSeg', [HypothesisController::class, 'getproblemswithcustSeg']);
 Route::get('/gethypothesis', [HypothesisController::class, 'gethypothesisdata']);
 Route::get('/getproblemHypothesis', [HypothesisController::class, 'getproblemHypothesis']);
+Route::get('/getinterviewIDbyHypothesis/{hypothesisID}', [HypothesisController::class, 'getinterviewIDbyHypothesis']);
 
 Route::get('/getcustomersegmentstopic', [HypothesisController::class, 'getCustomerSegmentsTopic']);
 Route::get('/getproblemstopic', [HypothesisController::class, 'getProblemsTopic']);
@@ -45,12 +47,24 @@ Route::prefix('/hypothesis')->group(function () {
 
 
 Route::prefix('/interview')->group(function () {
+    Route::get('/index/{id}', [InterviewController::class, 'index']);
     Route::post('/store', [InterviewController::class, 'store']);
+    Route::post('/updatescript/{interviewID}', [InterviewController::class, 'updateScript']);
     // Route::put('/{id}', [HypothesisController::class,'update']);
     // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);
     // Route::delete('/custprob/{customerproblem_id}',[HypothesisController::class,'destroy']);
-
 });
+
+Route::prefix('/customer')->group(function () {
+    Route::get('/index/{id}', [CustomerController::class, 'index']);
+    Route::post('/store/{interviewid}', [CustomerController::class, 'store']);
+    Route::post('/update/{custID}', [CustomerController::class, 'update']);
+    // Route::post('/updatescript/{interviewID}', [CustomerController::class, 'updateScript']);
+    // Route::put('/{id}', [HypothesisController::class,'update']);
+    // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);
+    // Route::delete('/custprob/{customerproblem_id}',[HypothesisController::class,'destroy']);
+});
+
 
 
 // auth 

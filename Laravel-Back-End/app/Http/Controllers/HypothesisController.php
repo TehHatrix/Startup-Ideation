@@ -10,13 +10,15 @@ use App\Models\Problem;
 use ArrayObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 
 class HypothesisController extends Controller
 {
 
     public function getproblemswithcustSeg()
     {
-        $problemswithcustSeg = DB::table('problems')->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.id','problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
+        $problemswithcustSeg = DB::table('problems')->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.id', 'problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
         return $problemswithcustSeg;
     }
 
@@ -28,9 +30,17 @@ class HypothesisController extends Controller
 
     public function getproblemHypothesis()
     {
-        $hypothesisProblem = DB::table('hypotheses')->join('problems','problems.id','=','hypotheses.problem_id')->select('problems.id','hypotheses.pain_level_severity','hypotheses.pain_level_freq','hypotheses.feedback_cycle')->get();
+        $hypothesisProblem = DB::table('hypotheses')->join('problems', 'problems.id', '=', 'hypotheses.problem_id')->select('problems.id','hypotheses.hypothesis_ID','hypotheses.pain_level_severity', 'hypotheses.pain_level_freq', 'hypotheses.feedback_cycle')->get();
         return $hypothesisProblem;
     }
+
+    public function getinterviewIDbyHypothesis($hypothesisID)
+    {
+        $interviewID = DB::table('interview')->where('interview.hypothesis_ID','=',$hypothesisID)->value('interview.interview_ID');
+        return $interviewID;
+    }
+
+    
 
 
     public function getstatus($customerproblem_id)
@@ -92,32 +102,33 @@ class HypothesisController extends Controller
      */
     public function store(Request $request)
     {
-        $matchingProblemTopicandID = DB::table('problems')->where('topic','=',$request->problems)->value('id');
+        $validator = Validator::make($request->all(), [
+            'problems' => 'string|required',
+            'pain.frequency' => 'string|required',
+            'pain.severity' => 'string|required',
+            'feedbackCycle' => 'string|required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $matchingProblemTopicandID = DB::table('problems')->where('topic', '=', $data['problems'])->value('id');
         $insertHypothesis = DB::table('hypotheses')->insert([
-            'problem_id'=> $matchingProblemTopicandID,
-            'pain_level_severity' => $request->pain['severity'],
-            'pain_level_freq' => $request->pain['frequency'],
-            'feedback_cycle' => $request->feedbackCycle,
+            'problem_id' => $matchingProblemTopicandID,
+            'pain_level_severity' => $data['pain']['severity'],
+            'pain_level_freq' => $data['pain']['frequency'],
+            'feedback_cycle' => $data['feedbackCycle'],
             'status' => true
         ]);
-        if($insertHypothesis){
-            return "Insert Successful";
-        } else {
-            return "Error inserting to table";
-        }
-
-        // $newhypothesis = new Hypotheses;
-        // $newhypothesis->problem_id = $request->cus
-        // $newhypothesis = new Hypotheses;
-        // $newhypothesis->CustomerProblem_ID = $request->hypothesis['problem_id'];
-        // $newhypothesis->pain_level_severity = $request->hypothesis['pain_level_severity'];
-        // $newhypothesis->pain_level_freq = $request->hypothesis['pain_level_freq'];
-        // $newhypothesis->feedback_cycle = $request->hypothesis['feedback_cycle'];
-        // $newhypothesis->status = $request->hypothesis['status'];
-        // $newhypothesis->save();
-
-        // return $newhypothesis;
-        //
+        $id = DB::getPdo()->lastInsertId();
+        return  response()->json([
+            'hypothesisID' => $id,
+            'success' => true,
+            'errors' => null
+        ]);
     }
 
     /**

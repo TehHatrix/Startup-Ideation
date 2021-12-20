@@ -26,10 +26,10 @@ const routes = [
     path: '/hypothesis',
     name: 'Hypothesis',
     component: Hypothesis,
-    beforeEnter: middleware.guest
+    beforeEnter: middleware .guest
   },
   {
-    path: '/interview',
+    path: '/interview/:id',
     name: 'Interview',
     component: Interview,
     beforeEnter: middleware.guest
