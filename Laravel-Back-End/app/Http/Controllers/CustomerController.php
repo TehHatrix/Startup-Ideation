@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
@@ -37,11 +38,20 @@ class CustomerController extends Controller
      */
     public function store(Request $request, $interviewID)
     {
+        // $test = $request->file('image')->store('images','public');
+        // $test = $request->file('image')->store('images','public');
+        $disk = Storage::disk('gcs');
+        $file = $request->file('image');
+        $test = $disk->put('',$file);
+        
+        // $test = $request->file('image')->store('images','public');
+        return $test;
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
             'occupation' => 'string|required',
             'email' => 'string|required',
             'phone' => 'string|required',
+            'image' => 'nullable'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -50,6 +60,10 @@ class CustomerController extends Controller
             ]);
         }
         $data = $validator->validated();
+        $pathtofile = $request->image->get('image');
+        return $pathtofile;
+        $customerImageName = time().'-'.$data['name'].'.'.$data['image']->extension();
+        $data['image']->move(public_path('images'),$customerImageName);
         $insertCustomer = DB::table('customer')->insert([
             'interview_ID' => $interviewID,
             'custname' => $data['name'],
@@ -57,6 +71,7 @@ class CustomerController extends Controller
             'custocc' => $data['occupation'],
             'cust_phone_num' => $data['phone'],
             'custemail' => $data['email'],
+            'image_path' => $customerImageName,
             'logs' => "",
         ]);
         return  response()->json([

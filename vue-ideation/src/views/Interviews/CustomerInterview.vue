@@ -34,14 +34,13 @@ export default {
     CustomerCard,
     AddCustomerCard,
   },
-
   methods: {
     async addCardInterview(customer_info) {
       let createCustomer = await customerApi.createCustomer(
         this.interviewIndex,
         customer_info
       );
-      console.log(createCustomer.data);
+      console.log(createCustomer);
       this.customerCards.push(customer_info);
     },
 
@@ -51,15 +50,15 @@ export default {
       for (let item in getCustomer.data) {
         this.customerCards.push(getCustomer.data[item]);
       }
-      console.log(this.customerCards);
     },
   },
   computed: {
     ...mapGetters(["interviewIndex"]),
   },
-  mounted() {},
-  created() {
+  mounted() {
     this.getCustomerInterview();
+  },
+  created() {
   },
 };
 </script>

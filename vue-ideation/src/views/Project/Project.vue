@@ -197,7 +197,7 @@ export default {
       },
       showDeleteModal: false,
       showCollabSettingModal: false,
-      validationPhase: "survey",
+      validationPhase: "hypothesis",
     };
   },
 
