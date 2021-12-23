@@ -23,7 +23,7 @@
                         </td>
                         <td v-if="!task.completed" >{{ task.due_date === null ? 'no due date' : task.due_date }}</td>
                         <td v-if="!task.completed" class="action-container">
-                            <span class="edit" @click="openUpdateModal">
+                            <span class="edit" @click="openUpdateModal(task)">
                                 <font-awesome-icon  icon="fa-pen"></font-awesome-icon>
                             </span>
                             <span class="trash" @click="openDeleteModal(task)">
@@ -51,12 +51,28 @@
          :showModal="showUpdateModal"
          @close="showUpdateModal = false">
             <h2>Update Task</h2>
-            <form @submit.prevent="">
+            <form @submit.prevent="updateTask">
                 <div class="input-container">
-                    <input type="text" id="task" v-model="taskForm.task">                    
+                    <input type="text" id="task" class="material-input" v-model="taskForm.task" required>                    
+                    <label for="task" class="material-label" >Task</label>
                 </div>
-                <div>
-                    
+                <div class="select input-container">
+                    <select class="select-text" v-model="taskForm.assigned_to" >
+                        <option :value="null" selected>Everyone</option>
+
+                        <option v-for="(user, index) in project.collaborator" :key="index" :value="user.id" >{{ user.name }}</option>
+                    </select>
+
+                    <span class="select-highlight"></span>
+                    <span class="select-bar"></span>
+                    <label  class="select-label">Assigned To</label>
+                </div>
+                <div class="input-container">
+                    <input type="date" class="material-input" id="date" v-model="taskForm.due_date" >
+                    <label for="date" class="material-label" >Date</label>
+                </div>
+                <div class="btn-container">
+                    <button class="general-button">Submit</button>
                 </div>
             </form>
         </modal>
@@ -88,9 +104,11 @@ export default {
 
             showUpdateModal: false,
             taskForm: {
+                id: null,
                 task: '',
                 due_date: null,
                 assigned_to: null,
+                completed: false
             },
         }
     },
@@ -123,17 +141,32 @@ export default {
             }
         },
 
+        async updateTask() {
+            try {
+                let { data } = await api.updateTask(this.project.id, this.taskForm.id, this.taskForm)
+                if(data.success) {
+                    await this.$store.dispatch('getTodos', this.project.id)
+                    this.closeUpdateModal()
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
         openUpdateModal(task) {
             this.taskForm.task = task.task
             this.taskForm.due_date = task.due_date
             this.taskForm.assigned_to = task.assigned_to
+            this.taskForm.id = task.id
             this.showUpdateModal = true
+            // console.table(this.taskForm)
         }, 
         
         closeUpdateModal() {
             this.showUpdateModal = false
             this.taskForm.task = ''
             this.taskForm.due_date = null
+            this.taskForm.id = null
             this.taskForm.assigned_to = null
         },
 
@@ -211,6 +244,113 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    /* select starting stylings ------------------------------*/
+    .select {
+        position: relative;
+    }
+
+    .select-text {
+        position: relative;
+        font-family: inherit;
+        background-color: transparent;
+        width: fill;
+        padding: 10px 10px 10px 0;
+        font-size: 18px;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0, 0.12);
+    }
+
+    /* Remove focus */
+    .select-text:focus {
+        outline: none;
+        border-bottom: 1px solid rgba(0,0,0, 0);
+    }
+
+        /* Use custom arrow */
+    .select .select-text {
+        appearance: none;
+        -webkit-appearance:none
+    }
+
+    .select:after {
+        position: absolute;
+        top: 18px;
+        right: 10px;
+        /* Styling the down arrow */
+        width: 0;
+        height: 0;
+        padding: 0;
+        content: '';
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid rgba(0, 0, 0, 0.12);
+        pointer-events: none;
+    }
+
+
+    /* LABEL ======================================= */
+    .select-label {
+        color: rgba(0,0,0, 0.5);
+        font-size: 18px;
+        font-weight: normal;
+        position: absolute;
+        pointer-events: none;
+        left: 0;
+        top: 10px;
+        transition: 0.2s ease all;
+    }
+
+    /* active state */
+    .select-text:focus ~ .select-label, .select-text:valid ~ .select-label {
+        color: #2F80ED;
+        top: -20px;
+        transition: 0.2s ease all;
+        font-size: 14px;
+    }
+
+    /* BOTTOM BARS ================================= */
+    .select-bar {
+        position: relative;
+        display: block;
+        width: fill;
+    }
+
+    .select-bar:before, .select-bar:after {
+        content: '';
+        height: 2px;
+        width: 0;
+        bottom: 1px;
+        position: absolute;
+        background: #2F80ED;
+        transition: 0.2s ease all;
+    }
+
+    .select-bar:before {
+        left: 50%;
+    }
+
+    .select-bar:after {
+        right: 50%;
+    }
+
+    /* active state */
+    .select-text:focus ~ .select-bar:before, .select-text:focus ~ .select-bar:after {
+        width: 50%;
+    }
+
+    /* HIGHLIGHTER ================================== */
+    .select-highlight {
+        position: absolute;
+        height: 60%;
+        width: fill;
+        top: 25%;
+        left: 0;
+        pointer-events: none;
+        opacity: 0.5;
+
     }
     
 </style>

@@ -10,7 +10,7 @@
                 </span>
             </section>
             <section class="page-body">
-                <tiptap/>
+                <tiptap />
             </section>
         </div>
 

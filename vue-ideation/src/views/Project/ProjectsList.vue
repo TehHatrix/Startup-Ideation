@@ -93,7 +93,6 @@ export default {
     ...mapGetters(["user", "projects"]),
   },
   async mounted() {
-    console.log;
     try {
       await this.$store.dispatch("getProjects");
     } catch (error) {

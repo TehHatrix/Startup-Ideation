@@ -2,7 +2,7 @@ import api from '@/api/projectApi'
 
 const state = {
     projects: {},
-    project: sessionStorage.project ? JSON.parse(sessionStorage.project) : {},
+    project: null,
     collaborator: [],
 }
 

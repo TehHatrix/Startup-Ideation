@@ -34,7 +34,7 @@
             </div>
 
         </section>
-
+        <!-- announcement card  -->
         <section class="grid grid-cols-3 gap-4">
             <div class="col-span-2">
                 <div class="announcement-card">
@@ -357,18 +357,24 @@ export default {
         .announcement-title {
             background-color: #14213d;   
             color: white;
-            padding: 0.5rem 0.5rem;
+            padding: 0.2rem 0.5rem;
+            letter-spacing: .1rem;
+            font-size: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
         }
 
         .announcement-body {
             max-height: 25rem;
             padding-top: 2rem;
-            min-height: 25rem;
+            min-height: 20rem;
             overflow: scroll;
             background-color: #e5e5e5;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
         }   
     }
 

@@ -26,12 +26,16 @@ export default {
     data() {
         return {
             editor: null,
+            asyncContent: ``,
         }
+    },
+    created() {
+
     },
 
     mounted() {
         this.editor = new Editor({
-            content: `<p>Start Editing here</p><br/>`,
+            content: `<p>Start Editing here</p><br/><br/><br/><br/>`,
             extensions: [
                 Starterkit,
                 TaskList,
@@ -53,7 +57,7 @@ export default {
     
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
     .editor {
         display: flex;
         flex-direction: column;
@@ -70,11 +74,11 @@ export default {
             border-bottom: 3px solid #0D0D0D;
         }
         &__content {
-            padding: 1.25rem 1rem;
             flex: 1 1 auto;
             overflow-x: hidden;
             overflow-y: auto;
             max-height: 35rem;
+            height: 32rem;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -111,8 +115,9 @@ export default {
 
     /* Basic editor styles */
     .ProseMirror {
-
-
+        
+        padding: .3rem .5rem ;
+        height: 30rem;
         > * + * {
             margin-top: 0.75em;
         }

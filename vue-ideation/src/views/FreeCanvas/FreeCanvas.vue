@@ -33,7 +33,7 @@
 
             </div>
         </section>
-
+        <!-- create canvas modal  -->
         <modal
          :showModal="showAddModal"
          @close="closeAddModal">
@@ -48,6 +48,8 @@
                 </div>
             </form>
         </modal>
+
+        
     </div>
 </template>
 <script>
