@@ -1,86 +1,95 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Hypothesis from '../views/Hypothesis.vue'
-import middleware from './middleware'
-import Interview from '../views/Interviews/Interview.vue'
-import LandingEditor from "../views/LandingMaker/LandingEditor.vue"
-import LandingPage from "../views/LandingMaker/LandingPage.vue"
-import LandingPageTest from "../views/LandingMaker/LandingPageTest.vue"
-import LandingDashboard from "../views/LandingMaker/LandingDashboard.vue"
-import Survey from "../views/Survey/Survey.vue"
-import SurveySummary from "@/views/Survey/SummarySurvey.vue"
-import SurveyDashboard from "@/views/Survey/SurveyDashboard.vue"
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Hypothesis from "../views/Hypothesis.vue";
+// import middleware from "./middleware";
+import Interview from "../views/Interviews/Interview.vue";
+import LandingEditor from "../views/LandingMaker/LandingEditor.vue";
+import LandingPage from "../views/LandingMaker/LandingPage.vue";
+import LandingPageTest from "../views/LandingMaker/LandingPageTest.vue";
+import LandingDashboard from "../views/LandingMaker/LandingDashboard.vue";
+import Survey from "../views/Survey/Survey.vue";
+import SurveySummary from "@/views/Survey/SummarySurvey.vue";
+import SurveyDashboard from "@/views/Survey/SurveyDashboard.vue";
+import store from '@/store'
 
-
-
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'HomeGuest',
-    component: () => import('../views/Authentication/Authentication.vue'),
-    beforeEnter: middleware.user
+    path: "/",
+    name: "HomeGuest",
+    component: () => import("../views/Authentication/Authentication.vue"),
+    meta: { requiresAuth: false },
+    // beforeEnter: middleware.user
   },
   {
-    path: '/hypothesis',
-    name: 'Hypothesis',
+    path: "/hypothesis",
+    name: "Hypothesis",
     component: Hypothesis,
-    beforeEnter: middleware .guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/interview/:id',
-    name: 'Interview',
+    path: "/interview/:id",
+    name: "Interview",
     component: Interview,
-    beforeEnter: middleware.guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/editor/landing',
-    name: 'LandingEditor',
+    path: "/editor/landing",
+    name: "LandingEditor",
     component: LandingEditor,
-    beforeEnter: middleware.guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/landingpage',
-    name: 'LandingPage',
+    path: "/landingpage",
+    name: "LandingPage",
     component: LandingPage,
-    beforeEnter: middleware.guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/landingpage/dashboard',
-    name: 'LandingDashboard',
+    path: "/landingpage/dashboard",
+    name: "LandingDashboard",
     component: LandingDashboard,
-    beforeEnter: middleware.guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/survey',
-    name: 'survey',
+    path: "/survey",
+    name: "survey",
     component: Survey,
-    beforeEnter: middleware.guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/survey/summary',
-    name: 'SurveySummary',
+    path: "/survey/summary",
+    name: "SurveySummary",
     component: SurveySummary,
-    beforeEnter: middleware.guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/survey/dashboard',
-    name: 'SurveyDashboard',
+    path: "/survey/dashboard",
+    name: "SurveyDashboard",
     component: SurveyDashboard,
-    beforeEnter: middleware.guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
 
   {
-    path: '/landingpagetest',
-    name: 'LandingPageTest',
+    path: "/landingpagetest",
+    name: "LandingPageTest",
     component: LandingPageTest,
-    beforeEnter: middleware.guest
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/test',
-    name: 'Test',
-    component: () => import('../views/ProjectDashboard.vue')
+    path: "/test",
+    name: "Test",
+    component: () => import("../views/ProjectDashboard.vue"),
   },
   // {
   //   path: '/login',
@@ -95,47 +104,59 @@ const routes = [
 
   // },
   {
-    path: '/projects',
-    name: 'ProjectsList',
-    component: () => import('../views/Project/ProjectsList.vue'),
-    beforeEnter: middleware.guest
-    // beforeEnter: (to, from, next) => {
-    //   if(store.getters['authenticated']) {
-    //     next()
-    //   } else {
-    //     next({name: 'HomeGuest'})
-    //   }
-    // }
+    path: "/projects",
+    name: "ProjectsList",
+    component: () => import("../views/Project/ProjectsList.vue"),
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/projects/:id',
-    name: 'Project',
-    component: () => import('../views/Project/Project.vue'),
-    beforeEnter: middleware.guest
+    path: "/projects/:id",
+    name: "Project",
+    component: () => import("../views/Project/Project.vue"),
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
   {
-    path: '/projects/:id/todos',
-    name: 'TodoPage',
-    component: () => import('../views/Todo/TodoPage.vue'),
-    beforeEnter: middleware.guest
-
+    path: "/projects/:id/todos",
+    name: "TodoPage",
+    component: () => import("../views/Todo/TodoPage.vue"),
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
 
   {
-    path: '/projects/:id/leancanvas',
-    name: 'LeanCanvas',
-    component: () => import('../views/LeanCanvas/LeanCanvas.vue'),
-    beforeEnter: middleware.guest
-
+    path: "/projects/:id/leancanvas",
+    name: "LeanCanvas",
+    component: () => import("../views/LeanCanvas/LeanCanvas.vue"),
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
   },
-
-
-]
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if(to.name === 'HomeGuest'){
+    if(store.getters['authenticated']){
+      next({name: 'ProjectsList'})
+    }
+  }
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!store.getters['authenticated']) {
+      next({name: 'HomeGuest'})
+    } else {
+      next()
+    }
+  } else {
+    next() // make sure to always call next()!
+  }
 })
 
-export default router
+export default router;

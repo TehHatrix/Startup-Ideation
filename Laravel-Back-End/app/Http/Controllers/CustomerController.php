@@ -38,14 +38,6 @@ class CustomerController extends Controller
      */
     public function store(Request $request, $interviewID)
     {
-        // $test = $request->file('image')->store('images','public');
-        // $test = $request->file('image')->store('images','public');
-        $disk = Storage::disk('gcs');
-        $file = $request->file('image');
-        $test = $disk->put('',$file);
-        
-        // $test = $request->file('image')->store('images','public');
-        return $test;
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
             'occupation' => 'string|required',
@@ -60,8 +52,9 @@ class CustomerController extends Controller
             ]);
         }
         $data = $validator->validated();
-        $pathtofile = $request->image->get('image');
-        return $pathtofile;
+        $disk = Storage::disk('gcs');
+        $file = $request->file('image');
+        $test = $disk->put('customer-pictures',$file);
         $customerImageName = time().'-'.$data['name'].'.'.$data['image']->extension();
         $data['image']->move(public_path('images'),$customerImageName);
         $insertCustomer = DB::table('customer')->insert([
