@@ -14,6 +14,14 @@ export default {
     return api.post(`api/customer/update/${custID}`,payload);
   },
 
+  async updateScoreCustomer(custID,score){
+    return api.post(`api/customer/update/${custID}/score`,score);
+  },
+
+  async updateLogsCustomer(custID,logs){
+    return api.post(`api/customer/update/${custID}/logs`,logs);
+  }
+
 
 }
 

@@ -2,9 +2,7 @@
   <div>
     <div class="card" @click="showModalCustomer">
       <div class="card_image">
-        <img
-          src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-        />
+        <img :src="imagePath" />
       </div>
       <div class="customer_data">
         <p>
@@ -31,11 +29,9 @@
               "
             >
               <div class="customerInfo">
-                <img
-                  src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                />
+                <img :src="imagePath" />
                 <p class="custName">
-                  <strong>{{ customerName }}</strong>
+                  <strong :contentEditable="contenteditable" @blur="editName($event)">{{ customerName }}</strong>
                 </p>
                 <p class="custRating">
                   <strong>Current Rating</strong>
@@ -45,7 +41,7 @@
                   /></span>
                 </p>
                 <p class="custOcc">
-                  <strong>Occupation</strong>
+                  <strong>Occupation </strong>
                   <span
                     :contentEditable="contenteditable"
                     @blur="editOcc($event)"
@@ -53,7 +49,7 @@
                   >
                 </p>
                 <p class="custPhone">
-                  <strong>Phone Number</strong>
+                  <strong>Phone Number </strong>
                   <span
                     :contentEditable="contenteditable"
                     @blur="editPhone($event)"
@@ -61,7 +57,7 @@
                   >
                 </p>
                 <p class="custEmail">
-                  <strong>Email Address</strong>
+                  <strong>Email Address </strong>
                   <span
                     :contentEditable="contenteditable"
                     @blur="editEmail($event)"
@@ -69,73 +65,44 @@
                     {{ customerEmail }}</span
                   >
                 </p>
-                <button
-                  class="button"
+                <general-button
                   v-if="this.editable"
-                  @click="
+                  @click.native="
                     editableToggle();
                     saveEditedData();
                   "
+                  >Save Profile</general-button
                 >
-                  Save Profile
-                </button>
-                <button
-                  class="button"
+                <general-button
                   v-if="this.editable == false"
-                  @click="editableToggle()"
+                  @click.native="editableToggle()"
+                  >Edit Profile</general-button
                 >
-                  Edit Profile
-                </button>
               </div>
               <div class="interviewdata">
                 <div class="interviewdata_header">
                   <span class="interviewlogs_title">
                     <strong>Interview Logs</strong></span
                   >
-                  <button class="button" @click="showModalConclude">
-                    Conclude Interview
-                  </button>
-                  <button class="button" @click="showInterviewScript">
-                    Open Interview Logs
-                  </button>
+                  <general-button @click.native="showModalConclude"
+                    >Conclude Interview</general-button
+                  >
+                  <general-button @click.native="showInterviewLogs"
+                    >Open Interview Logs</general-button
+                  >
                 </div>
                 <div class="interviewdata_content">
                   <p>
-                    1. Thanks for taking my call, I’m doing some research on
-                    [main activity related to problem]. Before we start, can you
-                    tell me a bit about yourself? - Focus on learning about WHO
-                    your customer is before moving onto the problem... 2. When
-                    was the last time you [main activity related to problem]?
+                    {{ interviewLogsContent }}
                   </p>
                 </div>
               </div>
             </div>
           </transition>
           <transition name="fade" appear>
-            <div
-              class="concludeContent"
+            <conclude-content
               v-if="modalCustomer && modalConclude == true"
-            >
-              <div class="concludeHeader">
-                <circular-progress></circular-progress>
-                <p class="score">
-                  <strong>Current Score </strong>
-                  <span class="scoreNumber"
-                    ><strong>4</strong
-                    ><font-awesome-icon icon="fa-solid fa-star"
-                  /></span>
-                </p>
-              </div>
-              <div class="concludeQuestion">
-                Does this person care about the problem?
-              </div>
-              <div class="concludeAnswer">
-                <div class="answerCard"><check></check> Yes</div>
-                <div class="answerCard">
-                  <x-Mark :toggleHover="false"></x-Mark> No
-                </div>
-              </div>
-            </div>
+            ></conclude-content>
           </transition>
           <transition name="fade" appear>
             <div
@@ -162,36 +129,33 @@
             </div>
           </transition>
         </div>
-
-        <button class="button" style="margin-top: 10px" @click="closeModal">
-          Close
-        </button>
-        <button
-          v-if="(modalConclude || modalScript) && fromCustomerProfile"
-          class="button"
-          style="margin-top: 10px"
-          @click="showCustomerContent"
-        >
-          Back
-        </button>
+        <div class="bottomButton">
+          <general-button
+            @click.native="closeModal"
+            >Close</general-button
+          >
+          <general-button
+            v-if="(modalConclude || modalScript) && fromCustomerProfile"
+            @click.native="showCustomerContent"
+            >Back</general-button
+          >
+        </div>
       </div>
     </transition>
   </div>
 </template>
 
 <script>
-import circularProgress from "../../components/CircularProgress.vue";
-import xMark from "@/components/icons/x-mark.vue";
-import check from "@/components/icons/check.vue";
+import concludeContent from "./ConcludeContent.vue";
 import interviewApi from "@/api/interviewApi.js";
 import customerApi from "@/api/customerApi.js";
 import { mapGetters } from "vuex";
+import GeneralButton from "../../components/GeneralButtonNonHover.vue";
 
 export default {
   components: {
-    circularProgress,
-    xMark,
-    check,
+    concludeContent,
+    GeneralButton,
   },
   props: {
     passedID: {
@@ -212,6 +176,9 @@ export default {
     passedScore: {
       type: String,
     },
+    passedImagePath: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -221,6 +188,7 @@ export default {
       customerPhone: this.passedPhone,
       customerEmail: this.passedEmail,
       customerScore: this.passedScore,
+      imagePath: this.passedImagePath,
       editable: false,
     };
   },
@@ -259,12 +227,14 @@ export default {
       this.editable = !this.editable;
     },
     async saveEditedData() {
-      console.log(this.currentID);
       let saveProfile = await customerApi.updateCustomer(
         this.currentID,
         this.customer
       );
       console.log(saveProfile.data);
+    },
+    editName(e){
+      this.$store.commit("setEditedName", e.target.innerText);
     },
     editOcc(e) {
       this.$store.commit("setEditedOcc", e.target.innerText);
@@ -291,7 +261,7 @@ export default {
       this.$store.commit("fromCustomerProfile");
       this.$store.commit("showModalConclude");
     },
-    showInterviewScript() {
+    showInterviewLogs() {
       this.$store.commit("setCustomerLogTrue");
       this.$store.commit("fromCustomerProfile");
       this.$store.commit("showInterviewNotepad");
@@ -305,6 +275,8 @@ export default {
         await interviewApi.updateScript(this.interviewIndex, textObject);
       } else {
         this.$store.commit("setInterviewLogs", textObject.text);
+        let test = await customerApi.updateLogsCustomer(this.currentID, textObject);
+        console.log(test)
       }
     },
   },
@@ -313,6 +285,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.bottomButton{
+  display:flex;
+  gap:20px;
+  margin-top: 20px; 
+}
+
 .fa-star {
   color: #e67100;
   font-size: 20px;
@@ -321,8 +299,9 @@ export default {
   width: 220px;
   height: 220px;
   border-radius: 40px;
-  box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
-    -5px -5px 30px 7px rgba(0, 0, 0, 0.22);
+  // box-shadow: 2px 2px 10px 5px rgba(0, 0, 0, 0.25),
+  //   -2px -2px 10px 5px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   cursor: pointer;
   transition: 0.3s ease-out;
   .card_image {
@@ -362,29 +341,7 @@ export default {
 
 .card:hover {
   transform: scale(0.9, 0.9);
-  box-shadow: 5px 5px 30px 15px rgba(0, 0, 0, 0.25),
-    -5px -5px 30px 15px rgba(0, 0, 0, 0.22);
-}
-
-.button {
-  appearance: none;
-  outline: none;
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 10px 10px;
-  background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
-  border-radius: 8px;
-
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-
-  box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
-  transition: 0.4s ease-out;
-  &:hover {
-    box-shadow: 6px 6px rgba(0, 0, 0, 0.6);
-  }
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 .customerInfoModal {
   position: fixed;
@@ -405,9 +362,6 @@ export default {
   p {
     padding-top: 2px;
     padding-bottom: 3px;
-  }
-  .button {
-    margin-right: 20px;
   }
   .customerContent {
     top: 0;
@@ -441,12 +395,6 @@ export default {
         font-size: 20px;
         font-weight: bold;
       }
-      button {
-        margin-left: 90px;
-        margin-top: 10px;
-        padding: 8px 10px;
-        //   margin: auto;
-      }
     }
 
     .interviewdata {
@@ -464,8 +412,8 @@ export default {
         margin-left: 18px;
         margin-right: 50px;
       }
-      button {
-        padding: 8px 8px;
+      ::v-deep button {
+        margin-left: 30px;
       }
       .interviewdata_content {
         margin-top: 15px;
@@ -485,7 +433,7 @@ export default {
 }
 
 .customerContent,
-.concludeContent,
+::v-deep .concludeContent,
 .interviewLogs {
   grid-column: 1;
   grid-row: 1;
@@ -570,13 +518,13 @@ export default {
 }
 
 .modal-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
+  overflow: auto;
   z-index: 98;
-  height: 150%;
   background-color: rgba(0, 0, 0, 0.3);
 }
 

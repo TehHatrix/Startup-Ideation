@@ -6,7 +6,7 @@ const state = {
   interviewScript: "",
   script: false,
   customerlog: false,
-  fromCustomer: true,
+  fromCustomer: false,
   interviewIndex: 0,
 };
 

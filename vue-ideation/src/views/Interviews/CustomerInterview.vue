@@ -6,12 +6,13 @@
       :key="index"
     >
       <customer-card
-      :passedID="item.cust_ID"
+        :passedID="item.cust_ID"
         :passedName="item.custname"
         :passedOcc="item.custocc"
         :passedEmail="item.custemail"
         :passedPhone="item.cust_phone_num"
         :passedScore="item.custscore"
+        :passedImagePath="item.image_path"
       >
       </customer-card>
     </div>
@@ -36,17 +37,13 @@ export default {
   },
   methods: {
     async addCardInterview(customer_info) {
-      let createCustomer = await customerApi.createCustomer(
-        this.interviewIndex,
-        customer_info
-      );
-      console.log(createCustomer);
+      await customerApi.createCustomer(this.interviewIndex, customer_info);
       this.customerCards.push(customer_info);
     },
 
     async getCustomerInterview() {
       let getCustomer = await customerApi.getAllCustomer(this.interviewIndex);
-
+      console.log(getCustomer);
       for (let item in getCustomer.data) {
         this.customerCards.push(getCustomer.data[item]);
       }
@@ -58,8 +55,7 @@ export default {
   mounted() {
     this.getCustomerInterview();
   },
-  created() {
-  },
+  created() {},
 };
 </script>
 

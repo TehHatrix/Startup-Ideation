@@ -41,6 +41,9 @@ export default {
 </script>
 
 <style>
+#confetti-canvas{
+    z-index: 1000;
+}
 /* .toast-enter-from {
   opacity: 0;
   transform: translateY(-60px);

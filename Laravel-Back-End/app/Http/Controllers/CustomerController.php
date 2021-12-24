@@ -43,7 +43,7 @@ class CustomerController extends Controller
             'occupation' => 'string|required',
             'email' => 'string|required',
             'phone' => 'string|required',
-            'image' => 'nullable'
+            'image' => 'image|nullable'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -52,11 +52,14 @@ class CustomerController extends Controller
             ]);
         }
         $data = $validator->validated();
+        /** @var \Illuminate\Filesystem\FilesystemManager $disk */
         $disk = Storage::disk('gcs');
+        
         $file = $request->file('image');
-        $test = $disk->put('customer-pictures',$file);
-        $customerImageName = time().'-'.$data['name'].'.'.$data['image']->extension();
-        $data['image']->move(public_path('images'),$customerImageName);
+        $appendImage = $disk->put('customer-pictures',$file);
+        $fileName= basename($appendImage);
+        $folderFileName= "customer-pictures/".$fileName;
+        $url = $disk->url($folderFileName);
         $insertCustomer = DB::table('customer')->insert([
             'interview_ID' => $interviewID,
             'custname' => $data['name'],
@@ -64,7 +67,7 @@ class CustomerController extends Controller
             'custocc' => $data['occupation'],
             'cust_phone_num' => $data['phone'],
             'custemail' => $data['email'],
-            'image_path' => $customerImageName,
+            'image_path' => $url,
             'logs' => "",
         ]);
         return  response()->json([
@@ -105,6 +108,7 @@ class CustomerController extends Controller
     public function update(Request $request, $custid)
     {
         $validator = Validator::make($request->all(), [
+            'currentEditedName' => 'string|nullable',
             'currentEditedOcc' => 'string|nullable',
             'currentEditedPhone' => 'string|nullable',
             'currentEditedEmail' => 'string|nullable',
@@ -117,6 +121,7 @@ class CustomerController extends Controller
         }
         $data = $validator->validated();
         $updateDetails = [
+            'custname' => $data['currentEditedName'],
             'custocc' => $data['currentEditedOcc'],
             'cust_phone_num' => $data['currentEditedPhone'],
             'custemail' => $data['currentEditedEmail']
@@ -129,8 +134,58 @@ class CustomerController extends Controller
             'success' => true,
             'errors' => null
         ]);
-        //
     }
+
+    public function updateScore(Request $request, $custid)
+    {
+        $validator = Validator::make($request->all(), [
+            'score' => 'required|between:0,99.99'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $updateDetails = [
+            'custscore' => $data['score'],
+        ]; 
+        $updateScript = DB::table('customer')
+            ->where('cust_ID', '=', $custid)
+            ->update($updateDetails);
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+    public function updateLog(Request $request, $custid)
+    {
+        $validator = Validator::make($request->all(), [
+            'text' => 'string|nullable'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $updateDetails = [
+            'logs' => $data['text'],
+        ]; 
+        $updateScript = DB::table('customer')
+            ->where('cust_ID', '=', $custid)
+            ->update($updateDetails);
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+
+
 
     /**
      * Remove the specified resource from storage.

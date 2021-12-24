@@ -2,21 +2,11 @@
   <div class="containerCircular">
     <div class="outer">
       <div class="inner">
-        <div id="number" v-bind="percentage">
-          {{ percentage + '%'
+        <div id="number" >
+          {{ passedPercentage + '%'
            }}        </div>
       </div>
     </div>
-    <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 34 34">
-      <circle cx="16" cy="16" r="15.9155" class="progress-bar__background" />
-      <circle
-        cx="16"
-        cy="16"
-        r="15.9155"
-        class="progress-bar__progress js-progress-bar"
-      />
-    </svg> -->
-
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="160px" height="160px">
          <defs>
             <linearGradient id="GradientColor">
@@ -24,19 +14,27 @@
                <stop offset="100%" stop-color="#8743FF" />
             </linearGradient>
          </defs>
-         <circle cx="80" cy="80" r="70" stroke-linecap="round" />
+         <transition name="fade" appear>
+           <circle cx="80" cy="80" r="70" stroke-linecap="round" :stroke-dashoffset="strokeOffset" :key="strokeOffset"  />
+         </transition>
+         
  </svg>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      percentage : 65
-    }
+  props: {
+    passedPercentage: {
+      type: Number,
+    },
   },
-
+  computed: {
+  strokeOffset() {
+    let offset = 472-472*(this.passedPercentage/100)
+    return offset;
+  }
+},
 };
 </script>
 
@@ -50,6 +48,7 @@ export default {
   height: 160px;
   width: 160px;
   border-radius: 50%;
+  border: 1 px solid purple;
   padding: 20px;
   box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
     -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
@@ -59,6 +58,7 @@ export default {
   height: 120px;
   width: 120px;
   border-radius: 50%;
+  border: 1 px solid purple;
   display:flex;
   align-items: center;
   justify-content: center;
@@ -78,7 +78,7 @@ circle{
   stroke: url(#GradientColor);
   stroke-width: 20px;
   stroke-dasharray: 472;
-  stroke-dashoffset: 472;
+  // stroke-dashoffset: 472;
   animation: anim 2s linear forwards;
 }
 
@@ -87,38 +87,19 @@ svg{
   top:0;
   left: 0;
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 // calculate for 65% = 472-472 x 0.65 = 165.2
 @keyframes anim{ 
   100%{
-    stroke-dashoffset: 165.2;
+    // stroke-dashoffset: 200;
   } 
 
 }
-
-
-// $progress-bar-stroke-width: 1.8;
-// $progress-bar-size: 100px;
-
-// svg {
-//   height: $progress-bar-size;
-//   transform: rotate(-90deg);
-//   width: $progress-bar-size;
-// }
-
-// .progress-bar__background {
-//   fill: none;
-//   stroke: #e2eff0;
-//   stroke-width: $progress-bar-stroke-width;
-// }
-
-// .progress-bar__progress {
-//   fill: none;
-//   stroke: #e2eff0;
-//   stroke: #448f99;
-//   stroke-dasharray: 100 100;
-//   stroke-dashoffset: 100;
-//   stroke-linecap: round;
-//   stroke-width: $progress-bar-stroke-width;
-//   transition: stroke-dashoffset 1s ease-in-out;
-// }
 </style>
