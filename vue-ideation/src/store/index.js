@@ -10,6 +10,8 @@ import hypothesisRepository from "./hypothesisRepository"
 import toastRepository from "./toastRepository"
 import interviewRepository from "./interviewRepository"
 import customerRepository from "./customerRepository"
+import communicationRepository from './communicationRepository'
+import freeCanvasRepository from './freeCanvasRepository' 
 
 Vue.use(Vuex)
 
@@ -38,6 +40,8 @@ export default new Vuex.Store( {
         toastRepository,
         interviewRepository,
         customerRepository,
+        communicationRepository,
+        freeCanvasRepository,
     }
     
 })

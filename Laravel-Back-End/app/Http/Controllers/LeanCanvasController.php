@@ -20,7 +20,7 @@ class LeanCanvasController extends Controller
 {
     public function index($id) {
         // $customerSegment = LeanCanvas::with('customerSegment')->get();
-        $canvas = LeanCanvas::find($id);
+        $canvas = LeanCanvas::where('project_id', $id)->first();
         $customerSegment = $canvas->customerSegment()->get();
         $problem = $canvas->problem()->get();
         $revenue = $canvas->revenue()->get();

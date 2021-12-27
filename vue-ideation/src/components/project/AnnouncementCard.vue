@@ -1,181 +1,149 @@
 <template lang="">
     <div>
-        <section class="container">
-            <div class="page-title">
-                <span>Free Canvas</span>
-                <button @click="openAddModal" >New</button>
-            </div>
-
-            <div class="page-body ">
-                <div class="grid grid-cols-2">
-
-                    <div v-for="(canvas, index) in freeCanvas" :key="index" class="" >
-                        <!-- <p class="content-card" @click="goContent(canvas.id)" >{{ canvas.name }}</p> -->
-
-                        <div class="notifications__item" @click="goContent(canvas.id)">
-                            <div class="notifications__item__content">
-                                <span class="notifications__item__title">
-                                    {{ canvas.name }}
-                                </span>
-                            </div>
-                            <div >
-                                <div class="notifications__item__option edit"  >
-                                    <font-awesome-icon icon="fa-edit" size="xs"></font-awesome-icon>
-                                </div>
-                                <div class="notifications__item__option delete"  >
-                                    <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
-                                </div>
-                            </div>
-                        </div> 
-
+        <div v-for="(ann, index) in announcement" :key="index">
+            <shrink-card>
+                <div class="notifications__item">
+                    <div class="notifications__item__content">
+                        <span class="notifications__item__title">{{ ann.title }}</span>
+                        <span class=" notifications__item__message">{{ ann.description }}</span>
                     </div>
-                </div>
+                    <div v-if="project.creator_id === user.id">
+                        <div class="notifications__item__option edit"  @click="openEditModal(ann.id, ann.title, ann.description)">
+                            <font-awesome-icon icon="fa-edit" size="xs"></font-awesome-icon>
+                        </div>
+                        <div class="notifications__item__option delete" @click="openDeleteModal(ann.id)" >
+                            <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="notifications__item__option " style="cursor: auto;" >
+                        </div>
+                        <div class="notifications__item__option " style="cursor: auto;" >
+                            
+                        </div>
+                    </div>
+                </div>      
+            </shrink-card>        
+        </div>
 
-            </div>
-        </section>
-        <!-- create canvas modal  -->
         <modal
-         :showModal="showAddModal"
-         @close="closeAddModal">
-            <h2>Add Free Canvas</h2>
-            <form @submit.prevent="addCanvas">
+        :showModal="showEditModal"
+        @close="closeEditModal">
+            <h2 class="modal-title">Update Modal</h2>
+            <form @submit.prevent="updateAnnouncement">
                 <div class="input-container">
-                    <input type="text" id="name" class="material-input" v-model="freeCanvasForm.name" required>
-                    <label for="name" class="material-label">Canvas Name</label>
+                    <input type="text" id="title" class="material-input" v-model="editForm.title" required>
+                    <label for="title" class="material-label">Title</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="description" class="material-input" v-model="editForm.description" required>
+                    <label for="description" class="material-label">Description</label>
                 </div>
                 <div>
-                <button class="general-button">Submit</button>
+                    <button class="general-button">Update</button>
                 </div>
             </form>
         </modal>
-
-        
+        <!-- delete modal -->
+        <modal 
+         :showModal="showDeleteModal"
+         @close="closeDeleteModal">
+            <h2 class="modal-title">Confirm Delete</h2>
+            <div class="btn-container">
+                <button class="c-btn-danger" @click="deleteAnnouncement">Confirm</button>
+                <button class="c-btn-primary-outline" @click="closeDeleteModal">Cancel</button>
+            </div>
+        </modal>
     </div>
 </template>
 <script>
-import ProjectModalVue from '../../components/ProjectModal.vue'
-import api from '../../api/freeCanvasApi'
 import { mapGetters } from 'vuex'
+import ProjectModalVue from '../ProjectModal.vue'
+import ShrinkCardVue from '../ShrinkCard.vue'
+import api from '@/api/communicationApi'
 
 export default {
-    name: 'FreeCanvas',
-    components: {
-        'modal': ProjectModalVue,
+    name: 'AnnouncementCard',
+    components:{
+        'shrink-card': ShrinkCardVue,
+        'modal': ProjectModalVue
     },
+
     computed: {
         ...mapGetters([
+            'announcement',
             'project',
-            'freeCanvas'
-        ])
-    },
-
-    async created() {
-        try {
-            await this.$store.dispatch('getCanvas', this.project.id)
-        } catch (error) {
-            console.log(error)
-        }
-    },
+            'user'
+        ]),
+    },  
 
     data() {
-        return {
-            showAddModal: false,
-            freeCanvasForm: {
-                name: ''
-            },
+        return{
+            showEditModal: false,
 
+            showDeleteModal: false,
+
+            tempId: '',
+            editForm: {
+                title: '',
+                description: ''
+            },
         }
     },
 
     methods: {
-        openAddModal() {
-            this.showAddModal = true
+        openEditModal(id, title, description) {
+            this.tempId = id
+            this.editForm.title = title
+            this.editForm.description = description
+            this.showEditModal = true
         },
 
-        closeAddModal() {
-            this.showAddModal = false 
-            this.freeCanvasForm.name = ''
-        }, 
+        closeEditModal() {
+            this.showEditModal = false
+            this.editForm.title = ''
+            this.editForm.description = ''
+            this.tempId = ''
+        },
 
-        async addCanvas() {
+        async updateAnnouncement() {
             try {
-                let res = await api.addFreeCanvas(this.project.id, this.freeCanvasForm)
-                console.table(res.data)
-                if(res.data.success) {
-                    this.$store.dispatch('getCanvas', this.project.id)
-                    this.closeAddModal()
-                } 
+                let { data } = await api.updateAnnouncement(this.project.id, this.tempId, this.editForm)
+                if(data.success) {
+                    this.showEditModal = false
+                    await this.$store.dispatch('getAnnouncement', this.project.id)
+                }
             } catch (error) {
                 console.log(error)
             }
         },
 
-        goContent(canvasId) {
-            this.$router.push({ name: 'EditorPage', params: {id: this.project.id, canvasId: canvasId} })
+        openDeleteModal(annId) {
+            this.tempId = annId
+            this.showDeleteModal = true
         },
 
-        updateContent() {
+        closeDeleteModal() {
+            this.tempId = '',
+            this.showDeleteModal = false
+        },
 
-        }, 
-
-        deleteContent() {
-            
+        async deleteAnnouncement() {
+            try {
+                let { data } = await api.deleteAnnouncement(this.project.id, this.tempId)
+                if(data.success) {
+                    await this.$store.dispatch('getAnnouncement', this.project.id)
+                    this.showDeleteModal = false 
+                    
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
-    }
-    
+    },
 }
 </script>
-<style lang="scss" scoped>
-    .page-title {
-        background: #fff;
-        border-radius: 1rem;
-        box-shadow: 0 0 40px rgb(0 0 0 / 5%);
-        margin-bottom: 2rem;
-        min-height: 2rem;
-        padding: 1rem 1rem;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        span {
-            letter-spacing: 0.2rem;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        button {
-            border: none;
-            border-radius: .4rem;
-            background: #14213d;
-            color: white;
-            border: 1px solid #14213d;
-            padding: .5rem .5rem;
-            cursor: pointer;
-            transition: all 0.5s ease-in 0.3s;
-            width: 7rem;
-            letter-spacing: .1rem;
-            font-weight: 800;
-        }
-    }
-
-    .page-body {
-        background: #fff;
-        border-radius: 1rem;
-        box-shadow: 0 0 40px rgb(0 0 0 / 5%);
-        height: 45rem;
-        max-height: 45rem;
-        padding: 2rem 1rem;
-        overflow: scroll;        
-    }
-
-    .content-card {
-        background: #e0fbfc;
-        box-shadow: 0 0 40px rgb(0 0 0 / 5%);
-
-    }
-
-
+<style lang="css" scoped>
     .notifications__item {
         display: flex;
         align-items: center;
@@ -189,8 +157,7 @@ export default {
         background-color: white;
         border-radius: 5px;
         transition: all .3s ease-in;
-        border: 3px solid black;
-        cursor: pointer;
+        border: none;
     }
 
     .notifications__item__title,
@@ -353,5 +320,4 @@ export default {
         justify-content: space-between;
         align-items: center;
     }
-    
 </style>

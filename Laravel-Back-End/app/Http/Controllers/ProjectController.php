@@ -56,16 +56,17 @@ class ProjectController extends Controller
 
         $project = Project::create([
             'project_name' => $data['project_name'],
-            'project_description' => $data['project_description']
+            'project_description' => $data['project_description'],
+            'creator_id' => Auth::id()
         ]);
 
         $project->users()->attach(Auth::id());
 
         $leanCanvas = new LeanCanvas;
         $leanCanvas->project()->associate($project->id)->save();
-
         
         // $user = Auth::user();
+        
         // $project = $user->projects()->create([
         //     'project_name' => $data['project_name'],
         //     'project_description' => $data['project_description']
@@ -105,7 +106,13 @@ class ProjectController extends Controller
         //     'collaborator' => $collaborator], 200);
 
         return response()->json([
-            'project' => array('id' => $project['id'],'project_name' => $project['project_name'],'project_description' => $project['project_description'], 'collaborator' => $collaborator),
+            'project' => array(
+                'id' => $project['id'],
+                'project_name' => $project['project_name'],
+                'project_description' => $project['project_description'],
+                'creator_id' => $project['creator_id'],
+                'collaborator' => $collaborator
+            ),
             'success' => true,
             'message' => 'successfull'
         ]);
@@ -234,7 +241,7 @@ class ProjectController extends Controller
 
         $data = $validator->validated();
         
-        $user = User::select('username', 'id', 'name')->where('username', strtolower($data['username']))->first();
+        $user = User::select('username', 'id')->where('username', strtolower($data['username']))->first();
         
         if(!$user) {
             return response()->json([
@@ -251,9 +258,60 @@ class ProjectController extends Controller
 
     }
 
-    public function addCollab() {
+    public function addCollab(Request $request, $projectId) {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required'
+        ]);
 
+        if($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+                'success' => false
+            ]);
+        }
+
+        $data = $validator->validated();
+        $user = User::select('username', 'id')->where('username', strtolower($data['username']))->first();
+        if(!$user) {
+            return response()->json([
+                'user' => $user,
+                'errors' => 'user does not exist',
+                'success' => false
+            ]);
+        }
+
+        $project = Project::find($projectId);
+        $project->users()->attach($user->id);
+
+        return response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
     }
+
+    public function removeCollab(Request $request, $projectId) {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+                'success' => false
+            ]);
+        }
+
+        $data = $validator->validated();
+        $project = Project::find($projectId);
+        $project->users()->detach($data['id']);
+
+        return response()->json([
+            'success' => true,
+            'errors' => null,
+
+        ]);
+
+    } 
 }
 
 

@@ -11,9 +11,14 @@ class FreeCanvasController extends Controller
     public function index($project) {
         $project = Project::findOrFail($project);
         $canvases = $project->canvases()->get();
-        return response([
-            'FreeCanvas' => $canvases
-        ], 200);
+        // return response([
+        //     'FreeCanvas' => $canvases,
+        //     'success' => true
+        // ], 200);
+        return response()->json([
+            'FreeCanvas' => $canvases,
+            'success' => true
+        ]);
     }
 
     public function store(Request $request, $project) {
@@ -22,21 +27,25 @@ class FreeCanvasController extends Controller
             'name' => 'required|string'
         ]);
 
-        // $canvas = Canvas::create([
-        //     'name' => $data['name'],
-        //     'project_id' => $project
-        // ]);
         $project = Project::findOrFail($project);
         $canvas = $project->canvases()->create([
             'name' => $data['name']
         ]);
 
-        return response(['FreeCanvas' => $canvas], 200);
+        // return response(['FreeCanvas' => $canvas, 'success' => true], 200);
+        return response()->json([
+            'FreeCanvas' => $canvas,
+            'success' => true
+        ]);
     }
 
     public function show($project, $id) {
-        $canvas = Canvas::findOrFail($id)->where('project_id', $project);
-        return response(['FreeCanvas' => $canvas], 200);
+        $canvas = Canvas::findOrFail($id);
+        // return response(['FreeCanvas' => $canvas], 200);
+        return response()->json([
+            'FreeCanvas' => $canvas,
+            'success' => true
+        ]);
     }
 
     public function update(Request $request, $project, $id) {
@@ -45,11 +54,19 @@ class FreeCanvasController extends Controller
             'name' => $data['name']
         ]);
 
-        return response(['FreeCanvas' => $canvas], 200);
+        // return response(['FreeCanvas' => $canvas], 200);
+        return response()->json([
+            'FreeCanvas' => $canvas,
+            'success' => true
+        ]);
     }
 
     public function destroy($project, $id) {
         $canvas = Canvas::find($id)->delete();
-        return 'deleted';
+        // return 'deleted';
+        return response()->json([
+            'FreeCanvas' => $canvas,
+            'success' => true
+        ]);
     }
 }

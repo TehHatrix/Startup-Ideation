@@ -132,6 +132,19 @@ const routes = [
     meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,
   },
+  {
+    path: '/projects/:id/freecanvas',
+    name: 'FreeCanvas',
+    component: () => import('../views/FreeCanvas/FreeCanvas.vue'),
+    // beforeEnter: middleware.guest
+  },
+
+  {
+    path: '/projects/:id/freecanvas/:canvasId',
+    name: 'EditorPage',
+    component: () => import('../views/FreeCanvas/EditorPage.vue'),
+    // beforeEnter: middleware.guest,
+  }
 ];
 
 const router = new VueRouter({

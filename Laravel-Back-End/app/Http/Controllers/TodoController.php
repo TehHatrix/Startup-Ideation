@@ -39,7 +39,7 @@ class TodoController extends Controller
 
         $validator = Validator::make($request->all(), [
             'task' => 'required|string',
-            'assigned_to' => 'integer',
+            'assigned_to' => 'integer|nullable',
             'due_date' => 'nullable|date'
         ]);
 
@@ -105,15 +105,10 @@ class TodoController extends Controller
      */
     public function update(Request $request, $project, $id)
     {
-        // $data = $request->validate([
-        //     'task' => 'required|string',
-        //     'assigned_to' => 'nullable|integer',
-        //     'due_date' => 'nullable|date',
-        //     'completed' => 'boolean'
-        // ]);
+
         $validator = Validator::make($request->all(), [
             'task' => 'required|string',
-            'assigned_to' => 'integer',
+            'assigned_to' => 'integer|nullable',
             'due_date' => 'nullable|date',
             'completed' => 'boolean'
         ]);
@@ -127,14 +122,7 @@ class TodoController extends Controller
 
         $data = $validator->validated();
 
-        // $task = Todo::findOrFail($id)->where('project_id', $project)->update([
-        //     'task' => $data['task'],
-        //     'assigned_to' => $data['assigned_to'],
-        //     'due_date' => $data['due_date'],
-        //     'completed' => $data['completed']
-        // ]);
 
-        // $test = Todo::findOrFail($id)->where('project_id', $project);
         $task = Todo::with('project')->where('id', $id)->update([
             'task' => $data['task'],
             'assigned_to' => $data['assigned_to'],
@@ -162,6 +150,32 @@ class TodoController extends Controller
         return response()->json([
             'success' => true
         ], 200);
+    }
+
+    public function taskComplete(Request $request, $projectId, $id) {
+        $validator = Validator::make($request->all(), [
+            'completed' => 'required|boolean'
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+
+        $data = $validator->validated();
+        dd($data);
+
+        $task = Todo::find($id)->update([
+            'completed' => $data['completed']
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+
     }
 
     

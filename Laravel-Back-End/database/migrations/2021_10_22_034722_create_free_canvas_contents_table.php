@@ -15,8 +15,7 @@ class CreateFreeCanvasContentsTable extends Migration
     {
         Schema::create('free_canvas_contents', function (Blueprint $table) {
             $table->id();
-            $table->string('topic');
-            $table->string('content');
+            $table->longText('content');
             $table->integer('publisher_id');
             $table->unsignedBigInteger('free_canvas_id');
             $table->foreign('free_canvas_id')->references('id')->on('free_canvases');

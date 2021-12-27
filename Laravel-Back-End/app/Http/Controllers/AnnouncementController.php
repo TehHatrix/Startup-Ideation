@@ -27,6 +27,7 @@ class AnnouncementController extends Controller
             'title' => 'required', 
             'description' => 'required'
         ]);
+
         if($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'success' => false]);
         }
@@ -78,7 +79,7 @@ class AnnouncementController extends Controller
 
     }
 
-    public function destroy($id) {
+    public function destroy($projectId, $id) {
         $ann = Announcement::find($id);
         if($ann->publisher_id == Auth::id()) {
             $ann->delete();

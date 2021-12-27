@@ -17,6 +17,7 @@ class CreateProjectsTable extends Migration
             $table->id();
             $table->string('project_name');
             $table->string('project_description');
+            $table->bigInteger('creator_id');
             $table->timestamps();
             
         });

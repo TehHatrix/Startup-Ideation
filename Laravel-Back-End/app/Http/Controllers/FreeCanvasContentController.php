@@ -12,6 +12,7 @@ class FreeCanvasContentController extends Controller
 
     public function index($canvas) {
         $content = FreeCanvas::with('contents')->where('id', $canvas);
+        // $content = 
         return response(['content' => $content], 200);
     }
 
