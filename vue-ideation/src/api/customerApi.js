@@ -20,6 +20,10 @@ export default {
 
   async updateLogsCustomer(custID,logs){
     return api.post(`api/customer/update/${custID}/logs`,logs);
+  },
+
+  async deleteCustomer(custID){
+    return api.delete(`api/customer/delete/${custID}`);
   }
 
 

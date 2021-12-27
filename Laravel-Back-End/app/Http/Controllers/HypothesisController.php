@@ -195,23 +195,36 @@ class HypothesisController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($customerproblem_id)
-    {
-        $CustomerProblem_item = CustomerProblem::find($customerproblem_id);
-        if ($CustomerProblem_item) {
-            $customersegmentcp_id = $CustomerProblem_item->cs_ID;
-            $problemcp_id = $CustomerProblem_item->problem_ID;
-            $customer_segment = CustomerSegment::find($customersegmentcp_id);
-            $problem = Problem::find($problemcp_id);
-            $Hypotheses = Hypotheses::where('CustomerProblem_ID', $customerproblem_id);
-            // $Interview = Interview::where('hypothesis_ID',)
-            if ($Hypotheses) {
-                $Hypotheses->delete();
-            }
-            $CustomerProblem_item->delete();
-            // $customer_segment-> delete();
-            // $problem->delete();
+    // public function destroy($customerproblem_id)
+    // {
+    //     $CustomerProblem_item = CustomerProblem::find($customerproblem_id);
+    //     if ($CustomerProblem_item) {
+    //         $customersegmentcp_id = $CustomerProblem_item->cs_ID;
+    //         $problemcp_id = $CustomerProblem_item->problem_ID;
+    //         $customer_segment = CustomerSegment::find($customersegmentcp_id);
+    //         $problem = Problem::find($problemcp_id);
+    //         $Hypotheses = Hypotheses::where('CustomerProblem_ID', $customerproblem_id);
+    //         // $Interview = Interview::where('hypothesis_ID',)
+    //         if ($Hypotheses) {
+    //             $Hypotheses->delete();
+    //         }
+    //         $CustomerProblem_item->delete();
+    //         // $customer_segment-> delete();
+    //         // $problem->delete();
+    //     }
+    //     //
+    // }
+
+    public function deleteHypothesis($hypothesisID){
+        $interviewID = DB::table('interview')->where('hypothesis_ID','=',$hypothesisID)->value('interview_ID');
+        $customerInterviewList = DB::table('customer')->where('interview_ID','=',$interviewID)->pluck('cust_ID');
+        foreach ($customerInterviewList as $customerID){
+            DB::table('customer')->where('cust_ID','=',$customerID)->delete();
         }
-        //
+        DB::table('interview')->where('hypothesis_ID','=',$hypothesisID)->delete();
+        DB::table('hypotheses')->where('hypothesis_ID','=',$hypothesisID)->delete();
+        return response()->json(['success' => true, 'message' => 'successfully deleted']);
+        
+
     }
 }

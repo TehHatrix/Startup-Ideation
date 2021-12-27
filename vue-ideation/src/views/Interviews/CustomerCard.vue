@@ -1,17 +1,24 @@
 <template>
   <div>
-    <div class="card" @click="showModalCustomer">
-      <div class="card_image">
-        <img :src="imagePath" />
+    <div class="cardContainer">
+      <div class="cardTop">
+        <disabled-button @click.native="deleteCustomer(customerID)">
+          <font-awesome-icon icon="fa-solid fa-trash-can"
+        /></disabled-button>
       </div>
-      <div class="customer_data">
-        <p>
-          <strong>{{ customerName }}</strong>
-        </p>
-        <p class="occupation">{{ customerOcc }}</p>
-        <p class="rating">
-          {{ customerScore }}<font-awesome-icon icon="fa-solid fa-star" />
-        </p>
+      <div class="card" @click="showModalCustomer">
+        <div class="card_image">
+          <img :src="imagePath" />
+        </div>
+        <div class="customer_data">
+          <p>
+            <strong>{{ customerName }}</strong>
+          </p>
+          <p class="occupation">{{ customerOcc }}</p>
+          <p class="rating">
+            {{ customerScore }}<font-awesome-icon icon="fa-solid fa-star" />
+          </p>
+        </div>
       </div>
     </div>
 
@@ -31,7 +38,11 @@
               <div class="customerInfo">
                 <img :src="imagePath" />
                 <p class="custName">
-                  <strong :contentEditable="contenteditable" @blur="editName($event)">{{ customerName }}</strong>
+                  <strong
+                    :contentEditable="contenteditable"
+                    @blur="editName($event)"
+                    >{{ customerName }}</strong
+                  >
                 </p>
                 <p class="custRating">
                   <strong>Current Rating</strong>
@@ -130,10 +141,7 @@
           </transition>
         </div>
         <div class="bottomButton">
-          <general-button
-            @click.native="closeModal"
-            >Close</general-button
-          >
+          <general-button @click.native="closeModal">Close</general-button>
           <general-button
             v-if="(modalConclude || modalScript) && fromCustomerProfile"
             @click.native="showCustomerContent"
@@ -151,11 +159,13 @@ import interviewApi from "@/api/interviewApi.js";
 import customerApi from "@/api/customerApi.js";
 import { mapGetters } from "vuex";
 import GeneralButton from "../../components/GeneralButtonNonHover.vue";
+import DisabledButton from "../../components/DisabledButton.vue";
 
 export default {
   components: {
     concludeContent,
     GeneralButton,
+    DisabledButton,
   },
   props: {
     passedID: {
@@ -223,6 +233,10 @@ export default {
     ]),
   },
   methods: {
+    async deleteCustomer(customerID) {
+      await customerApi.deleteCustomer(customerID);
+      this.$router.go();
+    },
     editableToggle() {
       this.editable = !this.editable;
     },
@@ -233,7 +247,7 @@ export default {
       );
       console.log(saveProfile.data);
     },
-    editName(e){
+    editName(e) {
       this.$store.commit("setEditedName", e.target.innerText);
     },
     editOcc(e) {
@@ -275,8 +289,11 @@ export default {
         await interviewApi.updateScript(this.interviewIndex, textObject);
       } else {
         this.$store.commit("setInterviewLogs", textObject.text);
-        let test = await customerApi.updateLogsCustomer(this.currentID, textObject);
-        console.log(test)
+        let test = await customerApi.updateLogsCustomer(
+          this.currentID,
+          textObject
+        );
+        console.log(test);
       }
     },
   },
@@ -285,17 +302,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.bottomButton{
-  display:flex;
-  gap:20px;
-  margin-top: 20px; 
+.bottomButton {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .fa-star {
   color: #e67100;
   font-size: 20px;
 }
+
 .card {
+  position: relative;
   width: 220px;
   height: 220px;
   border-radius: 40px;
@@ -339,7 +358,24 @@ export default {
   }
 }
 
-.card:hover {
+.cardContainer {
+  position: relative;
+  border-radius: 40px;
+  transition: 0.3s ease-out;
+  .cardTop {
+    position: absolute;
+    left: -20px;
+    z-index: 10;
+    ::v-deep button {
+      cursor: pointer;
+      width: 45px;
+      height: 35px;
+      border-radius: 15px;
+    }
+  }
+}
+
+.cardContainer:hover {
   transform: scale(0.9, 0.9);
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }

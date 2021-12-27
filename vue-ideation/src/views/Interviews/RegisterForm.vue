@@ -27,7 +27,7 @@
         class="forwardButton"
         @click.native="checkStep"
       ></arrow-right>
-      <div id="inputContainer" :class="{ showContainer: showContainer }" >
+      <div id="inputContainer" :class="{ showContainer: showContainer }">
         <form @submit.prevent="checkStep" enctype="multipart/form-data">
           <input
             id="inputField"
@@ -42,14 +42,18 @@
             for="inputField"
             class="uploadButton"
             ><font-awesome-icon icon="fa-solid fa-arrow-up-from-bracket" />
-            Upload Customer Image</label>
-          <span v-if="inputType === 'file'" id="uploadStatus">{{ uploadStatus }}</span>
+            Upload Customer Image</label
+          >
+          <span v-if="inputType === 'file'" id="uploadStatus">{{
+            uploadStatus
+          }}</span>
           <!-- <label id="inputLabel" v-if="inputFile">{{ inputLabel }}</label> -->
           <label id="inputLabel" :style="inputFile">{{ inputLabel }}</label>
         </form>
         <div
           v-if="inputType === 'text' || inputType === 'phone'"
-          id="inputProgress"></div>
+          id="inputProgress"
+        ></div>
       </div>
     </div>
   </div>
@@ -128,18 +132,10 @@ export default {
       }
     },
     passAddCardParent() {
-      this.selectedFile.append("name",this.registerSteps[0].value)
-      this.selectedFile.append("occupation",this.registerSteps[1].value)
-      this.selectedFile.append("email",this.registerSteps[2].value)
-      this.selectedFile.append("phone",this.registerSteps[3].value)
-
-      // let customer = {
-      //   name: this.registerSteps[0].value,
-      //   occupation: this.registerSteps[1].value,
-      //   email: this.registerSteps[2].value,
-      //   phone: this.registerSteps[3].value,
-      //   image: this.selectedFile,
-      // };
+      this.selectedFile.append("name", this.registerSteps[0].value);
+      this.selectedFile.append("occupation", this.registerSteps[1].value);
+      this.selectedFile.append("email", this.registerSteps[2].value);
+      this.selectedFile.append("phone", this.registerSteps[3].value);
       this.$emit("addCard", this.selectedFile);
     },
     setStep() {
@@ -192,6 +188,9 @@ export default {
             this.showFinal = true;
           }, 1000);
           this.passAddCardParent();
+          setTimeout(() => {
+            this.$router.go();
+          }, 2000);
         });
       }
     },

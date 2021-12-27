@@ -30,8 +30,13 @@ export default {};
 background: linear-gradient(180deg, #FF3156 0%, #B10404 100%);
   border: none;
   border-radius: 45px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.212);
+  box-shadow: 0px 8px 15px rgba(255, 67, 67, 0.425);
   transition: all 0.3s ease 0s;
   outline: none;
   }
+
+  .button:hover {
+  box-shadow: 0px 15px 20px rgba(255, 67, 67, 0.425);
+  transform: translateY(-7px);
+}
 </style>

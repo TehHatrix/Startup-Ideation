@@ -43,6 +43,7 @@ Route::prefix('/hypothesis')->group(function () {
     Route::put('/{id}', [HypothesisController::class, 'update']);
     Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class, 'updateCustomerProblem']);
     Route::delete('/custprob/{customerproblem_id}', [HypothesisController::class, 'destroy']);
+    Route::delete('/delete/{hypothesisID}', [HypothesisController::class, 'deleteHypothesis']);
 });
 
 
@@ -61,6 +62,7 @@ Route::prefix('/customer')->group(function () {
     Route::post('/update/{custID}', [CustomerController::class, 'update']);
     Route::post('/update/{custID}/score', [CustomerController::class, 'updateScore']);
     Route::post('/update/{custID}/logs', [CustomerController::class, 'updateLog']);
+    Route::delete('/delete/{custID}', [CustomerController::class, 'deleteCustomer']);
     // Route::post('/updatescript/{interviewID}', [CustomerController::class, 'updateScript']);
     // Route::put('/{id}', [HypothesisController::class,'update']);
     // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);

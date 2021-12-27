@@ -193,8 +193,9 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function deleteCustomer($customerid)
     {
-        //
+        DB::table('customer')->where('cust_ID','=',$customerid)->delete();
+        return response()->json(['success' => true, 'message' => 'successfully deleted']);
     }
 }

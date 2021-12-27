@@ -8,5 +8,9 @@ export default {
     return api.get(`api/getinterviewIDbyHypothesis/${hypothesisID}`)
    },
 
+  async deleteHypothesis(hypothesisID){
+    return api.delete(`api/hypothesis/delete/${hypothesisID}`)
+  }
+
   
 };

@@ -4,8 +4,9 @@
       <table>
         <thead>
           <tr>
+            <th class="theadNone"></th>
             <th>Customer Segment</th>
-            <th></th>
+            <th class="bridge"></th>
             <th>Problems</th>
             <th>Pain</th>
             <th>Feedback Cycle</th>
@@ -14,8 +15,20 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) in custseg_data" :key="index">
+            <div v-if="item.definedStatus" class="deleteEditButton">
+              <disabled-button class="trashButton" @click.native="deleteHypothesis(item.hypothesisID)"
+                ><font-awesome-icon icon="fa-solid fa-trash-can"
+              /></disabled-button>
+              <general-button-non-hover @click.native="updateHypothesis(item.hypothesisID,index)"
+                  ><font-awesome-icon icon="fa-solid fa-pen-to-square"
+              /></general-button-non-hover>
+            </div>
+            <div v-else>
+            </div>
+
             <td>
               <p id="cust_seg">{{ item.customerSegment }}</p>
+              {{ item.definedStatus }}
             </td>
             <td>has a problems of</td>
             <td>
@@ -58,29 +71,31 @@
                 @getHypothesisData="appendFeedback"
               ></hypothesis-dropdown>
             </td>
-            <div v-if="item.definedStatus">
-              <general-button @click.native="handleResume(item.hypothesisID)"
-                >Resume Interview</general-button
-              >
-            </div>
-            <div v-else-if="modaldisabled[index]">
-              <disabled-button>Disabled</disabled-button>
-            </div>
-            <div v-else>
-              <Modal
-                @routeInterview="routeInterview"
-                @clickedObjective="appendLearningObjectives"
-                @clickedGoal="appendGoal"
-                @click.native="handleModal(index)"
-              >
-                <template #hypothesisTitle>
-                  <h2>
-                    {{ item.customerSegment }} has a problems of
-                    {{ item.problemsTopic }}
-                  </h2>
-                </template>
-              </Modal>
-            </div>
+            <td id="actionButton">
+              <div v-if="item.definedStatus">
+                <general-button @click.native="handleResume(item.hypothesisID)"
+                  >Resume Interview</general-button
+                >
+              </div>
+              <div v-else-if="modaldisabled[index]">
+                <disabled-button>Disabled</disabled-button>
+              </div>
+              <div v-else>
+                <Modal
+                  @routeInterview="routeInterview"
+                  @clickedObjective="appendLearningObjectives"
+                  @clickedGoal="appendGoal"
+                  @click.native="handleModal(index)"
+                >
+                  <template #hypothesisTitle>
+                    <h2>
+                      {{ item.customerSegment }} has a problems of
+                      {{ item.problemsTopic }}
+                    </h2>
+                  </template>
+                </Modal>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -95,6 +110,7 @@ import DisabledButton from "../components/DisabledButton.vue";
 import hypothesisApi from "@/api/hypothesisApi";
 import interviewApi from "@/api/interviewApi";
 import GeneralButton from "../components/GeneralButton.vue";
+import GeneralButtonNonHover from "../components/GeneralButtonNonHover.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -102,12 +118,14 @@ export default {
     HypothesisDropdown,
     DisabledButton,
     GeneralButton,
+    GeneralButtonNonHover,
   },
   created() {
     this.getHypothesisData();
   },
   data() {
     return {
+      editable: false,
       modaldisabled: [],
       paindefined: [],
       feedbackdefined: [],
@@ -148,6 +166,18 @@ export default {
     ...mapGetters(["interviewIndex"]),
   },
   methods: {
+    async deleteHypothesis(hypothesisID){
+      await hypothesisApi.deleteHypothesis(hypothesisID);
+      this.$router.go();
+    },
+    async updateHypothesis(hypothesisID,index){
+      this.editable = true;
+      console.log(this.custseg_data)
+      // this.$set(this.custseg_data, this.custseg_data[index].definedStatus, false);
+      this.$set(this.custseg_data[index],'definedStatus', (this.custseg_data[index].definedStatus == false));
+      console.log(this.custseg_data)
+      // console.log(hypothesisID);
+    },
     show() {
       this.$modal.show("pre-interview-modal");
     },
@@ -331,6 +361,7 @@ export default {
           this.$store.dispatch("checkHypothesisInitialized", index);
           this.modaldisabled[index] = true;
         }
+        console.log(this.custseg_data)
       } catch (error) {
         console.log(error);
       }
@@ -340,9 +371,28 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang = 'scss'>
 * {
   margin: auto;
+}
+
+.theadNone {
+  background: #f9f9f9;
+}
+
+.deleteEditButton {
+  ::v-deep button {
+    width: 40px;
+    height: 30px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+}
+
+#actionButton {
+  ::v-deep button {
+    margin-top: 5px;
+  }
 }
 
 .styled-table {
