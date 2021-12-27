@@ -117,275 +117,430 @@
             </form>
         </modal>
 
+<!-- Validation modal -->
+            <div class="validationContainer">
+      <h2>Validation</h2>
+      <div class="validationCard">
+        <div class="cardProgress" :class="validationProgress"></div>
+        <div class="cardContent">
+          <p>
+            <strong>{{ phaseUpperCase }} Validation</strong>
+          </p>
+          <p>3 {{ phaseUpperCase }} Validation to Complete</p>
+        </div>
+        <div class="cardFooter">
+          <div class="logoCard">
+            <circle-check></circle-check>
+          </div>
+
+          <p>
+            <strong>Validate {{ phaseUpperCase }} Now</strong> <br />
+            Complete the current validation phase to unlock new phase along the
+            way.
+          </p>
+          <general-button @click.native="handleValidate"
+            >Validate Now!</general-button
+          >
+        </div>
+      </div>
+    </div>
+
     </div>
 </template>
 <script>
-import ProjectModal from '@/components/ProjectModal.vue'
-import { mapGetters } from 'vuex'
-import api from '@/api/projectApi'
-import AnnouncementCardVue from '../../components/project/AnnouncementCard.vue'
-import CollabCardVue from '../../components/project/CollabCard.vue'
-import annApi from '@/api/communicationApi'
+import ProjectModal from "@/components/ProjectModal.vue";
+import { mapGetters } from "vuex";
+import api from "@/api/projectApi";
+import AnnouncementCardVue from "../../components/project/AnnouncementCard.vue";
+import CollabCardVue from "../../components/project/CollabCard.vue";
+import annApi from "@/api/communicationApi";
+import GeneralButton from "../../components/GeneralButton.vue";
+import CircleCheck from "../../components/icons/circleCheck.vue";
 
 export default {
-    name: 'Project',
-    data() {
-        return {
-            projectId: this.$route.params.id,
+  name: "Project",
+  data() {
+    return {
+      projectId: this.$route.params.id,
 
-            showSettingModal: false,
-            updatedProjectForm: {
-                project_name: '',
-                project_description: '',
-            },
+      showSettingModal: false,
+      updatedProjectForm: {
+        project_name: "",
+        project_description: "",
+      },
 
-            showDeleteModal: false,
+      showDeleteModal: false,
 
-            showAnnounModal: false,
-            announForm: {
-                title: '',
-                description: '',
-                
-            }
-        }
-    },
+      showAnnounModal: false,
+      announForm: {
+        title: "",
+        description: "",
+      },
+      validationPhase: "hypothesis",
+    };
+  },
 
-    components: {
-        'modal': ProjectModal,
-        'announcement-card': AnnouncementCardVue,
-        'collaborator-card': CollabCardVue
-    },
+  components: {
+    modal: ProjectModal,
+    "announcement-card": AnnouncementCardVue,
+    "collaborator-card": CollabCardVue,
+    GeneralButton,
+    CircleCheck,
+  },
 
-    async created() {
-        try {
-            await this.$store.dispatch('getProject', this.projectId)
-            // console.log(this.announcement)
-            if(this.announcement === null) {
-                await this.$store.dispatch('getAnnouncement', this.projectId)
-            }
+  async created() {
+    try {
+      await this.$store.dispatch("getProject", this.projectId);
+      // console.log(this.announcement)
+      if (this.announcement === null) {
+        await this.$store.dispatch("getAnnouncement", this.projectId);
+      }
 
-            // console.log('after created')
-        } catch (error) {
-            console.log(error)
-        }
-    },
-
-    computed: {
-        ...mapGetters([
-            'project',
-            'collaborator',
-            'user',
-            'announcement'
-        ])
-
-    },
-
-    methods: {
-
-        resetSettingModal() {
-            this.showSettingModal = false
-            this.updatedProjectForm.project_name = this.project.project_name
-            this.updatedProjectForm.project_description = this.project.project_description
-
-        },
-
-        openSettingModal() {
-            this.updatedProjectForm.project_name = this.project.project_name
-            this.updatedProjectForm.project_description = this.project.project_description
-            this.showSettingModal = true
-
-        },
-
-        confirmDelete() {
-            this.showDeleteModal = true
-        },
-
-        async deleteProject() {
-            try {
-                let {data} = await api.deleteProject(this.projectId)
-                if(data.success) {
-                    this.$router.push({name: 'ProjectsList'})
-                } else {
-                    alert("fail")
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        },
-
-        async updateProject() {
-            try {
-                let res = await api.updateProject(this.projectId, this.updatedProjectForm)
-
-                if(res.data.success) {
-                    await this.$store.dispatch('getProject', this.projectId)
-                    // !!!! check this later thus performance gain significant
-                    this.$store.dispatch('getProjects')
-
-                    this.resetSettingModal()
-                } else if(!res.data.success || res.status !== 200) {
-                    // !temp
-                    alert("unsuccessful")
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        },
-
-        closeAnnounModal() {
-            this.showAnnounModal = false
-            this.announForm.title = ''
-            this.announForm.description = ''
-        },
-
-        async addAnnouncement() {
-            try {
-                let { data } = await annApi.postAnnouncement(this.project.id, this.announForm)
-                if(data.success) {
-                    await this.$store.dispatch('getAnnouncement', this.project.id)
-                    this.closeAnnounModal()
-                } else {
-                    alert('error')
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        },
+      // console.log('after created')
+    } catch (error) {
+      console.log(error);
     }
-}
+  },
+
+  computed: {
+    ...mapGetters(["project", "collaborator", "user", "announcement"]),
+    phaseUpperCase() {
+      return (
+        this.validationPhase.charAt(0).toUpperCase() +
+        this.validationPhase.slice(1)
+      );
+    },
+    validationProgress() {
+      return {
+        hypothesis: this.validationPhase == "hypothesis",
+        landing: this.validationPhase == "landing",
+        survey: this.validationPhase == "survey",
+      };
+    },
+  },
+
+  methods: {
+    handleValidate() {
+      if (this.validationPhase == "hypothesis") {
+        this.$router.push("/hypothesis");
+      } else if (this.validationPhase == "landing") {
+        this.$router.push({ name: "LandingEditor" });
+      } else if (this.validationPhase == "survey") {
+        this.$router.push({ name: "SurveyDashboard" });
+      }
+    },
+    resetSettingModal() {
+      this.showSettingModal = false;
+      this.updatedProjectForm.project_name = this.project.project_name;
+      this.updatedProjectForm.project_description =
+        this.project.project_description;
+    },
+
+    openSettingModal() {
+      this.updatedProjectForm.project_name = this.project.project_name;
+      this.updatedProjectForm.project_description =
+        this.project.project_description;
+      this.showSettingModal = true;
+    },
+
+    confirmDelete() {
+      this.showDeleteModal = true;
+    },
+
+    async deleteProject() {
+      try {
+        let { data } = await api.deleteProject(this.projectId);
+        if (data.success) {
+          this.$router.push({ name: "ProjectsList" });
+        } else {
+          alert("fail");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async updateProject() {
+      try {
+        let res = await api.updateProject(
+          this.projectId,
+          this.updatedProjectForm
+        );
+
+        if (res.data.success) {
+          await this.$store.dispatch("getProject", this.projectId);
+          // !!!! check this later thus performance gain significant
+          this.$store.dispatch("getProjects");
+
+          this.resetSettingModal();
+        } else if (!res.data.success || res.status !== 200) {
+          // !temp
+          alert("unsuccessful");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    closeAnnounModal() {
+      this.showAnnounModal = false;
+      this.announForm.title = "";
+      this.announForm.description = "";
+    },
+
+    async addAnnouncement() {
+      try {
+        let { data } = await annApi.postAnnouncement(
+          this.project.id,
+          this.announForm
+        );
+        if (data.success) {
+          await this.$store.dispatch("getAnnouncement", this.project.id);
+          this.closeAnnounModal();
+        } else {
+          alert("error");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
-    .dashboard-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+.dashboard-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-        .dashboard-title-name h1 {
-            text-transform: uppercase;
-            position: relative;
-            letter-spacing: 0.2rem;
-            padding: 0;
-            margin: 0;
-            font-weight: bold;
-            font-size: 3rem;
-            color: #080808;
-            -webkit-transition: all 0.4s ease 0s;
-            -o-transition: all 0.4s ease 0s;
-            transition: all 0.4s ease 0s;
+  .dashboard-title-name h1 {
+    text-transform: uppercase;
+    position: relative;
+    letter-spacing: 0.2rem;
+    padding: 0;
+    margin: 0;
+    font-weight: bold;
+    font-size: 3rem;
+    color: #080808;
+    -webkit-transition: all 0.4s ease 0s;
+    -o-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
 
-            span {
-                font-size: 1.15rem;
-                font-weight: 500;
-                text-transform: uppercase;
-                letter-spacing: 0.1rem;
-                line-height: 3em;
-                padding-left: 0.25em;
-                color: rgba(0, 0, 0, 0.4);
-                padding-bottom: 10px;
-                display: block;
-            }
-        }
-
-
+    span {
+      font-size: 1.15rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1rem;
+      line-height: 3em;
+      padding-left: 0.25em;
+      color: rgba(0, 0, 0, 0.4);
+      padding-bottom: 10px;
+      display: block;
     }
+  }
+}
 
-    .modal-title {
-        letter-spacing: 0.25rem;
+.modal-title {
+  letter-spacing: 0.25rem;
+}
+
+.delete-modal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.c-btn-danger {
+  margin-right: 0.5rem;
+}
+
+.side {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    letter-spacing: 2px;
+    color: #0b090a;
+  }
+}
+
+#quick-access {
+  margin-bottom: 2rem;
+  h2 {
+    letter-spacing: 0.2rem;
+    font-size: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #000;
+  }
+
+  .grid {
+    justify-items: center;
+  }
+
+  .grid > .card-white {
+    padding: 0.5rem 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 8rem;
+    width: 10rem;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.2rem;
+    background: white;
+    color: #343a40;
+    text-decoration: none;
+  }
+}
+
+.announcement-card {
+  box-shadow: 0 0 2rem -1rem rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+
+  .announcement-title {
+    background-color: #14213d;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    letter-spacing: 0.1rem;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+  }
+
+  .announcement-body {
+    max-height: 25rem;
+    padding-top: 2rem;
+    min-height: 20rem;
+    overflow: scroll;
+    background-color: #e5e5e5;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+  }
+}
+
+.btn-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#cancel-btn {
+  margin-right: 1rem;
+}
+
+.validationCard {
+  height: 200px;
+  width: 100%;
+  max-width: 1000px;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.16), 0 5px 8px rgba(0, 0, 0, 0.23);
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  &:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  }
+  .cardContent {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    p {
+      margin-left: 20px;
+      margin-right: 20px;
     }
-
-
-    .delete-modal {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
+  }
+  .cardFooter {
+    position: absolute;
+    border-radius: inherit;
+    display: flex;
+    justify-content: space-between;
+    background: linear-gradient(180deg, #8843ff1c 0%, #4236f125 100%);
+    position: relative;
+    top: 20px;
+    height: 115px;
+    p {
+      margin-top: 30px;
     }
-
-    .c-btn-danger {
-        margin-right: 0.5rem;
+    ::v-deep button {
+      margin-right: 10px;
     }
-
-    .side {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-
-        h2 {
-            letter-spacing: 2px;
-            color: #0b090a;
-        }
+    .logoCard {
+      height: 60px;
+      width: 60px;
+      background: #ffffff;
+      border-radius: 10px;
+      align-self: center;
+      margin-left: 10px;
+      ::v-deep svg {
+        height: 45px;
+        width: 45px;
+        text-align: center;
+        margin-left: 7px;
+        margin-top: 5px;
+      }
     }
+  }
+}
 
-    #quick-access {
-        margin-bottom: 2rem;
-        h2 {
-            letter-spacing: 0.2rem;
-            font-size: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #000;
-        }
+.cardProgress {
+  position: relative;
+  display: block;
+  right: 0;
+  top: 0;
+  left: 5px;
+  width: 0%;
+  border-radius: 20px;
+  height: 10px;
+  background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+}
 
-        .grid {
-            justify-items: center;
+.hypothesis {
+  width: 33.33%;
+}
 
-        }
+.landing {
+  width: 66.66%;
+}
 
-        .grid > .card-white {
-            
-            padding: 0.5rem 0.5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            height: 8rem;
-            width: 10rem;
-            cursor: pointer;
-            font-weight: bold;
-            letter-spacing: 0.2rem;
-            background: white;
-            color: #343a40;
-            text-decoration: none;
-        }
+.survey {
+  width: 99.99%;
+}
+
+.cardFooter {
+  position: absolute;
+  border-radius: inherit;
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(180deg, #8843ff1c 0%, #4236f125 100%);
+  position: relative;
+  top: 20px;
+  height: 115px;
+  p {
+    margin-top: 30px;
+  }
+  ::v-deep button {
+    margin-right: 10px;
+  }
+  .logoCard {
+    height: 60px;
+    width: 60px;
+    background: #ffffff;
+    border-radius: 10px;
+    align-self: center;
+    margin-left: 10px;
+    ::v-deep svg {
+      height: 45px;
+      width: 45px;
+      text-align: center;
+      margin-left: 7px;
+      margin-top: 5px;
     }
-
-    .announcement-card {
-        box-shadow:0 0 2rem -1rem rgba(0,0,0,.05);
-        border-radius: 1rem;
-        margin-bottom: 2rem;
-
-        .announcement-title {
-            background-color: #14213d;   
-            color: white;
-            padding: 0.2rem 0.5rem;
-            letter-spacing: .1rem;
-            font-size: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top-left-radius: 1rem;
-            border-top-right-radius: 1rem;
-        }
-
-        .announcement-body {
-            max-height: 25rem;
-            padding-top: 2rem;
-            min-height: 20rem;
-            overflow: scroll;
-            background-color: #e5e5e5;
-            border-bottom-left-radius: 1rem;
-            border-bottom-right-radius: 1rem;
-        }   
-    }
-
-    .btn-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    #cancel-btn {
-        margin-right: 1rem;
-    }
-
+  }
+}
 </style>
