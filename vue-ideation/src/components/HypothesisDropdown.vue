@@ -1,9 +1,9 @@
 
 <template>
   <div class="container">
-    <div class="select-box" :class="{disable: disabled}">
+    <div class="select-box" :class="{disable: disableDropdown}">
       <div class="options-container" :class="{ active: selectedActive }">
-        <div v-if="currentStep == 1 && disabled == false">
+        <div v-if="currentStep == 1 && disableDropdown == false">
           <div v-for="(option, index) in optionsValueFirst" :key="index">
             <div class="option" @click="handleOptions(option)">
               <input type="radio" class="radio" name="category" />
@@ -14,7 +14,7 @@
         <transition name="fade" appear>
           <div
             v-if="
-              currentStep == 2 && dropdownType == 'pain' && disabled == false
+              currentStep == 2 && dropdownType == 'pain' && disableDropdown == false
             "
           >
             <div v-for="(option, index) in optionsValueSecond" :key="index">
@@ -26,7 +26,7 @@
           </div>
         </transition>
       </div>
-      <div class="selected" :class="{disable: disabled}" :value="selectedValue" @click="toggleSelected">
+      <div class="selected" :class="{disable: disableDropdown}" :value="selectedValue" @click="toggleSelected">
         <div v-if="defaultDisplayCondition">Define {{ dropdownType }}</div>
         <div v-else>
           {{ selectedDisplay }}
@@ -82,7 +82,7 @@ export default {
         severity: this.passedSeverity,
         feedback: this.passedFeedback,
       },
-      disabled: this.disableDropdown,
+      // disabled: this.disableDropdown,
       selectedActive: false,
       currentStep: 1,
     };
@@ -143,7 +143,7 @@ export default {
   },
   methods: {
     toggleSelected() {
-      if (this.disabled == false) {
+      if (this.disableDropdown == false) {
         this.selectedActive = !this.selectedActive;
       }
     },

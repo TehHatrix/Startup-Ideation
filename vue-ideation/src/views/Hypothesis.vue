@@ -16,27 +16,38 @@
         <tbody>
           <tr v-for="(item, index) in custseg_data" :key="index">
             <div v-if="item.definedStatus" class="deleteEditButton">
-              <disabled-button class="trashButton" @click.native="deleteHypothesis(item.hypothesisID)"
+              <disabled-button
+                class="trashButton"
+                @click.native="deleteHypothesis(item.hypothesisID)"
                 ><font-awesome-icon icon="fa-solid fa-trash-can"
               /></disabled-button>
-              <general-button-non-hover @click.native="updateHypothesis(item.hypothesisID,index)"
-                  ><font-awesome-icon icon="fa-solid fa-pen-to-square"
+              <general-button-non-hover
+                @click.native="updateHypothesis(item.hypothesisID, index)"
+                ><font-awesome-icon icon="fa-solid fa-pen-to-square"
               /></general-button-non-hover>
             </div>
-            <div v-else>
-            </div>
+            <div v-else></div>
 
             <td>
               <p id="cust_seg">{{ item.customerSegment }}</p>
-              {{ item.definedStatus }}
             </td>
             <td>has a problems of</td>
             <td>
               <p id="problems">{{ item.problemsTopic }}</p>
             </td>
             <td id="freqSliders">
+              {{ editable[index] }}
               <hypothesis-dropdown
-                v-if="item.definedStatus"
+                v-if="editable[index]"
+                dropdownType="pain"
+                :passedFrequency="item.painFrequency"
+                :passedSeverity="item.painSeverity"
+                :disableDropdown="false"
+                :currentIndex="index"
+                @getHypothesisData="appendFrequencySeverity"
+              ></hypothesis-dropdown>
+              <hypothesis-dropdown
+                v-else-if="item.definedStatus"
                 dropdownType="pain"
                 :passedFrequency="item.painFrequency"
                 :passedSeverity="item.painSeverity"
@@ -44,6 +55,7 @@
                 :currentIndex="index"
                 @getHypothesisData="appendFrequencySeverity"
               ></hypothesis-dropdown>
+
               <hypothesis-dropdown
                 v-else
                 dropdownType="pain"
@@ -125,7 +137,7 @@ export default {
   },
   data() {
     return {
-      editable: false,
+      editable: [],
       modaldisabled: [],
       paindefined: [],
       feedbackdefined: [],
@@ -166,17 +178,12 @@ export default {
     ...mapGetters(["interviewIndex"]),
   },
   methods: {
-    async deleteHypothesis(hypothesisID){
+    async deleteHypothesis(hypothesisID) {
       await hypothesisApi.deleteHypothesis(hypothesisID);
       this.$router.go();
     },
-    async updateHypothesis(hypothesisID,index){
-      this.editable = true;
-      console.log(this.custseg_data)
-      // this.$set(this.custseg_data, this.custseg_data[index].definedStatus, false);
-      this.$set(this.custseg_data[index],'definedStatus', (this.custseg_data[index].definedStatus == false));
-      console.log(this.custseg_data)
-      // console.log(hypothesisID);
+    async updateHypothesis(hypothesisID, index) {
+      this.$set(this.editable, index, true);
     },
     show() {
       this.$modal.show("pre-interview-modal");
@@ -361,7 +368,7 @@ export default {
           this.$store.dispatch("checkHypothesisInitialized", index);
           this.modaldisabled[index] = true;
         }
-        console.log(this.custseg_data)
+        console.log(this.custseg_data);
       } catch (error) {
         console.log(error);
       }
