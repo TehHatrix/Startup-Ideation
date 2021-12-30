@@ -10,6 +10,9 @@ export default {
 
   async deleteHypothesis(hypothesisID){
     return api.delete(`api/hypothesis/delete/${hypothesisID}`)
+  },
+  async updateHypothesis(hypothesisID,payload){
+    return api.put(`api/hypothesis/update/${hypothesisID}`,payload)
   }
 
   

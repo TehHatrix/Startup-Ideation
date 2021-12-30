@@ -10,7 +10,7 @@ export default {
   },
 
   async updateScript(interviewId,text){
-    return api.post(`api/interview/updatescript/${interviewId}`,text)
+  return api.post(`api/interview/updatescript/${interviewId}`,text)
   }
 
 //   async getAllContent(projectId) {

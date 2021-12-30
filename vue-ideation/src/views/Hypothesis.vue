@@ -22,7 +22,7 @@
                 ><font-awesome-icon icon="fa-solid fa-trash-can"
               /></disabled-button>
               <general-button-non-hover
-                @click.native="updateHypothesis(item.hypothesisID, index)"
+                @click.native="updateHypothesis(index)"
                 ><font-awesome-icon icon="fa-solid fa-pen-to-square"
               /></general-button-non-hover>
             </div>
@@ -36,15 +36,16 @@
               <p id="problems">{{ item.problemsTopic }}</p>
             </td>
             <td id="freqSliders">
-              {{ editable[index] }}
               <hypothesis-dropdown
                 v-if="editable[index]"
                 dropdownType="pain"
+                :optionsValueFirst="frequency_data"
+                :optionsValueSecond="severity_data"
                 :passedFrequency="item.painFrequency"
                 :passedSeverity="item.painSeverity"
                 :disableDropdown="false"
                 :currentIndex="index"
-                @getHypothesisData="appendFrequencySeverity"
+                @getHypothesisData="appendUpdateFrequencySeverity"
               ></hypothesis-dropdown>
               <hypothesis-dropdown
                 v-else-if="item.definedStatus"
@@ -55,7 +56,6 @@
                 :currentIndex="index"
                 @getHypothesisData="appendFrequencySeverity"
               ></hypothesis-dropdown>
-
               <hypothesis-dropdown
                 v-else
                 dropdownType="pain"
@@ -68,12 +68,21 @@
 
             <td id="feedSliders">
               <hypothesis-dropdown
-                v-if="item.definedStatus"
+                v-if="editable[index]"
+                dropdownType="feedback"
+                :optionsValueFirst="feedback_data"
+                :passedFeedback="item.feedback"
+                :disableDropdown="false"
+                :currentIndex="index"
+                @getHypothesisData="appendUpdateFeedback"
+              ></hypothesis-dropdown>
+              <hypothesis-dropdown
+                v-else-if="item.definedStatus"
                 dropdownType="feedback"
                 :passedFeedback="item.feedback"
                 :disableDropdown="true"
                 :currentIndex="index"
-                @getHypothesisData="appendFrequencySeverity"
+                @getHypothesisData="appendFeedback"
               ></hypothesis-dropdown>
               <hypothesis-dropdown
                 v-else
@@ -84,7 +93,13 @@
               ></hypothesis-dropdown>
             </td>
             <td id="actionButton">
-              <div v-if="item.definedStatus">
+              <div v-if="editable[index]">
+                <general-button
+                  @click.native="handleSave(item.hypothesisID, index)"
+                  >Update Hypothesis</general-button
+                >
+              </div>
+              <div v-else-if="item.definedStatus">
                 <general-button @click.native="handleResume(item.hypothesisID)"
                   >Resume Interview</general-button
                 >
@@ -137,15 +152,14 @@ export default {
   },
   data() {
     return {
+      updateFrequency: [],
+      updateSeverity: [],
+      updateFeedback: [],
+      updateError: [],
       editable: [],
       modaldisabled: [],
       paindefined: [],
       feedbackdefined: [],
-      pain_value1: [],
-      pain_data1: ["1-Time", "Yearly", "Monthly", "Weekly", "Daily"],
-      pain_value2: [],
-      pain_data2: ["Mild", "Moderate", "Major", "Severe"],
-      feedback_value: [],
       feedback_data: [
         "A few months",
         "One month",
@@ -171,18 +185,18 @@ export default {
       ],
       custseg_data: null,
       defined_hypothesis: null,
-      hypothesis: [],
+      // hypothesis: [],
     };
   },
   computed: {
-    ...mapGetters(["interviewIndex"]),
+    ...mapGetters(["interviewIndex", "hypothesis", "currentIndex"]),
   },
   methods: {
     async deleteHypothesis(hypothesisID) {
       await hypothesisApi.deleteHypothesis(hypothesisID);
       this.$router.go();
     },
-    async updateHypothesis(hypothesisID, index) {
+    async updateHypothesis(index) {
       this.$set(this.editable, index, true);
     },
     show() {
@@ -200,6 +214,32 @@ export default {
         name: "Interview",
         params: { id: interviewID.data },
       });
+    },
+    async handleSave(hypothesisID, index) {
+      if (
+        (this.updateFrequency[index] === undefined &&
+        this.updateSeverity[index] === undefined &&
+        this.updateFeedback[index] === undefined) || this.updateError[index] == true
+      ) {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "You have nothing to update! Or fix the problem first."
+        );
+        this.$store.commit("showToast");
+      }
+      let payload = {
+        pain_level_freq: this.updateFrequency[index],
+        pain_level_severity: this.updateSeverity[index],
+        feedback_cycle: this.updateFeedback[index],
+      }
+      let saveHypothesis = await hypothesisApi.updateHypothesis(hypothesisID,payload)
+      if(saveHypothesis.data.success){
+        this.$router.go();
+      }
+      else{
+        console.log(saveHypothesis)
+      }
     },
     async routeInterview() {
       try {
@@ -266,6 +306,29 @@ export default {
         console.log(error);
       }
     },
+
+    appendUpdateFrequencySeverity(value) {
+      if (this.checkPainValue(value)) {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "Pain is not enough, try defining a more specific segment or problem"
+        );
+        this.$store.commit("showToast");
+        this.$set(this.updateError, value.index, true);
+        this.$set(this.paindefined, value.index, false);
+        this.$set(this.modaldisabled, value.index, true);
+      } else {
+        this.$set(this.paindefined, value.index, true);
+        this.$set(this.updateFrequency, value.index, value.frequency);
+        this.$set(this.updateSeverity, value.index, value.severity);
+        this.$set(this.updateError, value.index, false);
+        if (this.feedbackdefined[value.index]) {
+          this.$set(this.modaldisabled, value.index, false);
+        }
+      }
+      // console.log(updateFrequency)
+    },
     appendFrequencySeverity(value) {
       if (this.checkPainValue(value)) {
         this.$store.commit("setTypeToast", "Error");
@@ -297,6 +360,26 @@ export default {
       } else {
         this.$set(this.feedbackdefined, value.index, true);
         this.$store.dispatch("setFeedbackValue", value);
+        if (this.paindefined[value.index]) {
+          this.$set(this.modaldisabled, value.index, false);
+        }
+      }
+    },
+    appendUpdateFeedback(value) {
+      if (value.feedback == "A few months") {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "Feedback Cycle is too slow, focus on a segment you can reach"
+        );
+        this.$store.commit("showToast");
+        this.$set(this.updateError, value.index, true);
+        this.$set(this.feedbackdefined, value.index, false);
+        this.$set(this.modaldisabled, value.index, true);
+      } else {
+        this.$set(this.feedbackdefined, value.index, true);
+        this.$set(this.updateFeedback, value.index, value.feedback);
+        this.$set(this.updateError, value.index, false);
         if (this.paindefined[value.index]) {
           this.$set(this.modaldisabled, value.index, false);
         }
@@ -368,13 +451,14 @@ export default {
           this.$store.dispatch("checkHypothesisInitialized", index);
           this.modaldisabled[index] = true;
         }
-        console.log(this.custseg_data);
       } catch (error) {
         console.log(error);
       }
     },
   },
-  mounted() {},
+  mounted() {
+    this.$store.commit("closeToast");
+  },
 };
 </script>
 

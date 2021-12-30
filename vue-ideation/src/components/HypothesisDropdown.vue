@@ -82,7 +82,6 @@ export default {
         severity: this.passedSeverity,
         feedback: this.passedFeedback,
       },
-      // disabled: this.disableDropdown,
       selectedActive: false,
       currentStep: 1,
     };

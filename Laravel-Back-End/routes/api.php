@@ -40,7 +40,7 @@ Route::get('/getstatus/{customerproblem_id}', [HypothesisController::class, 'get
 Route::get('/getHypothesisID/{customerproblem_id}', [HypothesisController::class, 'getHypothesisID']);
 Route::prefix('/hypothesis')->group(function () {
     Route::post('/store', [HypothesisController::class, 'store']);
-    Route::put('/{id}', [HypothesisController::class, 'update']);
+    Route::put('/update/{hypothesisID}', [HypothesisController::class, 'updateHypothesis']);
     Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class, 'updateCustomerProblem']);
     Route::delete('/custprob/{customerproblem_id}', [HypothesisController::class, 'destroy']);
     Route::delete('/delete/{hypothesisID}', [HypothesisController::class, 'deleteHypothesis']);

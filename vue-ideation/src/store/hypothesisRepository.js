@@ -3,7 +3,10 @@ const state = {
   currentIndex: 0,
 };
 
-const getters = {};
+const getters = {
+  currentIndex: (state) => state.currentIndex,
+  hypothesis: (state) => state.hypothesis,
+};
 
 const actions = {
   checkHypothesisInitialized({ commit }, index) {
@@ -53,6 +56,9 @@ const mutations = {
   },
   setGoal(state,goalValue){
     state.hypothesis[state.currentIndex].goal = goalValue
+  },
+  setCurrentIndex(state,index){
+    state.currentIndex = index;
   },
   checkInitialiseHypothesis(state, index) {
     if (state.hypothesis[index] === undefined) {

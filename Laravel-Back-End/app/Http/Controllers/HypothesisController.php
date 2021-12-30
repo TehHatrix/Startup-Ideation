@@ -30,17 +30,17 @@ class HypothesisController extends Controller
 
     public function getproblemHypothesis()
     {
-        $hypothesisProblem = DB::table('hypotheses')->join('problems', 'problems.id', '=', 'hypotheses.problem_id')->select('problems.id','hypotheses.hypothesis_ID','hypotheses.pain_level_severity', 'hypotheses.pain_level_freq', 'hypotheses.feedback_cycle')->get();
+        $hypothesisProblem = DB::table('hypotheses')->join('problems', 'problems.id', '=', 'hypotheses.problem_id')->select('problems.id', 'hypotheses.hypothesis_ID', 'hypotheses.pain_level_severity', 'hypotheses.pain_level_freq', 'hypotheses.feedback_cycle')->get();
         return $hypothesisProblem;
     }
 
     public function getinterviewIDbyHypothesis($hypothesisID)
     {
-        $interviewID = DB::table('interview')->where('interview.hypothesis_ID','=',$hypothesisID)->value('interview.interview_ID');
+        $interviewID = DB::table('interview')->where('interview.hypothesis_ID', '=', $hypothesisID)->value('interview.interview_ID');
         return $interviewID;
     }
 
-    
+
 
 
     public function getstatus($customerproblem_id)
@@ -160,6 +160,28 @@ class HypothesisController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function updateHypothesis(Request $request, $hypothesisID)
+    {
+        $validator = Validator::make($request->all(), [
+            'feedback_cycle' => 'string|nullable',
+            'pain_level_freq' => 'string|nullable',
+            'pain_level_severity' => 'string|nullable',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $update = DB::table('hypotheses')->where('hypothesis_ID', $hypothesisID)->update($data);
+        return  response()->json([
+            'update' => $update,
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
     public function updateCustomerProblem(Request $request, $customerproblem_id, $tablenumber, $table)
     {
         $CustomerProblem = CustomerProblem::find($customerproblem_id);
@@ -215,16 +237,15 @@ class HypothesisController extends Controller
     //     //
     // }
 
-    public function deleteHypothesis($hypothesisID){
-        $interviewID = DB::table('interview')->where('hypothesis_ID','=',$hypothesisID)->value('interview_ID');
-        $customerInterviewList = DB::table('customer')->where('interview_ID','=',$interviewID)->pluck('cust_ID');
-        foreach ($customerInterviewList as $customerID){
-            DB::table('customer')->where('cust_ID','=',$customerID)->delete();
+    public function deleteHypothesis($hypothesisID)
+    {
+        $interviewID = DB::table('interview')->where('hypothesis_ID', '=', $hypothesisID)->value('interview_ID');
+        $customerInterviewList = DB::table('customer')->where('interview_ID', '=', $interviewID)->pluck('cust_ID');
+        foreach ($customerInterviewList as $customerID) {
+            DB::table('customer')->where('cust_ID', '=', $customerID)->delete();
         }
-        DB::table('interview')->where('hypothesis_ID','=',$hypothesisID)->delete();
-        DB::table('hypotheses')->where('hypothesis_ID','=',$hypothesisID)->delete();
+        DB::table('interview')->where('hypothesis_ID', '=', $hypothesisID)->delete();
+        DB::table('hypotheses')->where('hypothesis_ID', '=', $hypothesisID)->delete();
         return response()->json(['success' => true, 'message' => 'successfully deleted']);
-        
-
     }
 }
