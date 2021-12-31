@@ -13,6 +13,7 @@
         :passedPhone="item.cust_phone_num"
         :passedScore="item.custscore"
         :passedImagePath="item.image_path"
+        :passedLogs="item.logs"
       >
       </customer-card>
     </div>
@@ -43,7 +44,6 @@ export default {
 
     async getCustomerInterview() {
       let getCustomer = await customerApi.getAllCustomer(this.interviewIndex);
-      console.log(getCustomer);
       for (let item in getCustomer.data) {
         this.customerCards.push(getCustomer.data[item]);
       }

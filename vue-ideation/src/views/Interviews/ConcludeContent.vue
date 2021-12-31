@@ -49,7 +49,7 @@ import CircularProgress from "../../components/CircularProgress.vue";
 import Vue from "vue";
 import VueConfetti from "vue-confetti";
 import customerApi from "@/api/customerApi.js";
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 Vue.use(VueConfetti);
 
@@ -63,7 +63,7 @@ export default {
     percentagePerSteps() {
       return 100 / this.steps.length;
     },
-    ...mapGetters(['currentID'])
+    ...mapGetters(["currentID","interviewIndex"]),
   },
 
   data() {
@@ -123,7 +123,7 @@ export default {
       this.updatePercentage();
       this.checkEnd();
     },
-    checkAnswer(answer){
+    checkAnswer(answer) {
       if (answer === this.steps[this.currentStepsIndex].answer) {
         this.currentScore += this.steps[this.currentStepsIndex].score;
       } else {
@@ -163,23 +163,29 @@ export default {
       }
     },
 
-    async updateScoreDatabase(){
-      // console.log(this.currentScore);
-      // console.log(this.currentID);
+    async updateScoreDatabase() {
       let conclude = {
-        score: this.currentScore
+        score: this.currentScore,
+        interviewID: this.interviewIndex
+      };
+      let updateScore = await customerApi.updateScoreCustomer(
+        this.currentID,
+        conclude
+      );
+      console.log(updateScore)
+      if (updateScore.success == false) {
+        throw new Error("Could not update Customer Score");
+      } 
+      else {
+        setTimeout(() => {
+          this.$router.go();
+        }, 2300);
       }
-      let updateScore = await customerApi.updateScoreCustomer(this.currentID,conclude);
-      if (updateScore.success == false){
-        throw new Error('Could not update Customer Score')
-      }
-    }
-    // reduceStep() {
-    //   // this.currentStepsIndex -= 1;
-    // },
+    },
   },
 
-  mounted() {},
+  mounted() {
+  },
 };
 </script>
 

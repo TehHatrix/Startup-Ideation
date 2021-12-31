@@ -176,7 +176,7 @@ export default {
         title: "",
         description: "",
       },
-      validationPhase: "hypothesis",
+      validationPhase: "landing",
     };
   },
 

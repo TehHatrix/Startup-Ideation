@@ -1,11 +1,26 @@
 <template>
   <div class="progress">
-    <div class="progress_bar"></div>
+    <div class="progress_bar" :style="ProgressWidth"></div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    interviewMax: {
+      type: Number,
+    },
+    currentCustomerLength:{
+      type: Number,
+    },
+  },
+  computed: {
+    ProgressWidth() {
+      let widthPercentage = (this.currentCustomerLength/this.interviewMax)*100;
+      return "width:" + widthPercentage + "%";
+    }
+  },
+};
 </script>
 
 <style scoped>

@@ -10,7 +10,6 @@ export default {
   },
 
   async updateCustomer(custID,payload){
-    // const headers = { 'Content-Type': 'multipart/form-data' };
     return api.post(`api/customer/update/${custID}`,payload);
   },
 

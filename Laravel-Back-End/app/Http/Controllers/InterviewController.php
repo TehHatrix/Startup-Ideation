@@ -22,6 +22,9 @@ class InterviewController extends Controller
         $customersegmentwithProb = DB::table('problems')->where('problems.id', '=', $problemID)->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('customer_segments.topic as custsegTopic', 'problems.topic as problemsTopic')->get();
         $data[0]->custsegment = $customersegmentwithProb[0]->custsegTopic;
         $data[0]->problems = $customersegmentwithProb[0]->problemsTopic;
+        $customerScoreData = DB::table('customer')->where('interview_ID', '=', $id)->pluck('custscore');
+        $interviewCounts = DB::table('customer')->where('interview_ID', '=', $id)->count();
+        $data[0]->customerScore = $customerScoreData;
         return response()->json([
             'interviewData' => $data,
             'success' => true,

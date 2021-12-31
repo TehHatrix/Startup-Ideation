@@ -70,6 +70,11 @@ class CustomerController extends Controller
             'image_path' => $url,
             'logs' => "",
         ]);
+        $averageScoreCustomers = DB::table('customer')->where('interview_ID',$interviewID)->avg('custscore');
+        $updateDetailsInterviewScore = [
+            'overall_score' => $averageScoreCustomers
+        ];
+        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID',$interviewID)->update($updateDetailsInterviewScore);
         return  response()->json([
             'success' => true,
             'errors' => null
@@ -108,10 +113,10 @@ class CustomerController extends Controller
     public function update(Request $request, $custid)
     {
         $validator = Validator::make($request->all(), [
-            'currentEditedName' => 'string|nullable',
-            'currentEditedOcc' => 'string|nullable',
-            'currentEditedPhone' => 'string|nullable',
-            'currentEditedEmail' => 'string|nullable',
+            'custname' => 'string|nullable',
+            'custocc' => 'string|nullable',
+            'cust_phone_num' => 'string|nullable',
+            'custemail' => 'string|nullable',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -120,16 +125,16 @@ class CustomerController extends Controller
             ]);
         }
         $data = $validator->validated();
-        $updateDetails = [
-            'custname' => $data['currentEditedName'],
-            'custocc' => $data['currentEditedOcc'],
-            'cust_phone_num' => $data['currentEditedPhone'],
-            'custemail' => $data['currentEditedEmail']
-
-        ]; 
+        // return array_filter($data);
+        // $updateDetails = [
+        //     'custname' => $data['currentEditedName'],
+        //     'custocc' => $data['currentEditedOcc'],
+        //     'cust_phone_num' => $data['currentEditedPhone'],
+        //     'custemail' => $data['currentEditedEmail']
+        // ]; 
         $updateScript = DB::table('customer')
             ->where('cust_ID', '=', $custid)
-            ->update($updateDetails);
+            ->update(array_filter($data));
         return  response()->json([
             'success' => true,
             'errors' => null
@@ -139,7 +144,8 @@ class CustomerController extends Controller
     public function updateScore(Request $request, $custid)
     {
         $validator = Validator::make($request->all(), [
-            'score' => 'required|between:0,99.99'
+            'score' => 'required|between:0,99.99',
+            'interviewID' => 'integer|required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -148,13 +154,20 @@ class CustomerController extends Controller
             ]);
         }
         $data = $validator->validated();
+        $averageScoreCustomers = DB::table('customer')->where('interview_ID',$data['interviewID'])->avg('custscore');
         $updateDetails = [
             'custscore' => $data['score'],
-        ]; 
-        $updateScript = DB::table('customer')
+        ];
+        $updateDetailsInterviewScore = [
+            'overall_score' => $averageScoreCustomers
+        ];
+        $updateScore = DB::table('customer')
             ->where('cust_ID', '=', $custid)
             ->update($updateDetails);
+        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID',$data['interviewID'])->update($updateDetailsInterviewScore);
         return  response()->json([
+            'updateCustomerScore' => $updateScore,
+            'updateInterviewScore' => $updateInterviewOverallScore,
             'success' => true,
             'errors' => null
         ]);
@@ -195,7 +208,13 @@ class CustomerController extends Controller
      */
     public function deleteCustomer($customerid)
     {
+        $interviewID = DB::table('customer')->where('cust_ID','=',$customerid)->pluck('interview_ID');
         DB::table('customer')->where('cust_ID','=',$customerid)->delete();
+        $averageScoreCustomers = DB::table('customer')->where('interview_ID',$interviewID)->avg('custscore');
+        $updateDetailsInterviewScore = [
+            'overall_score' => $averageScoreCustomers
+        ];
+        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID',$interviewID)->update($updateDetailsInterviewScore);
         return response()->json(['success' => true, 'message' => 'successfully deleted']);
     }
 }
