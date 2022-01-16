@@ -469,10 +469,7 @@ section {
 
 .heading {
   text-align: center;
-  color: transparent;
-  background: linear-gradient(90deg, #ed176f, #f7817f);
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: #ed176f;
   font-size: 5rem;
   text-transform: uppercase;
   padding: 1rem;

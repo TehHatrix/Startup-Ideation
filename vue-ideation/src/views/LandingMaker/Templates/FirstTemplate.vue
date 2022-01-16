@@ -280,6 +280,16 @@
       </div>
     </section>
 
+    <div>
+      <transition name="fade" appear>
+        <div
+          class="modal-overlay"
+          v-if="showModal"
+          @click="showModal = false"
+        ></div>
+      </transition>
+    </div>
+
     <!-- pricing section ends -->
 
     <!-- footer section starts  -->
@@ -347,17 +357,17 @@ export default {
     handleBack() {
       this.$router.push({ name: "LandingChooseTemplates" });
     },
+
+    handlePricing() {},
   },
 };
 </script>
 
 
 <style>
-body #templateContainer{
-  background-image: linear-gradient(#ffffff
-	, #ffffff)
+body #templateContainer {
+  background-image: linear-gradient(#ffffff, #ffffff);
 }
-
 </style>
 
 

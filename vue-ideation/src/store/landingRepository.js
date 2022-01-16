@@ -3,10 +3,19 @@ const state = {
     pageHTML : "",
     pageCSS : "",
     landingName: "",
+    templateHTML: "",
+    templatePricingHTML: "",
+    templateCSS: "",
+    templateFooterHTML: "",
     landingRevenueGoal: 0,
 };
 
 const getters = {
+    templateHTML: (state) => state.templateHTML,
+    templateCSS: (state) => state.templateCSS,
+    templatePricingHTML: (state) => state.templatePricingHTML,
+    templateFooterHTML: (state) => state.templateFooterHTML,
+    
 };
 
 const actions = {
@@ -39,6 +48,18 @@ const mutations = {
     },
     setLandingRevenueGoal(state,goal){
         state.landingRevenueGoal = goal;
+    },
+    setTemplateHTML(state,html){
+        state.templateHTML = html;
+    },
+    setTemplatePricingHTML(state,pricinghtml){
+        state.templatePricingHTML = pricinghtml;
+    },
+    setTemplateFooterHTML(state,footerhtml){
+        state.templateFooterHTML = footerhtml;
+    },
+    setTemplateCSS(state,css){
+        state.templateCSS = css;
     },
     clearHTMLCSS(state){
         state.pageHTML = "";
