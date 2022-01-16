@@ -7,6 +7,9 @@ import LandingEditor from "../views/LandingMaker/LandingEditor.vue";
 import LandingPage from "../views/LandingMaker/LandingPage.vue";
 import LandingPageTest from "../views/LandingMaker/LandingPageTest.vue";
 import LandingDashboard from "../views/LandingMaker/LandingDashboard.vue";
+import LandingChooseTemplates from "../views/LandingMaker/LandingChooseTemplates.vue";
+import FirstTemplate from "../views/LandingMaker/Templates/FirstTemplate.vue";
+import SecondTemplate from "../views/LandingMaker/Templates/SecondTemplate.vue";
 import Survey from "../views/Survey/Survey.vue";
 import SurveySummary from "@/views/Survey/SummarySurvey.vue";
 import SurveyDashboard from "@/views/Survey/SurveyDashboard.vue";
@@ -36,6 +39,34 @@ const routes = [
     meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,
   },
+  {
+    path: "/templates/landing",
+    name: "LandingChooseTemplates",
+    component: LandingChooseTemplates,
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
+  },
+  {
+    path: "/templates/first",
+    name: "FirstTemplate",
+    component: FirstTemplate,
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
+  },
+  {
+    path: "/templates/second",
+    name: "SecondTemplate",
+    component: SecondTemplate,
+    meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
+  },
+  // {
+  //   path: "/templates/landing",
+  //   name: "LandingChooseTemplates",
+  //   component: LandingChooseTemplates,
+  //   meta: { requiresAuth: true },
+  //   // beforeEnter: middleware.guest,
+  // },
   {
     path: "/editor/landing",
     name: "LandingEditor",

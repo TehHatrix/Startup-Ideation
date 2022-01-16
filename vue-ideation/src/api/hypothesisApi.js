@@ -14,6 +14,4 @@ export default {
   async updateHypothesis(hypothesisID,payload){
     return api.put(`api/hypothesis/update/${hypothesisID}`,payload)
   }
-
-  
 };

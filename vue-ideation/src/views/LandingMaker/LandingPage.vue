@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id = "templateContainer">
     <general-button v-if="previewMode" @click.native="routeEditor"> Back to Editor </general-button>
     <div v-html="savedHTML">
     </div>
@@ -35,6 +35,14 @@ export default {
   },
 };
 </script>
+
+<style>
+body #templateContainer{
+  background-image: linear-gradient(#ffffff
+	, #ffffff)
+}
+
+</style>
 
 <style lang="scss" scoped>
 </style>

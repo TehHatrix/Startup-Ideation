@@ -2,6 +2,8 @@ const state = {
     previewMode: false,
     pageHTML : "",
     pageCSS : "",
+    landingName: "",
+    landingRevenueGoal: 0,
 };
 
 const getters = {
@@ -31,6 +33,12 @@ const mutations = {
     },
     setPreviewFalse(state){
         state.previewMode = false;
+    },
+    setLandingName(state, name){
+        state.landingName = name;
+    },
+    setLandingRevenueGoal(state,goal){
+        state.landingRevenueGoal = goal;
     },
     clearHTMLCSS(state){
         state.pageHTML = "";

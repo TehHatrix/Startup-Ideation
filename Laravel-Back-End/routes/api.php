@@ -9,6 +9,7 @@ use App\Http\Controllers\FreeCanvasController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HypothesisController;
 use App\Http\Controllers\InterviewController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LeanCanvasController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TodoController;
@@ -67,6 +68,10 @@ Route::prefix('/customer')->group(function () {
     // Route::put('/{id}', [HypothesisController::class,'update']);
     // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);
     // Route::delete('/custprob/{customerproblem_id}',[HypothesisController::class,'destroy']);
+});
+
+Route::prefix('/landing')->group(function () {
+    Route::get('/checkexistproject/{projectID}',[LandingController::class,'checkExistLandingProject']);
 });
 
 

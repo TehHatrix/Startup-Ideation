@@ -118,7 +118,7 @@
         </modal>
 
 <!-- Validation modal -->
-            <div class="validationContainer">
+    <div class="validationContainer">
       <h2>Validation</h2>
       <div class="validationCard">
         <div class="cardProgress" :class="validationProgress"></div>
@@ -138,9 +138,7 @@
             Complete the current validation phase to unlock new phase along the
             way.
           </p>
-          <general-button @click.native="handleValidate"
-            >Validate Now!</general-button
-          >
+          <landing-form-modal v-if="validationPhase === 'landing' " @click.native="handleValidate"></landing-form-modal>
         </div>
       </div>
     </div>
@@ -154,8 +152,10 @@ import api from "@/api/projectApi";
 import AnnouncementCardVue from "../../components/project/AnnouncementCard.vue";
 import CollabCardVue from "../../components/project/CollabCard.vue";
 import annApi from "@/api/communicationApi";
-import GeneralButton from "../../components/GeneralButton.vue";
+// import GeneralButton from "../../components/GeneralButton.vue";
 import CircleCheck from "../../components/icons/circleCheck.vue";
+import landingApi from "@/api/landingApi";
+import LandingFormModal from "@/components/PreLandingModal.vue"
 
 export default {
   name: "Project",
@@ -176,7 +176,11 @@ export default {
         title: "",
         description: "",
       },
+      //validationPhase
       validationPhase: "landing",
+      //definedboolean
+      landingvalidated: false,
+      
     };
   },
 
@@ -184,16 +188,25 @@ export default {
     modal: ProjectModal,
     "announcement-card": AnnouncementCardVue,
     "collaborator-card": CollabCardVue,
-    GeneralButton,
+    // GeneralButton,
     CircleCheck,
+    LandingFormModal,
   },
 
   async created() {
     try {
       await this.$store.dispatch("getProject", this.projectId);
       // console.log(this.announcement)
+
       if (this.announcement === null) {
         await this.$store.dispatch("getAnnouncement", this.projectId);
+      }
+
+      //Validation Phase
+      //Check Landing Exist based on project
+      let checkExistLanding = await landingApi.checkExist(this.projectId);
+      if (checkExistLanding.data === 1) {
+        this.landingvalidated = true;
       }
 
       // console.log('after created')
@@ -224,7 +237,11 @@ export default {
       if (this.validationPhase == "hypothesis") {
         this.$router.push("/hypothesis");
       } else if (this.validationPhase == "landing") {
-        this.$router.push({ name: "LandingEditor" });
+        if (this.landingvalidated === false) {
+          console.log("in development")
+        } else {
+          this.$router.push({ name: "LandingEditor" });
+        }
       } else if (this.validationPhase == "survey") {
         this.$router.push({ name: "SurveyDashboard" });
       }
