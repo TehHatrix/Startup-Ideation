@@ -1,8 +1,10 @@
 <template>
   <div id="templateContainer">
-    <general-button v-if="previewMode" @click.native="routeEditor">
-      Back to Editor
-    </general-button>
+    <circle-arrow-left
+      v-if="previewMode"
+      @click.native="routeEditor"
+      class="sticky"
+    ></circle-arrow-left>
     <div v-html="savedHTML" ref="template"></div>
     <div id="modal-comp">
       <transition name="fade" appear>
@@ -16,9 +18,9 @@
         <div class="modal" v-if="showModal">
           <transition name="fade" appear>
             <div class="preInterview">
-              <h1>Pre-Landing Form</h1>
+              <h1>Pricing Subscription Form</h1>
               <slot name="hypothesisTitle"> </slot>
-              <h3>Landing Name</h3>
+              <h3>Your Name</h3>
               <input
                 type="text"
                 class="inputField"
@@ -26,14 +28,10 @@
                 id="name"
                 required
               />
-              <h3>Landing Goals Revenue</h3>
+              <h3>Email Address</h3>
               <div class="goalsCurrency">
-                <span class="currency"
-                  ><strong>RM</strong
-                  ><font-awesome-icon icon="fa-solid fa-money-check-dollar"
-                /></span>
                 <input
-                  type="number"
+                  type="text"
                   class="inputField"
                   name="name"
                   id="name"
@@ -45,8 +43,8 @@
                 <general-button @click.native="showModal = false">
                   Close</general-button
                 >
-                <general-button @click.native="routeChooseLanding">
-                  Create Landing Page!</general-button
+                <general-button @click.native="sendDataLanding">
+                  Get Started</general-button
                 >
               </div>
             </div>
@@ -59,8 +57,10 @@
 
 <script>
 import GeneralButton from "../../components/GeneralButton.vue";
+import circleArrowLeft from "@/components/icons/circlearrowleft.vue";
+import { mapGetters } from "vuex";
 export default {
-  components: { GeneralButton },
+  components: { GeneralButton, circleArrowLeft },
   data() {
     return {
       showModal: false,
@@ -73,6 +73,12 @@ export default {
     routeEditor() {
       this.$router.push("editor/landing");
     },
+    sendDataLanding(){
+
+    },
+  },
+  computed: {
+    ...mapGetters(["currentTemplate"]),
   },
   mounted() {
     this.previewMode = this.$store.state.landingRepository.previewMode;
@@ -81,19 +87,30 @@ export default {
     this.styleTag = document.createElement("style");
     this.styleTag.appendChild(document.createTextNode(css));
     document.head.appendChild(this.styleTag);
-    let pricingbuttons = this.$refs['template'].getElementsByClassName("pricing-btn");
-    console.log(pricingbuttons.length)
+
+    let pricingbuttons =
+      this.$refs["template"].getElementsByClassName("pricing-btn");
     this.$nextTick(() => {
-      console.log(pricingbuttons.length);
-      console.log(this)
       for (let i = 0; i < pricingbuttons.length; i++) {
-        console.log(pricingbuttons[i]);
         pricingbuttons[i].addEventListener("click", function () {
-          var vueInstance = document.getElementById('templateContainer').__vue__;
+          var vueInstance =
+            document.getElementById("templateContainer").__vue__;
           vueInstance.showModal = true;
         });
       }
     });
+
+    // switch (this.currentTemplate) {
+    //   case "ideation":
+    //     {
+
+    //       break;
+    //     }
+    //   case "tech":
+    //   {
+    //     console.log("Test")
+    //   }
+    // }
   },
   destroyed() {
     this.styleTag.remove();
@@ -102,6 +119,16 @@ export default {
 </script>
 
 <style>
+.sticky {
+  position: fixed;
+  top: 5;
+  z-index: 999;
+  height: 50px;
+  width: 50px;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
 body #templateContainer {
   background-image: linear-gradient(#ffffff, #ffffff);
 }
@@ -160,6 +187,12 @@ body #templateContainer {
   overflow: scroll;
   padding: 25px;
 
+  h1 {
+    font-size: 32px;
+  }
+  h3 {
+    font-size: 18.72px;
+  }
   p {
     padding-top: 2px;
     padding-bottom: 3px;

@@ -34,6 +34,7 @@
       <div class="panel__top">
         <div class="panel__basic-actions"></div>
         <div class="panel-save">
+          <general-button @click.native="handleBack">Choose Another Template</general-button>
           <general-button @click.native="handleSave">Save</general-button>
           <general-button @click.native="handlePreview">Preview</general-button>
         </div>
@@ -69,7 +70,7 @@ import blocks from "../../components/icons/blocks.vue";
 import Layers from "../../components/icons/layers.vue";
 import XMark from "../../components/icons/x-mark.vue";
 import GeneralButton from "../../components/GeneralButton.vue";
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -92,16 +93,39 @@ export default {
       this.styleComponents = false;
       this.fillMainContent = true;
     },
+    handleBack(){
+      this.$router.push({name:"LandingChooseTemplates"})
+    },
+    injectModal() {
+      let stringHTML = this.editor.getHtml();
+      switch (this.currentTemplate) {
+        case "ideation": {
+          let injectedStringHTML = stringHTML.replaceAll(
+            `<a href="#" class="btn">check out</a>`,
+            `<div class="btn pricing-btn">check out</div>`
+          );
+          return injectedStringHTML;
+        }
+        case "tech": {
+          let injectedStringHTML = stringHTML.replaceAll(
+            `<a href="#" class="btn">select plan</a>`,
+            `<div class="btn pricing-btn">select plan</div>`
+          );
+          return injectedStringHTML;
+        }
+      }
+    },
     handlePreview() {
       //Get HTML and edit Checkout Button to inject @click="showmodal = true"
-      let stringHTML = this.editor.getHtml();
-      let result = stringHTML.includes(`<a href="#" class="btn">check out</a>`);
-      console.log(result)
-      let test = stringHTML.replaceAll(`<a href="#" class="btn">check out</a>`, `<div class="btn pricing-btn">check out</div>`);
-      console.log(test);
+      // let stringHTML = this.editor.getHtml();
+      // let result = stringHTML.includes(`<a href="#" class="btn">check out</a>`);
+      // console.log(result)
+      // let test = stringHTML.replaceAll(`<a href="#" class="btn">check out</a>`, `<div class="btn pricing-btn">check out</div>`);
+      // console.log(test);
+      console.log();
 
       this.$store.commit("setpageCSS", this.editor.getCss());
-      this.$store.commit("setpageHTML", test);
+      this.$store.commit("setpageHTML", this.injectModal());
       this.$store.commit("setPreviewTrue");
       this.$router.push("/landingpage");
     },
@@ -111,9 +135,16 @@ export default {
     },
   },
   computed: {
-  ...mapGetters(['templateHTML','templateCSS','templatePricingHTML','templateFooterHTML'])
+    ...mapGetters([
+      "templateHTML",
+      "templateCSS",
+      "templatePricingHTML",
+      "templateFooterHTML",
+      "currentTemplate",
+    ]),
   },
   mounted() {
+    console.log(this.currentTemplate);
     this.editor = grapesjs.init({
       container: "#editor",
       fromElement: true,

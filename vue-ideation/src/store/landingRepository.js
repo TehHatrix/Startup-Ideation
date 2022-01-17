@@ -3,6 +3,7 @@ const state = {
     pageHTML : "",
     pageCSS : "",
     landingName: "",
+    currentTemplate: "",
     templateHTML: "",
     templatePricingHTML: "",
     templateCSS: "",
@@ -15,6 +16,7 @@ const getters = {
     templateCSS: (state) => state.templateCSS,
     templatePricingHTML: (state) => state.templatePricingHTML,
     templateFooterHTML: (state) => state.templateFooterHTML,
+    currentTemplate: (state) => state.currentTemplate,
     
 };
 
@@ -48,6 +50,9 @@ const mutations = {
     },
     setLandingRevenueGoal(state,goal){
         state.landingRevenueGoal = goal;
+    },
+    setcurrentTemplate(state,templatetype){
+        state.currentTemplate = templatetype;
     },
     setTemplateHTML(state,html){
         state.templateHTML = html;

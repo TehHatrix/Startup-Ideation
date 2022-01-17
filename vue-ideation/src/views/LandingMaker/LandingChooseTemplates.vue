@@ -968,6 +968,7 @@ header .navbar a:hover {
             this.ideationPricingHTML
           );
           this.$store.commit("setTemplateFooterHTML", this.ideationFooter);
+          this.$store.commit("setcurrentTemplate",'ideation')
           this.$router.push({ name: "LandingEditor" });
           break;
         case "tech":
@@ -975,6 +976,7 @@ header .navbar a:hover {
           this.$store.commit("setTemplateCSS", this.techCSS);
           this.$store.commit("setTemplatePricingHTML", this.techPricingHTML);
           this.$store.commit("setTemplateFooterHTML", this.techFooter);
+          this.$store.commit("setcurrentTemplate",'tech')
           this.$router.push({ name: "LandingEditor" });
           break;
         default:
