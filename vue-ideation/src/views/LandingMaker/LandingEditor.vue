@@ -70,6 +70,7 @@ import blocks from "../../components/icons/blocks.vue";
 import Layers from "../../components/icons/layers.vue";
 import XMark from "../../components/icons/x-mark.vue";
 import GeneralButton from "../../components/GeneralButton.vue";
+import landingApi from "@/api/landingApi.js";
 import { mapGetters } from "vuex";
 
 export default {
@@ -117,21 +118,30 @@ export default {
     },
     handlePreview() {
       //Get HTML and edit Checkout Button to inject @click="showmodal = true"
-      // let stringHTML = this.editor.getHtml();
-      // let result = stringHTML.includes(`<a href="#" class="btn">check out</a>`);
-      // console.log(result)
-      // let test = stringHTML.replaceAll(`<a href="#" class="btn">check out</a>`, `<div class="btn pricing-btn">check out</div>`);
-      // console.log(test);
-      console.log();
-
       this.$store.commit("setpageCSS", this.editor.getCss());
       this.$store.commit("setpageHTML", this.injectModal());
       this.$store.commit("setPreviewTrue");
       this.$router.push("/landingpage");
     },
-    handleSave() {
+    async handleSave() {
       alert("Are you sure with this design?");
-      this.$router.push("/landingpage/dashboard");
+      console.log(this.landingName)
+      console.log(this.landingRevenueGoal)
+      console.log(this.currentProjectID)
+      let landingdata = {
+        html: this.injectModal(),
+        css: this.editor.getCss(),
+        landingName: this.landingName,
+        landingRevGoal: this.landingRevenueGoal,
+      }
+      let addPage = await landingApi.addLandingPage(landingdata,this.currentProjectID)
+      if (addPage.data.success === false){
+        throw new Error("Add Landing Page Fail!")
+      }
+      else{
+        this.$router.push("/landingpage/dashboard");
+      }
+      
     },
   },
   computed: {
@@ -141,6 +151,9 @@ export default {
       "templatePricingHTML",
       "templateFooterHTML",
       "currentTemplate",
+      "currentProjectID",
+      "landingName",
+      "landingRevenueGoal",
     ]),
   },
   mounted() {

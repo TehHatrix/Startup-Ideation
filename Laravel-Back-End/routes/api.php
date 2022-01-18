@@ -71,6 +71,8 @@ Route::prefix('/customer')->group(function () {
 });
 
 Route::prefix('/landing')->group(function () {
+    Route::get('/index/{projectID}',[LandingController::class,'index']);
+    Route::post('/store/{projectID}', [LandingController::class, 'store']);
     Route::get('/checkexistproject/{projectID}',[LandingController::class,'checkExistLandingProject']);
 });
 

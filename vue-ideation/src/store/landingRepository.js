@@ -17,6 +17,8 @@ const getters = {
     templatePricingHTML: (state) => state.templatePricingHTML,
     templateFooterHTML: (state) => state.templateFooterHTML,
     currentTemplate: (state) => state.currentTemplate,
+    landingRevenueGoal: (state) => state.landingRevenueGoal,
+    landingName: (state) => state.landingName,
     
 };
 

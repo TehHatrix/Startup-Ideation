@@ -43,7 +43,7 @@
                 <general-button @click.native="showModal = false">
                   Close</general-button
                 >
-                <general-button @click.native="sendDataLanding">
+                <general-button  @click.native="sendDataLanding">
                   Get Started</general-button
                 >
               </div>

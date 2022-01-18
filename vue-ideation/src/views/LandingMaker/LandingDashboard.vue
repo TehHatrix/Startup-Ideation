@@ -15,26 +15,34 @@
             <sign-up :gradientBoolean="true"></sign-up
           ></template>
           <template #title> <h4>Sign Ups</h4></template>
-          <template #content> <h1>17</h1> </template>
+          <template #content>
+            <h1>{{ signups }}</h1>
+          </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo> <eyes :gradientBoolean="true"></eyes></template>
           <template #title> <h4>Total Unique Views</h4></template>
-          <template #content> <h1>10</h1> </template>
+          <template #content>
+            <h1>{{ uniqueviews }}</h1>
+          </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo>
             <revenue :gradientBoolean="true"> </revenue
           ></template>
           <template #title> <h4>Expected Revenue</h4></template>
-          <template #content> <h1>RM 150</h1> </template>
+          <template #content>
+            <h1>RM {{ expectedrevenue }}</h1>
+          </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo>
             <revenue-target :gradientBoolean="true"></revenue-target>
           </template>
           <template #title> <h4>Goals Revenue</h4></template>
-          <template #content> <h1>RM 1000</h1> </template>
+          <template #content>
+            <h1>RM {{ goalsrevenue }}</h1>
+          </template>
         </dashboard-card>
       </div>
     </div>
@@ -60,6 +68,8 @@ import Revenue from "../../components/icons/revenue.vue";
 import RevenueTarget from "../../components/icons/revenueTarget.vue";
 import ChartCard from "@/components/ChartCard.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
+import landingApi from "@/api/landingApi.js";
+import { mapGetters } from "vuex";
 export default {
   components: {
     DashboardCard,
@@ -70,8 +80,16 @@ export default {
     ChartCard,
     GeneralButton,
   },
+  computed: {
+    ...mapGetters(["currentProjectID"]),
+  },
   data() {
     return {
+      signups: 0,
+      uniqueviews: 0,
+      expectedrevenue: 0,
+      goalsrevenue: 0,
+
       series: [
         {
           name: "Views",
@@ -145,6 +163,21 @@ export default {
     previewLanding() {
       this.$router.push("/landingpage");
     },
+    async getLandingData() {
+      let landingdata = await landingApi.getLandingData(this.currentProjectID);
+      if (landingdata.data.success) {
+        this.signups = landingdata.data.data[0].sign_ups;
+        this.uniqueviews = landingdata.data.data[0].unique_view;
+        this.expectedrevenue = landingdata.data.data[0].expected_revenue;
+        this.goalsrevenue = landingdata.data.data[0].target_revenue;
+      } else if (landingdata.data.success === false) {
+        throw new Error("Cannot Get Landing Page data");
+      }
+    },
+  },
+
+  async created() {
+    await this.getLandingData();
   },
 };
 </script>

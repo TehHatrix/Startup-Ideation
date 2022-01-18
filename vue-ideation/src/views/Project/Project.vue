@@ -138,7 +138,7 @@
             Complete the current validation phase to unlock new phase along the
             way.
           </p>
-          <landing-form-modal v-if="validationPhase === 'landing' " @click.native="handleValidate"></landing-form-modal>
+          <landing-form-modal v-if="validationPhase === 'landing' && landingvalidated === false" @click.native="handleValidate"></landing-form-modal>
         </div>
       </div>
     </div>
@@ -203,6 +203,7 @@ export default {
       }
 
       //Validation Phase
+      this.$store.commit("setCurrentProjectID",this.projectId);
       //Check Landing Exist based on project
       let checkExistLanding = await landingApi.checkExist(this.projectId);
       if (checkExistLanding.data === 1) {

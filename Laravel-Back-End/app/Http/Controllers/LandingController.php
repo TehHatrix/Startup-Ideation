@@ -15,7 +15,15 @@ class LandingController extends Controller
      */
     public function index()
     {
-        //
+        $landing = DB::table('landing_pages')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $landing,
+        ]);
+
+
+
+
     }
 
     public function checkExistLandingProject($projectID){
@@ -39,8 +47,36 @@ class LandingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$projectID)
     {
+        $validator = Validator::make($request->all(), [
+            'html' => 'string|nullable',
+            'css' => 'string|nullable',
+            'landingName' => 'string|required',
+            'landingRevGoal' => 'numeric|required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $insertLandingPage = DB::table('landing_pages')->insert([
+            'projectID' => $projectID,
+            'landingHTML' => $data['html'],
+            'landingCSS' => $data['css'],
+            'landingName' => $data['landingName'],
+            'target_revenue' => $data['landingRevGoal'],
+            'sign_ups' => 0,
+            'unique_view' => 0,
+            'expected_revenue' => 0,
+        ]);
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+
         //
     }
 
