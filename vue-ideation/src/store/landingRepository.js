@@ -1,5 +1,6 @@
 const state = {
     previewMode: false,
+    editingMode: false,
     pageHTML : "",
     pageCSS : "",
     landingName: "",
@@ -19,7 +20,7 @@ const getters = {
     currentTemplate: (state) => state.currentTemplate,
     landingRevenueGoal: (state) => state.landingRevenueGoal,
     landingName: (state) => state.landingName,
-    
+    editingMode: (state) => state.editingMode,
 };
 
 const actions = {
@@ -35,6 +36,9 @@ const actions = {
 };
 
 const mutations = {
+    setEditingMode(state,boolean){
+        state.editingMode = boolean
+    },
     setpageCSS(state, css){
         state.pageCSS = css;
     },

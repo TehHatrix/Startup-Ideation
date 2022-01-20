@@ -13,6 +13,7 @@ import SecondTemplate from "../views/LandingMaker/Templates/SecondTemplate.vue";
 import Survey from "../views/Survey/Survey.vue";
 import SurveySummary from "@/views/Survey/SummarySurvey.vue";
 import SurveyDashboard from "@/views/Survey/SurveyDashboard.vue";
+import LandingThankYou from "../views/LandingMaker/ThankYouPage.vue"
 import store from '@/store'
 
 Vue.use(VueRouter);
@@ -75,17 +76,31 @@ const routes = [
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/landingpage",
+    path: "/landingpage/",
     name: "LandingPage",
     component: LandingPage,
     meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/landingpage/dashboard",
+    path: "/landingpage/:landingID",
+    name: "LandingPageShare",
+    component: LandingPage,
+    // meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
+  },
+  {
+    path: "/landing/dashboard",
     name: "LandingDashboard",
     component: LandingDashboard,
     meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
+  },
+  {
+    path: "/landing/thankyou",
+    name: "LandingThankYou",
+    component: LandingThankYou,
+    // meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,
   },
   {

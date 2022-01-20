@@ -2,7 +2,7 @@
   <div id="templateContainer">
     <circle-arrow-left
       v-if="previewMode"
-      @click.native="routeEditor"
+      @click.native="routeBack"
       class="sticky"
     ></circle-arrow-left>
     <div v-html="savedHTML" ref="template"></div>
@@ -43,7 +43,7 @@
                 <general-button @click.native="showModal = false">
                   Close</general-button
                 >
-                <general-button  @click.native="sendDataLanding">
+                <general-button @click.native="sendDataLanding()">
                   Get Started</general-button
                 >
               </div>
@@ -59,60 +59,127 @@
 import GeneralButton from "../../components/GeneralButton.vue";
 import circleArrowLeft from "@/components/icons/circlearrowleft.vue";
 import { mapGetters } from "vuex";
+import landingApi from "@/api/landingApi.js";
 export default {
   components: { GeneralButton, circleArrowLeft },
   data() {
     return {
+      currentID: 0,
       showModal: false,
       previewMode: false,
       styleTag: "",
       savedHTML: "",
+      currentDate: undefined,
+      remainderPageView: 0,
+      totalpageView: 0,
+      todayPageView: 0,
+      currentprice: 0,
     };
   },
   methods: {
-    routeEditor() {
-      this.$router.push("editor/landing");
+    routeBack() {
+      this.$store.commit("setPreviewFalse");
+      this.$router.go(-1);
     },
-    sendDataLanding(){
+    async sendDataLanding() {
+      //Get money
+      let payload={
+        revenue: this.currentprice,
+      }
+      //incrementdatabaseSignUp
+      await landingApi.handleRevenueSignUp(this.currentID,payload);
+      //Add to earlyadopterlanding table (later feature)
+      //Route to thank you page 
+      this.$router.push({name:"LandingThankYou"})
+    },
 
+    injectpricingButton() {
+      let pricingbuttons =
+        this.$refs["template"].getElementsByClassName("pricing-btn");
+      let price = this.$refs["template"].getElementsByClassName("price");
+      this.$nextTick(() => {
+        for (let i = 0; i < pricingbuttons.length; i++) {
+          pricingbuttons[i].addEventListener("click", function () {
+            var vueInstance =
+              document.getElementById("templateContainer").__vue__;
+            vueInstance.currentprice = price[i].innerText.match(/\d+/)[0];
+            vueInstance.showModal = true;
+          });
+        }
+      });
+    },
+    async getDataLanding(projectID) {
+      let landing = landingApi.getLandingData(projectID);
+      return landing;
     },
   },
   computed: {
-    ...mapGetters(["currentTemplate"]),
+    ...mapGetters(["currentTemplate", "currentProjectID"]),
   },
   mounted() {
+    if (this.previewMode) {
+      let css = this.$store.state.landingRepository.pageCSS;
+      this.savedHTML = this.$store.state.landingRepository.pageHTML;
+      this.styleTag = document.createElement("style");
+      this.styleTag.appendChild(document.createTextNode(css));
+      document.head.appendChild(this.styleTag);
+      let pricingbuttons =
+        this.$refs["template"].getElementsByClassName("pricing-btn");
+      this.$nextTick(() => {
+        for (let i = 0; i < pricingbuttons.length; i++) {
+          pricingbuttons[i].addEventListener("click", function () {
+            var vueInstance =
+              document.getElementById("templateContainer").__vue__;
+            vueInstance.showModal = true;
+          });
+        }
+      });
+    }
+  },
+
+  async created() {
     this.previewMode = this.$store.state.landingRepository.previewMode;
-    let css = this.$store.state.landingRepository.pageCSS;
-    this.savedHTML = this.$store.state.landingRepository.pageHTML;
-    this.styleTag = document.createElement("style");
-    this.styleTag.appendChild(document.createTextNode(css));
-    document.head.appendChild(this.styleTag);
+    //Get Landing Page Data
+    if (this.previewMode === false) {
+      let projectID = atob(this.$route.params.landingID);
+      let landing = await this.getDataLanding(projectID);
+      this.savedHTML = landing.data.data[0].landingHTML;
+      let css = landing.data.data[0].landingCSS;
+      this.styleTag = document.createElement("style");
+      this.styleTag.appendChild(document.createTextNode(css));
+      document.head.appendChild(this.styleTag);
+      this.injectpricingButton();
+      this.currentID = projectID;
+      this.currentDate = landing.data.data[0].currentdate;
+      this.todayPageView = landing.data.data[0].today_pageview;
+      this.totalpageView = landing.data.data[0].unique_view;
+      this.remainderPageView = landing.data.data[0].remainder_pageview;
+    }
 
-    let pricingbuttons =
-      this.$refs["template"].getElementsByClassName("pricing-btn");
-    this.$nextTick(() => {
-      for (let i = 0; i < pricingbuttons.length; i++) {
-        pricingbuttons[i].addEventListener("click", function () {
-          var vueInstance =
-            document.getElementById("templateContainer").__vue__;
-          vueInstance.showModal = true;
-        });
+    //Count Page views
+    if (this.previewMode === false) {
+      // let today = new Date().toLocaleDateString();
+      let today = new Date().toLocaleDateString();
+      let projectdate = new Date(this.currentDate).toLocaleDateString();
+      // Means dashboard not updated & reseted (remainder page view will be added when dashboard is visited).
+      if (projectdate != today) {
+        await landingApi.incrementRemainderPageView(this.currentProjectID);
+        await landingApi.incrementTotalPageView(this.currentProjectID);
       }
-    });
-
-    // switch (this.currentTemplate) {
-    //   case "ideation":
-    //     {
-
-    //       break;
-    //     }
-    //   case "tech":
-    //   {
-    //     console.log("Test")
-    //   }
-    // }
+      //Currentdate == today
+      else {
+        //Todaypageview++
+        await landingApi.incrementTodayPageview(this.currentProjectID);
+        //Totalpageview++
+        await landingApi.incrementTotalPageView(this.currentProjectID);
+      }
+    }
+    // console.log(this.todayPageView);
+    // console.log(this.totalpageView);
+    // console.log(this.remainderPageView);
   },
   destroyed() {
+    this.$store.commit("setPreviewFalse");
     this.styleTag.remove();
   },
 };

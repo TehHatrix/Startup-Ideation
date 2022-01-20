@@ -73,7 +73,20 @@ Route::prefix('/customer')->group(function () {
 Route::prefix('/landing')->group(function () {
     Route::get('/index/{projectID}',[LandingController::class,'index']);
     Route::post('/store/{projectID}', [LandingController::class, 'store']);
+    Route::put('/update/{projectID}',[LandingController::class, 'update']);
+
+    Route::put('/updateseries/{projectID}',[LandingController::class, 'updateSeries']);
+    Route::put('/updatecurrentdate/{projectID}',[LandingController::class, 'updatecurrentdate']);
+    Route::put('/updatetodaypageview/{projectID}',[LandingController::class, 'updateTodayPageView']);
+    Route::put('/resetremainderpageview/{projectID}',[LandingController::class, 'resetRemainder']);
+    Route::put('/handlerevenuesignup/{projectID}',[LandingController::class, 'handleRevenueSignup']);
+    Route::put('/incrementtodaypageview/{projectID}',[LandingController::class, 'incrementTodayPageView']);
+    Route::put('/incrementtotalpageview/{projectID}',[LandingController::class, 'incrementTotalPageView']);
+    Route::put('/incrementremainderpageview/{projectID}',[LandingController::class, 'incrementRemainderPageView']);
     Route::get('/checkexistproject/{projectID}',[LandingController::class,'checkExistLandingProject']);
+
+    Route::delete('/delete/{projectID}', [LandingController::class, 'delete']);
+    //Adopter Table
 });
 
 

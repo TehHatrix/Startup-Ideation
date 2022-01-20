@@ -138,6 +138,7 @@
             Complete the current validation phase to unlock new phase along the
             way.
           </p>
+          <general-button v-if="validated" @click.native="handleResume">Resume Validating</general-button>
           <landing-form-modal v-if="validationPhase === 'landing' && landingvalidated === false" @click.native="handleValidate"></landing-form-modal>
         </div>
       </div>
@@ -155,7 +156,8 @@ import annApi from "@/api/communicationApi";
 // import GeneralButton from "../../components/GeneralButton.vue";
 import CircleCheck from "../../components/icons/circleCheck.vue";
 import landingApi from "@/api/landingApi";
-import LandingFormModal from "@/components/PreLandingModal.vue"
+import LandingFormModal from "@/components/PreLandingModal.vue";
+import GeneralButton from "@/components/GeneralButton.vue";
 
 export default {
   name: "Project",
@@ -180,7 +182,8 @@ export default {
       validationPhase: "landing",
       //definedboolean
       landingvalidated: false,
-      
+      hypothesisvalidated: false,
+      surveyvalidated: false,
     };
   },
 
@@ -188,7 +191,7 @@ export default {
     modal: ProjectModal,
     "announcement-card": AnnouncementCardVue,
     "collaborator-card": CollabCardVue,
-    // GeneralButton,
+    GeneralButton,
     CircleCheck,
     LandingFormModal,
   },
@@ -203,7 +206,7 @@ export default {
       }
 
       //Validation Phase
-      this.$store.commit("setCurrentProjectID",this.projectId);
+      this.$store.commit("setCurrentProjectID", this.projectId);
       //Check Landing Exist based on project
       let checkExistLanding = await landingApi.checkExist(this.projectId);
       if (checkExistLanding.data === 1) {
@@ -231,15 +234,29 @@ export default {
         survey: this.validationPhase == "survey",
       };
     },
+    validated(){
+      return this.landingvalidated || this.hypothesisvalidated || this.surveyvalidated
+    }
   },
 
   methods: {
+    handleResume() {
+      this.$store.commit("setCurrentProjectID",this.projectId);
+      if (this.validationPhase == "hypothesis") {
+        this.$router.push("/hypothesis");
+      } else if (this.validationPhase == "landing") {
+          this.$router.push({ name: "LandingDashboard" });
+      } else if (this.validationPhase == "survey") {
+        this.$router.push({ name: "SurveyDashboard" });
+      }
+    },
+
     handleValidate() {
       if (this.validationPhase == "hypothesis") {
         this.$router.push("/hypothesis");
       } else if (this.validationPhase == "landing") {
         if (this.landingvalidated === false) {
-          console.log("in development")
+          console.log("in development");
         } else {
           this.$router.push({ name: "LandingEditor" });
         }
