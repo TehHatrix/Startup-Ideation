@@ -280,15 +280,6 @@
       </div>
     </section>
 
-    <div>
-      <transition name="fade" appear>
-        <div
-          class="modal-overlay"
-          v-if="showModal"
-          @click="showModal = false"
-        ></div>
-      </transition>
-    </div>
 
     <!-- pricing section ends -->
 

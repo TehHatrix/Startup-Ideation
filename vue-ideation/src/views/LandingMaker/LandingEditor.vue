@@ -105,6 +105,7 @@ export default {
       this.$router.push({ name: "LandingChooseTemplates" });
     },
     handleBackDashboard() {
+      this.$store.commit("setEditingMode",false)
       this.$router.push({ name: "LandingDashboard" });
     },
     injectModal() {
@@ -146,10 +147,10 @@ export default {
           landingdata,
           this.currentProjectID
         );
-        console.log(updatePage)
         if (updatePage.data.success === false) {
           throw new Error("Update Landing Page Fail!");
         } else {
+          this.$store.commit("setEditingMode",false)
           this.$router.push({name: "LandingDashboard"});
         }
       } else {
@@ -160,6 +161,7 @@ export default {
         if (addPage.data.success === false) {
           throw new Error("Add Landing Page Fail!");
         } else {
+          this.$store.commit("setEditingMode",false)
           this.$router.push({name: "LandingDashboard"});
         }
       }
@@ -366,12 +368,12 @@ export default {
       let landing = await landingApi.getLandingData(this.currentProjectID);
       this.editingHTML = landing.data.data[0].landingHTML;
       this.editingCSS = landing.data.data[0].landingCSS;
-      editor.addComponents(this.editingHTML)[0];
-      editor.setStyle(this.editingCSS);
+      editor.addComponents(landing.data.data[0].landingHTML);
+      editor.setStyle(landing.data.data[0].landingCSS);
       //Bug Editing
     } else {
       //Get Passed Landing Page Template
-      editor.addComponents(this.templateHTML)[0];
+      editor.addComponents(this.templateHTML);
       // editor.addComponents(` <head> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" /> </head> <header> <a href="#" class="logo"><span>best</span>App</a> <input type="checkbox" id="menu-bar" /> <label for="menu-bar" class="fas fa-bars"></label> <nav class="navbar"> <a href="#home">home</a> <a href="#features">features</a> <a href="#about">about</a> <a href="#review">review</a> <a href="#pricing">pricing</a> </nav> </header> <section class="home" id="home"> <div class="content"> <h3>best mobile app <span>showcase</span></h3> <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus suscipit porro nam libero natus error consequatur sed repudiandae eos quo? </p> <a href="#pricing" class="btn">download now</a> </div> <div class="image"> <img src="https://storage.googleapis.com/startup-ideation/landing-page/templates/landingpage-1/home-img.png" alt="" /> </div> </section> <section class="features" id="features"> <h1 class="heading">app features</h1> <div class="box-container"> <div class="box"> <img src="https://storage.googleapis.com/startup-ideation/landing-page/templates/landingpage-1/f-icon1.png" alt="" /> <h3>amazing UI design</h3> <p> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam minus recusandae autem, repellendus fugit quaerat provident voluptatum non officiis ratione. </p> <a href="#" class="btn">read more</a> </div> <div class="box"> <img src="https://storage.googleapis.com/startup-ideation/landing-page/templates/landingpage-1/f-icon2.png" alt="" /> <h3>soft and smooth animations</h3> <p> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam minus recusandae autem, repellendus fugit quaerat provident voluptatum non officiis ratione. </p> <a href="#" class="btn">read more</a> </div> <div class="box"> <img src="https://storage.googleapis.com/startup-ideation/landing-page/templates/landingpage-1/f-icon3.png" alt="" /> <h3>freindly interactions</h3> <p> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam minus recusandae autem, repellendus fugit quaerat provident voluptatum non officiis ratione. </p> <a href="#" class="btn">read more</a> </div> </div> </section> <section class="about" id="about"> <h1 class="heading">about the app</h1> <div class="column"> <div class="image"> <img src="https://storage.googleapis.com/startup-ideation/landing-page/templates/landingpage-1/about-img.png" alt="" /> </div> <div class="content"> <h3>Easy And Perfect Solution For Your Business App</h3> <p> Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nulla placeat deserunt saepe repudiandae veniam soluta minima dolor hic aperiam iure. </p> <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laudantium, quaerat. Dolorem ratione saepe magni quo inventore porro ab voluptates eos, nam eius provident accusantium, quia similique est, repellendus et reiciendis. </p> <div class="buttons"> <a href="#pricing" class="btn"> <i class="fab fa-apple"></i> app store </a> <a href="#pricing" class="btn"> <i class="fab fa-google-play"></i> google-play </a> </div> </div> </div> </section> <div class="newsletter"> <h3>Subscribe For New Features</h3> <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus sed aliquam quibusdam neque magni magnam est laborum doloribus, facere dolores. </p> </div> <section class="review" id="review"> <h1 class="heading">people's review</h1> <div class="box-container"> <div class="box"> <i class="fas fa-quote-right"></i> <div class="user"> <img src="https://storage.googleapis.com/startup-ideation/landing-page/templates/landingpage-1/pic1.png" alt="" /> <h3>john deo</h3> <div class="stars"> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> </div> <div class="comment"> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus et, perspiciatis nisi tempore aspernatur accusantium sed distinctio facilis aperiam laborum autem earum repellat, commodi eum. Ullam cupiditate expedita officiis obcaecati? </div> </div> </div> <div class="box"> <i class="fas fa-quote-right"></i> <div class="user"> <img src="https://storage.googleapis.com/startup-ideation/landing-page/templates/landingpage-1/pic2.png" alt="" /> <h3>john deo</h3> <div class="stars"> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star-half-alt"></i> </div> <div class="comment"> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus et, perspiciatis nisi tempore aspernatur accusantium sed distinctio facilis aperiam laborum autem earum repellat, commodi eum. Ullam cupiditate expedita officiis obcaecati? </div> </div> </div> <div class="box"> <i class="fas fa-quote-right"></i> <div class="user"> <img src="https://storage.googleapis.com/startup-ideation/landing-page/templates/landingpage-1/pic3.png" alt="" /> <h3>john deo</h3> <div class="stars"> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="far fa-star"></i> </div> <div class="comment"> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus et, perspiciatis nisi tempore aspernatur accusantium sed distinctio facilis aperiam laborum autem earum repellat, commodi eum. Ullam cupiditate expedita officiis obcaecati? </div> </div> </div> </div> </section> `)[0];
       //Pricing Section Starts
       const DomComponents = editor.DomComponents;
@@ -393,6 +395,9 @@ export default {
     }
   },
   async created() {},
+  beforeDestroy () {
+    this.editor.runCommand('core:canvas-clear');
+  },
 };
 </script>
 

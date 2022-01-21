@@ -14,9 +14,9 @@ class LandingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($projectID)
     {
-        $landing = DB::table('landing_pages')->get();
+        $landing = DB::table('landing_pages')->where('projectID','=',$projectID)->get();
         return response()->json([
             'success' => true,
             'data' => $landing,
@@ -148,7 +148,12 @@ class LandingController extends Controller
             ]);
         }
         $data = $validator->validated();
-        DB::table('landing_pages')->where('projectID',$projectid)->update(['series' => $data['updateSeries']]);
+        $updateSeries = DB::table('landing_pages')->where('projectID',$projectid)->update(['series' => $data['updateSeries']]);
+        return  response()->json([
+            'result' => $updateSeries,
+            'success' => true,
+            'errors' => null
+        ]);
     }
 
     public function updateCurrentDate(Request $request, $projectid){
@@ -162,7 +167,12 @@ class LandingController extends Controller
             ]);
         }
         $data = $validator->validated();
-        DB::table('landing_pages')->where('projectID',$projectid)->update(['currentdate' => $data['newCurrentDate']]);
+        $updateDate = DB::table('landing_pages')->where('projectID',$projectid)->update(['currentdate' => $data['newCurrentDate']]);
+        return  response()->json([
+            'result' => $updateDate,
+            'success' => true,
+            'errors' => null
+        ]);
     }
 
     public function updateTodayPageView(Request $request, $projectid){
@@ -176,7 +186,12 @@ class LandingController extends Controller
             ]);
         }
         $data = $validator->validated();
-        DB::table('landing_pages')->where('projectID',$projectid)->update(['today_pageview' => $data['newTodayPageView']]);
+        $updateTodayPageView = DB::table('landing_pages')->where('projectID',$projectid)->update(['today_pageview' => $data['newTodayPageView']]);
+        return  response()->json([
+            'result' => $updateTodayPageView,
+            'success' => true,
+            'errors' => null
+        ]);
     }
 
     public function handleRevenueSignup(Request $request, $projectid){

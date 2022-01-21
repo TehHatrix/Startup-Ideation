@@ -5,7 +5,6 @@ import Hypothesis from "../views/Hypothesis.vue";
 import Interview from "../views/Interviews/Interview.vue";
 import LandingEditor from "../views/LandingMaker/LandingEditor.vue";
 import LandingPage from "../views/LandingMaker/LandingPage.vue";
-import LandingPageTest from "../views/LandingMaker/LandingPageTest.vue";
 import LandingDashboard from "../views/LandingMaker/LandingDashboard.vue";
 import LandingChooseTemplates from "../views/LandingMaker/LandingChooseTemplates.vue";
 import FirstTemplate from "../views/LandingMaker/Templates/FirstTemplate.vue";
@@ -105,9 +104,16 @@ const routes = [
   },
   {
     path: "/survey",
-    name: "survey",
+    name: "Survey",
     component: Survey,
     meta: { requiresAuth: true },
+    // beforeEnter: middleware.guest,
+  },
+  {
+    path: "/survey/share/:projectID",
+    name: "Survey",
+    component: Survey,
+    // meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,
   },
   {
@@ -118,17 +124,9 @@ const routes = [
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/survey/dashboard",
+    path: "/survey/dashboard/:projectID",
     name: "SurveyDashboard",
     component: SurveyDashboard,
-    meta: { requiresAuth: true },
-    // beforeEnter: middleware.guest,
-  },
-
-  {
-    path: "/landingpagetest",
-    name: "LandingPageTest",
-    component: LandingPageTest,
     meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,
   },

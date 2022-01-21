@@ -12,6 +12,7 @@ use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LeanCanvasController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TodoController;
 
 /*
@@ -87,6 +88,14 @@ Route::prefix('/landing')->group(function () {
 
     Route::delete('/delete/{projectID}', [LandingController::class, 'delete']);
     //Adopter Table
+});
+
+Route::prefix('/survey')->group(function (){
+    Route::get('/index/{projectID}',[SurveyController::class,'index']);
+    Route::post('/store/{projectID}', [SurveyController::class, 'store']);
+    Route::put('/updateseries/{projectID}',[SurveyController::class, 'updateSeries']);
+    Route::put('/resetupdatetpw/{projectID}',[SurveyController::class, 'resetUpdateTodayPV']);
+    Route::put('/updatedate/{projectID}',[SurveyController::class, 'updateCurrentDate']);
 });
 
 

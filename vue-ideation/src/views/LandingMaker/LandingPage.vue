@@ -43,7 +43,8 @@
                 <general-button @click.native="showModal = false">
                   Close</general-button
                 >
-                <general-button @click.native="sendDataLanding()">
+                <disabled-button v-if="previewMode">Disabled</disabled-button>
+                <general-button v-else @click.native="sendDataLanding()">
                   Get Started</general-button
                 >
               </div>
@@ -60,8 +61,9 @@ import GeneralButton from "../../components/GeneralButton.vue";
 import circleArrowLeft from "@/components/icons/circlearrowleft.vue";
 import { mapGetters } from "vuex";
 import landingApi from "@/api/landingApi.js";
+import DisabledButton from '../../components/DisabledButton.vue';
 export default {
-  components: { GeneralButton, circleArrowLeft },
+  components: { GeneralButton, circleArrowLeft, DisabledButton },
   data() {
     return {
       currentID: 0,
@@ -83,14 +85,14 @@ export default {
     },
     async sendDataLanding() {
       //Get money
-      let payload={
+      let payload = {
         revenue: this.currentprice,
-      }
+      };
       //incrementdatabaseSignUp
-      await landingApi.handleRevenueSignUp(this.currentID,payload);
+      await landingApi.handleRevenueSignUp(this.currentID, payload);
       //Add to earlyadopterlanding table (later feature)
-      //Route to thank you page 
-      this.$router.push({name:"LandingThankYou"})
+      //Route to thank you page
+      this.$router.push({ name: "LandingThankYou" });
     },
 
     injectpricingButton() {

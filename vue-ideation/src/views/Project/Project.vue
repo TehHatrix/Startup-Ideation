@@ -140,6 +140,7 @@
           </p>
           <general-button v-if="validated" @click.native="handleResume">Resume Validating</general-button>
           <landing-form-modal v-if="validationPhase === 'landing' && landingvalidated === false" @click.native="handleValidate"></landing-form-modal>
+          <pre-survey-modal v-if="validationPhase === 'survey'"></pre-survey-modal>
         </div>
       </div>
     </div>
@@ -157,6 +158,7 @@ import annApi from "@/api/communicationApi";
 import CircleCheck from "../../components/icons/circleCheck.vue";
 import landingApi from "@/api/landingApi";
 import LandingFormModal from "@/components/PreLandingModal.vue";
+import PreSurveyModal from "@/components/PreSurveyModal.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
 
 export default {
@@ -179,7 +181,7 @@ export default {
         description: "",
       },
       //validationPhase
-      validationPhase: "landing",
+      validationPhase: "survey",
       //definedboolean
       landingvalidated: false,
       hypothesisvalidated: false,
@@ -194,6 +196,7 @@ export default {
     GeneralButton,
     CircleCheck,
     LandingFormModal,
+    PreSurveyModal,
   },
 
   async created() {

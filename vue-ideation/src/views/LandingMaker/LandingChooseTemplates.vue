@@ -958,6 +958,7 @@ header .navbar a:hover {
     },
 
     handleChoose(template) {
+      this.$store.commit("setEditingMode",false)
       switch (template) {
         case "ideation":
           //Pass Ideation HTML CSS

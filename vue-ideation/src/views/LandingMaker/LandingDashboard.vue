@@ -170,7 +170,7 @@ export default {
     async handleDelete(){
       alert("Are you sure you want to delete this Landing Page?")
       await landingApi.deleteLandingPage(this.currentProjectID);
-      this.$router.push({name:"Project"})
+      this.$router.push({name:"Project", params: { id: this.currentProjectID }})
     },
     editLanding() {
       //Set Editing Mode
@@ -252,7 +252,7 @@ export default {
     }
 
     //If projectdate is not today
-    if (projectdate != today) {
+    else if (projectdate != today) {
       //Reset today page view and add remainder
       let pageviewResetRemainder = 0 + this.remainderPageView;
       let payload = {
