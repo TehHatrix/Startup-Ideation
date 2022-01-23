@@ -10,7 +10,7 @@
                 </span>
             </section>
             <section class="page-body">
-                <MCE :content="content"/>
+                <MCE />
 
             </section>
         </div>
@@ -20,7 +20,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import MCE from './MCEEditor.vue'
-import api from '@/api/freeCanvasApi'
 
 export default {
     name: 'EditorPage',
@@ -31,24 +30,20 @@ export default {
     async created() {
         try {
             await this.$store.dispatch('showCanvas', {id: this.$route.params.id, canvasId: this.$route.params.canvasId})
-            let {data} = await api.getFreeContent(this.$route.params.canvasId)
-            if(data.success) {
-                this.content = data.content.content
-            }   
+            await this.$store.dispatch('getFreeCanvasContent', this.$route.params.canvasId)
         } catch (error) {
             console.log(error)
         }
     },
     computed: {
         ...mapGetters([
-            'canvas'
+            'canvas',
         ]),
     },
 
     data() {
         return {
             currentCanvas: null,
-            content: '',
         }
     },
 

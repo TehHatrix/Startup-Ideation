@@ -139,6 +139,7 @@ const routes = [
     name: 'ChatPage',
     component: () => import('../views/Chat/ChatPage.vue'),
     beforeEnter: middleware.guest,
+    
   }
 
 

@@ -72,8 +72,9 @@ class FreeCanvasContentController extends Controller
 
         $data = $validator->validated();
 
-        $content = FreeCanvasContent::where('free_canvas_id')->first();
+        $content = FreeCanvasContent::where('free_canvas_id', $canvas)->first();
         $content->content = $data['content'];
+        $content->save();
 
         return response()->json([
 

@@ -1,5 +1,5 @@
 <template lang="">
-    <div class="container">
+    <div class="container" v-if="project">
         
         <div class="dashboard-title">
             <div class="dashboard-title-name">
@@ -261,9 +261,9 @@ export default {
 
         async addAnnouncement() {
             try {
-                let { data } = await annApi.postAnnouncement(this.project.id, this.announForm)
+                let { data } = await annApi.postAnnouncement(this.projectId, this.announForm)
                 if(data.success) {
-                    await this.$store.dispatch('getAnnouncement', this.project.id)
+                    await this.$store.dispatch('getAnnouncement', this.projectId)
                     this.closeAnnounModal()
                 } else {
                     alert('error')

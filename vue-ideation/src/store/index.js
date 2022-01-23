@@ -7,7 +7,7 @@ import landingRepository from './landingRepository'
 import leanCanvasRepository from './leanCanvasRepository'
 import communicationRepository from './communicationRepository'
 import freeCanvasRepository from './freeCanvasRepository' 
-
+import freeCanvasContentRepository from './FreeCanvasContentRepository'
 Vue.use(Vuex)
 
 export default new Vuex.Store( {
@@ -31,6 +31,7 @@ export default new Vuex.Store( {
         leanCanvasRepository,
         communicationRepository,
         freeCanvasRepository,
+        freeCanvasContentRepository
     }
     
 })

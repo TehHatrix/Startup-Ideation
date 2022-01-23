@@ -15,16 +15,19 @@
                 alignleft aligncenter alignright alignjustify | \
                 bullist numlist outdent indent | removeformat | help'
             }"
-            v-model="canvas"
+            :id="editorId"
+            v-model="editorContent.content"
         />
 
         <div class="btn-container">
-            <button class="c-btn-primary">Save</button>
+            <button class="c-btn-primary" @click="saveContent">Save</button>
         </div>
     </div>
 </template>
 <script>
 import Editor from '@tinymce/tinymce-vue'
+import { mapGetters } from 'vuex'
+import api from '@/api/freeCanvasApi'
 export default {
     name: 'MCEEditor',
 
@@ -32,11 +35,43 @@ export default {
         'editor': Editor,
     },
 
-    props: ['content'],
+    computed: {
+        ...mapGetters([
+            'FreeCanvasContent'
+        ])
+    },
+
+    async mounted() {
+        try {
+            let data = await this.$store.dispatch('getFreeCanvasContent', this.$route.params.canvasId)
+            if(data.success) {
+                this.editorContent.content = data.content.content
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    },
 
     data() {
         return {
-            canvas: this.content ? this.content : '',
+            editorId: String(this.$route.params.canvasId),
+            editorContent: {
+                content: ''
+            }
+        }
+    },
+
+    methods: {
+        async saveContent() {
+            // console.log(this.editorContent.content + this.editorId)
+            try {
+                let {data} = await api.updateFreeContent(this.editorId, this.editorContent)
+                if(data.success) {
+                    await this.$store.dispatch('getFreeCanvasContent', this.$route.params.canvasId)
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
 
