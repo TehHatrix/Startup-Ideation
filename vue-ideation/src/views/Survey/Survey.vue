@@ -18,26 +18,30 @@
             <x-Mark :toggleHover="false"></x-Mark> Doesn't care
           </div>
         </div>
-        <div class="checkboxGroup">
+        <div
+          class="checkboxGroup"
+          v-for="(item, index) in answers"
+          :key="index"
+        >
           <input
             class="inp-cbx"
-            id="cbx"
-            type="checkbox"
+            :id="index"
+            type="radio"
             style="display: none"
+            :value="item"
+            v-model ="currentAnswer"
           />
-          <label class="cbx" for="cbx"
+          <label class="cbx" :for="index"
             ><span
               ><svg width="12px" height="9px" viewbox="0 0 12 9">
                 <polyline points="1 5 4 8 11 1"></polyline></svg></span
-            ><span>Search engine (e.g. Google, Yahoo!)</span></label
+            ><span>{{ item }}</span></label
           >
-          
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import circularProgress from "@/components/CircularProgress.vue";
 import xMark from "@/components/icons/x-mark.vue";
@@ -50,9 +54,13 @@ export default {
   },
   data() {
     return {
+      answers: ["Search engine (e.g. Google, Yahoo!)", "Facebook", "Twitter","Blog","Friend or colleague","Other (please specify)"],
+      questions: ["How did you discover Mall Navigator?","How would you feel if you could no longer use Mall Navigator?"],
       currentQuestion: "",
-      questions: "",
+      currentAnswer:"",
     };
+  },
+  methods: {
   },
 };
 </script>

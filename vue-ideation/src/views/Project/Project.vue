@@ -96,7 +96,6 @@
             </div>
         </modal>
 
-
         <!-- add announcement modal -->
         <modal 
          :showModal="showAnnounModal"
@@ -116,6 +115,7 @@
                 </div>
             </form>
         </modal>
+
 
 <!-- Validation modal -->
     <div class="validationContainer">
