@@ -14,11 +14,16 @@
         </div>
         <section id="quick-access">
             <h2>Quick Access</h2>
-            <div class="grid-cols-3 grid gap-4">
+            <div class="grid-cols-4 grid gap-4">
 
                 <router-link :to="{name: 'TodoPage', params: projectId}" class="card-white"  >
                         <font-awesome-icon icon="fa-list" size="3x"></font-awesome-icon>
                         <p>To Do List</p>
+                </router-link>
+
+                <router-link :to="{name: 'ChatPage', params: projectId}" class="card-white"  >
+                        <font-awesome-icon icon="fa-comment-dots" size="3x"></font-awesome-icon>
+                        <p>Project Chat</p>
                 </router-link>
 
                 <router-link :to="{name: 'LeanCanvas', params: projectId}" class="card-white">
@@ -157,17 +162,12 @@ export default {
     },
 
     async created() {
-        try {
-            await this.$store.dispatch('getProject', this.projectId)
-            // console.log(this.announcement)
-            if(this.announcement === null) {
-                await this.$store.dispatch('getAnnouncement', this.projectId)
-            }
+        await this.initialise()
+        // this.connect()
+    },
 
-            // console.log('after created')
-        } catch (error) {
-            console.log(error)
-        }
+    beforeDestroy() {
+        // this.disconnect()
     },
 
     computed: {
@@ -181,6 +181,27 @@ export default {
     },
 
     methods: {
+
+        connect() {
+            // eslint-disable-next-line no-unused-vars
+            window.Echo.private('').listen('', (e) => {
+
+            })
+        },
+
+        disconnect() {
+            window.Echo.leaveChannel('')
+        },
+
+        async initialise() {
+            try {
+                await this.$store.dispatch('getProject', this.projectId)
+                await this.$store.dispatch('getAnnouncement', this.projectId)
+
+            } catch (error) {   
+                console.log(error)
+            }
+        },
 
         resetSettingModal() {
             this.showSettingModal = false

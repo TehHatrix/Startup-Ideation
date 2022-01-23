@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -20,4 +21,23 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel('first-test', function() {
     return Auth::check();
+});
+
+Broadcast::channel('first-try', function($user) {
+    return true;
+});
+
+Broadcast::channel('project', function ($user, $projectId) {
+    $project = Project::find($projectId);
+    $userArr = $project->users()->wherePivot('user_id', '=', $user->id)->get();
+    return $userArr[0]->id == $user->id;
+});
+
+// channel for project chat 
+Broadcast::channel('chat.{projectId}', function ($user, $projectId) {
+    $project = Project::find($projectId);
+    $userArr = $project->users()->wherePivot('user_id', '=', $user->id)->get();
+
+    return $userArr[0]->id == $user->id;
+    // return true;
 });

@@ -334,7 +334,7 @@ export default {
         position: relative;
         font-family: inherit;
         background-color: transparent;
-        width: fill;
+        width: stretch;
         padding: 10px 10px 10px 0;
         font-size: 18px;
         border-radius: 0;
@@ -394,7 +394,7 @@ export default {
     .select-bar {
         position: relative;
         display: block;
-        width: fill;
+        width: stretch;
     }
 
     .select-bar:before, .select-bar:after {
@@ -424,7 +424,7 @@ export default {
     .select-highlight {
         position: absolute;
         height: 60%;
-        width: fill;
+        width: stretch;
         top: 25%;
         left: 0;
         pointer-events: none;

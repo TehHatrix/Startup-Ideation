@@ -86,7 +86,7 @@ export default {
             display: flex;
             flex: 0 0 auto;
             align-items: center;
-            justify-content: end;
+            justify-content: flex-end;
             flex-wrap: wrap;
             white-space: nowrap;
             border-top: 3px solid #0D0D0D;

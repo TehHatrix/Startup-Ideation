@@ -191,6 +191,8 @@ class ProjectController extends Controller
         //     'project' => $project,
         //     'collaborator' => $collaborator
         // ], 200);
+        
+        broadcast()->toOthers();
         return response()->json([
             'project' => $project,
             'collaborator' => $collaborator,

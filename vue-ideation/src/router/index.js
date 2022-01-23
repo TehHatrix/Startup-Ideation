@@ -71,7 +71,8 @@ const routes = [
   {
     path: '/test',
     name: 'Test',
-    component: () => import('../views/ProjectDashboard.vue')
+    component: () => import('../views/Project/test.vue'),
+    beforeEnter: middleware.guest,
   },
   // {
   //   path: '/login',
@@ -131,6 +132,12 @@ const routes = [
     path: '/projects/:id/freecanvas/:canvasId',
     name: 'EditorPage',
     component: () => import('../views/FreeCanvas/EditorPage.vue'),
+    beforeEnter: middleware.guest,
+  },
+  {
+    path: '/project/:id/projectchat',
+    name: 'ChatPage',
+    component: () => import('../views/Chat/ChatPage.vue'),
     beforeEnter: middleware.guest,
   }
 

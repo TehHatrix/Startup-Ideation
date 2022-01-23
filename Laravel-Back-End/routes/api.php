@@ -1,5 +1,7 @@
 <?php
 
+use App\Events\communication\ChatUpdated;
+use App\Events\TestTry;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FreeCanvasContentController;
@@ -8,8 +10,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HypothesisController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LeanCanvasController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TodoController;
+use App\Models\Project;
+use App\Models\User;
+use Illuminate\Support\Facades\Broadcast;
+use Symfony\Component\Mime\MessageConverter;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,8 +97,29 @@ Route::group([
     Route::post('/projects/{projectId}/announcement', [AnnouncementController::class, 'store']);
     Route::put('/projects/{projectId}/announcement/{announcementId}', [AnnouncementController::class, 'update']);
     Route::delete('projects/{projectId}/announcement/{announcementId}', [AnnouncementController::class, 'destroy']);
-
     
+    // -> project chat
+    Route::get('/projects/{projectId}/message', [MessageController::class, 'index']);
+    Route::post('/projects/{projectId}/message', [MessageController::class, 'store']);
+    Route::delete('/projects/{projectId}/message/{messageId}', [MessageController::class, 'destroy']);
 });
 
+// test route
+Route::get('/channel/test', function() {
+    // broadcast(new ChatUpdated());
+    return 'success';
+});
 
+Route::get('/test/channel', function() {
+    broadcast(new TestTry());
+});
+
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
+// delete this later
+Route::get('/test', function() {
+    $project = Project::find(1);
+    $user = $project->users()->wherePivot('user_id', '=', '2')->get();
+
+    return $user[0]->id;
+});

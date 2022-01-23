@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Project;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TestTry implements ShouldBroadcast
+class ProjectUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,6 +21,7 @@ class TestTry implements ShouldBroadcast
      */
     public function __construct()
     {
+        //
     }
 
     /**
@@ -30,8 +31,6 @@ class TestTry implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('first-try');
+        return new PrivateChannel('channel-name');
     }
-
-
 }
