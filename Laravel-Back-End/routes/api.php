@@ -89,8 +89,10 @@ Route::group([
     
     // free canvas route
     Route::apiResource('projects.free-canvas', FreeCanvasController::class);
-    Route::apiResource('free-canvas.content', FreeCanvasContentController::class);
-
+    // Route::apiResource('free-canvas.content', FreeCanvasContentController::class);
+    Route::get('free-canvas/{canvasId}/content', [FreeCanvasContentController::class, 'show']);
+    Route::put('free-canvas/{canvasId}/content', [FreeCanvasContentController::class, 'update']);
+    
     // communication route
     //   -> announcement 
     Route::get('/projects/{projectId}/announcement', [AnnouncementController::class, 'index']);

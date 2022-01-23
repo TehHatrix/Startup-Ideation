@@ -12,17 +12,17 @@
                     <div v-for="(canvas, index) in freeCanvas" :key="index" class="" >
                         <!-- <p class="content-card" @click="goContent(canvas.id)" >{{ canvas.name }}</p> -->
 
-                        <div class="notifications__item" @click="goContent(canvas.id)">
-                            <div class="notifications__item__content">
+                        <div class="notifications__item" >
+                            <div class="notifications__item__content" @click="goContent(canvas.id)">
                                 <span class="notifications__item__title">
                                     {{ canvas.name }}
                                 </span>
                             </div>
                             <div >
-                                <div class="notifications__item__option edit"  >
+                                <div class="notifications__item__option edit" @click="openUpdateModal(canvas)"  >
                                     <font-awesome-icon icon="fa-edit" size="xs"></font-awesome-icon>
                                 </div>
-                                <div class="notifications__item__option delete"  >
+                                <div class="notifications__item__option delete" @click="openDeleteModal(canvas)" >
                                     <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
                                 </div>
                             </div>
@@ -49,7 +49,32 @@
             </form>
         </modal>
 
-        
+        <!-- update canvas modal -->
+        <modal 
+         :showModal="showUpdateModal"
+         @close="closeUpdateModal">
+            <h2>Update Free Canvas</h2>
+            <form @submit.prevent="updateCanvas">
+                <div class="input-container">
+                    <input type="text" class="material-input" id="name" v-model="updatedForm.name" required>
+                    <label for="name" class="material-label">Canvas Name</label>
+                </div>
+                <div>
+                    <button class="general-button">Update</button>
+                </div>
+            </form>
+        </modal>
+        <!-- delete modal -->
+        <modal 
+         :showModal="showDeleteModal"
+         @close="closeDeleteModal">
+            <h2>Delete Canvas</h2>
+            <div class="btn-container">
+                <button class="c-btn-danger" @click="deleteCanvas">Delete</button>
+                <button class="c-btn-primary-outline" @click="closeDeleteModal">cancel</button>
+            </div>
+        </modal>
+
     </div>
 </template>
 <script>
@@ -64,17 +89,17 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'project',
             'freeCanvas'
         ])
     },
 
     async created() {
-        try {
-            await this.$store.dispatch('getCanvas', this.project.id)
-        } catch (error) {
-            console.log(error)
-        }
+        this.initialize()
+        this.connect()
+    },
+
+    beforeDestroy() {
+        this.disconnect()
     },
 
     data() {
@@ -83,11 +108,36 @@ export default {
             freeCanvasForm: {
                 name: ''
             },
+            showUpdateModal: false,
+            showDeleteModal: false,
+            showConfirmModal: false,
+            
+            updatedForm: {
+                name: ''
+            },
 
+            tempId: null,
         }
     },
 
     methods: {
+
+        async initialize() {
+            try {
+                await this.$store.dispatch('getCanvas', this.$route.params.id)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        connect() {
+
+        },
+
+        disconnect() {
+
+        },
+
         openAddModal() {
             this.showAddModal = true
         },
@@ -99,10 +149,9 @@ export default {
 
         async addCanvas() {
             try {
-                let res = await api.addFreeCanvas(this.project.id, this.freeCanvasForm)
-                console.table(res.data)
+                let res = await api.addFreeCanvas(this.$route.params.id, this.freeCanvasForm)
                 if(res.data.success) {
-                    this.$store.dispatch('getCanvas', this.project.id)
+                    this.$store.dispatch('getCanvas', this.$route.params.id)
                     this.closeAddModal()
                 } 
             } catch (error) {
@@ -111,15 +160,57 @@ export default {
         },
 
         goContent(canvasId) {
-            this.$router.push({ name: 'EditorPage', params: {id: this.project.id, canvasId: canvasId} })
+            this.$router.push({ name: 'EditorPage', params: {id: this.$route.params.id, canvasId: canvasId} })
         },
 
-        updateContent() {
-
+        async updateCanvas() {
+            try {
+                let {data} = await api.updateFreeCanvas(this.$route.params.id, this.tempId, this.updatedForm)
+                if(data.success) {
+                    await this.$store.dispatch('getCanvas', this.$route.params.id)
+                    this.closeUpdateModal()
+                } else {
+                    alert('fails')
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }, 
 
-        deleteContent() {
-            
+        async deleteCanvas() {
+            try {
+                let {data} = await api.deleteFreeCanvas(this.$route.params.id, this.tempId)
+                if(data.success) {
+                    this.initialize()
+                    this.closeDeleteModal()
+                } else {
+                    alert('delete fails')
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        openUpdateModal(canvas) {
+            this.updatedForm.name = canvas.name
+            this.tempId = canvas.id
+            this.showUpdateModal = true
+        },
+
+        closeUpdateModal() {
+            this.showUpdateModal = false
+            this.updatedForm.name = ''
+            this.tempId = null
+        },
+
+        openDeleteModal(canvas) {
+            this.tempId = canvas.id
+            this.showDeleteModal = true
+        },
+
+        closeDeleteModal() {
+            this.tempId = null
+            this.showDeleteModal = false
         }
     }
     
@@ -190,7 +281,10 @@ export default {
         border-radius: 5px;
         transition: all .3s ease-in;
         border: 3px solid black;
-        cursor: pointer;
+
+        .notifications__item__content {
+            cursor: pointer;
+        }
     }
 
     .notifications__item__title,
