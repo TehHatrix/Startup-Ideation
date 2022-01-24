@@ -1,6 +1,10 @@
 import api from "./config";
 
 export default {
+  async checkExist(projectID) {
+    return api.get(`api/survey/checkexistproject/${projectID}`);
+  },
+
   async addSurvey(payload,projectID) {
     return api.post(`/api/survey/store/${projectID}`,payload);
   },

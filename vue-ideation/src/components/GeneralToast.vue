@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     closeToast() {
-      this.$store.state.toastRepository.showToast = false;
+      this.$store.commit("closeToast");
     },
   },
 };

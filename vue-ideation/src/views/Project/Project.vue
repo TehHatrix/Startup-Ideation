@@ -138,9 +138,9 @@
             Complete the current validation phase to unlock new phase along the
             way.
           </p>
-          <general-button v-if="validated" @click.native="handleResume">Resume Validating</general-button>
+          <general-button v-if="validated" @click.native="handleResume()">Resume Validating</general-button>
           <landing-form-modal v-if="validationPhase === 'landing' && landingvalidated === false" @click.native="handleValidate"></landing-form-modal>
-          <pre-survey-modal v-if="validationPhase === 'survey'"></pre-survey-modal>
+          <pre-survey-modal v-if="validationPhase === 'survey' && surveyvalidated === false"></pre-survey-modal>
         </div>
       </div>
     </div>
@@ -160,6 +160,7 @@ import landingApi from "@/api/landingApi";
 import LandingFormModal from "@/components/PreLandingModal.vue";
 import PreSurveyModal from "@/components/PreSurveyModal.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
+import surveyApi from "@/api/surveyApi.js"
 
 export default {
   name: "Project",
@@ -210,10 +211,30 @@ export default {
 
       //Validation Phase
       this.$store.commit("setCurrentProjectID", this.projectId);
-      //Check Landing Exist based on project
-      let checkExistLanding = await landingApi.checkExist(this.projectId);
-      if (checkExistLanding.data === 1) {
-        this.landingvalidated = true;
+
+      switch (this.validationPhase) {
+        case "hypothesis":
+          
+          break;
+        case "landing": {
+          //Check Landing Exist based on project
+          let checkExistLanding = await landingApi.checkExist(this.projectId);
+          if (checkExistLanding.data === 1) {
+            this.landingvalidated = true;
+          }
+          break;
+        }
+        case "survey":
+          {
+            //Check Survey Exist
+          let checkExistSurvey = await surveyApi.checkExist(this.projectId);
+          if (checkExistSurvey.data === 1){
+            this.surveyvalidated = true;
+          }
+          break;
+          }
+
+        
       }
 
       // console.log('after created')
@@ -237,20 +258,24 @@ export default {
         survey: this.validationPhase == "survey",
       };
     },
-    validated(){
-      return this.landingvalidated || this.hypothesisvalidated || this.surveyvalidated
-    }
+    validated() {
+      return (
+        this.landingvalidated ||
+        this.hypothesisvalidated ||
+        this.surveyvalidated
+      );
+    },
   },
 
   methods: {
     handleResume() {
-      this.$store.commit("setCurrentProjectID",this.projectId);
+      this.$store.commit("setCurrentProjectID", this.projectId);
       if (this.validationPhase == "hypothesis") {
         this.$router.push("/hypothesis");
       } else if (this.validationPhase == "landing") {
-          this.$router.push({ name: "LandingDashboard" });
+        this.$router.push({ name: "LandingDashboard" });
       } else if (this.validationPhase == "survey") {
-        this.$router.push({ name: "SurveyDashboard" });
+        this.$router.push({ name: "SurveyDashboard", params:{projectID:this.projectId} });
       }
     },
 

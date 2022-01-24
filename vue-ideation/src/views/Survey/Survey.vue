@@ -1,71 +1,280 @@
 <template>
-  <div>
-    <div class="card">
-      <div class="concludeContent">
-        <div class="concludeHeader">
-          <circular-progress></circular-progress>
-          <p class="score">
-            <strong>Current Score </strong>
-            <span class="scoreNumber"
-              ><strong>4</strong><font-awesome-icon icon="fa-solid fa-star"
+  <div class="card">
+    <div class="concludeContent">
+      <div class="concludeHeader">
+        <circular-progress
+          :passedPercentage="currentpercentageConclude"
+        ></circular-progress>
+        <p class="score">
+          <strong>Current Score </strong>
+          <transition name="fade" appear>
+            <span class="scoreNumber" :key="currentScore"
+              ><strong>{{ currentScore }}</strong
+              ><font-awesome-icon icon="fa-solid fa-star"
             /></span>
-          </p>
+          </transition>
+        </p>
+        <!-- <general-button class="stepbackButton" v-if="currentStepsIndex > 0 && endQuestion == false" @click.native="reduceStep()">Step Back</general-button> -->
+      </div>
+
+      <div class="showFinal" v-if="endQuestion === true">
+        <transition name="fade" appear>
+          <h3>Survey completed! Thank you!</h3>
+        </transition>
+      </div>
+
+      <div v-else-if="endQuestion === false">
+        <div class="concludeQuestionContainer">
+          <transition name="fade" appear>
+            <div class="concludeQuestion" :key="currentQuestion">
+              {{ appendProductQuestion(steps[currentStepsIndex].question) }}
+            </div>
+          </transition>
         </div>
-        <div class="concludeQuestion">How did you discover Mall Navigator?</div>
-        <div class="concludeAnswer">
-          <div class="answerCard"><check></check> Sad</div>
-          <div class="answerCard">
-            <x-Mark :toggleHover="false"></x-Mark> Doesn't care
+        <!-- If answer is Objectives -->
+        <div v-if="answerType === 'mcq'" class="concludeAnswerSubjective">
+          <div
+            class="checkboxGroup"
+            v-for="(item, index) in answers"
+            :key="index"
+          >
+            <input
+              class="inp-cbx"
+              :id="index"
+              type="radio"
+              style="display: none"
+              :value="item"
+              v-model="currentMCQAnswer"
+            />
+            <label class="cbx" :for="index"
+              ><span
+                ><svg width="12px" height="9px" viewbox="0 0 12 9">
+                  <polyline points="1 5 4 8 11 1"></polyline></svg></span
+              ><span>{{ item }}</span></label
+            >
           </div>
         </div>
-        <div
-          class="checkboxGroup"
-          v-for="(item, index) in answers"
-          :key="index"
-        >
-          <input
-            class="inp-cbx"
-            :id="index"
-            type="radio"
-            style="display: none"
-            :value="item"
-            v-model ="currentAnswer"
-          />
-          <label class="cbx" :for="index"
-            ><span
-              ><svg width="12px" height="9px" viewbox="0 0 12 9">
-                <polyline points="1 5 4 8 11 1"></polyline></svg></span
-            ><span>{{ item }}</span></label
-          >
+        <!-- ! TODO: Create Handle Next/Step method -->
+        <general-button @click.native="handleStep"> Next </general-button>
+        <!-- If answer is Subjective -->
+        <!-- <div class="concludeAnswer">
+        <div class="answerCard" @click="handleStep('Yes')">
+          <check></check> Yes
         </div>
+        <div class="answerCard" @click="handleStep('No')">
+          <x-Mark :toggleHover="false"></x-Mark> No
+        </div>
+      </div> -->
       </div>
     </div>
   </div>
 </template>
+
 <script>
-import circularProgress from "@/components/CircularProgress.vue";
-import xMark from "@/components/icons/x-mark.vue";
-import check from "@/components/icons/check.vue";
+// import xMark from "@/components/icons/x-mark.vue";
+// import check from "@/components/icons/check.vue";
+import CircularProgress from "../../components/CircularProgress.vue";
+import Vue from "vue";
+import VueConfetti from "vue-confetti";
+import customerApi from "@/api/customerApi.js";
+import { mapGetters } from "vuex";
+import GeneralButton from "../../components/GeneralButton.vue";
+
+Vue.use(VueConfetti);
+
 export default {
   components: {
-    circularProgress,
-    xMark,
-    check,
+    // xMark,
+    // check,
+    CircularProgress,
+    GeneralButton,
   },
+  computed: {
+    percentagePerSteps() {
+      return 100 / this.steps.length;
+    },
+    answerType() {
+      return this.steps[this.currentStepsIndex].type;
+    },
+    answers() {
+      return this.steps[this.currentStepsIndex].answer;
+    },
+
+    ...mapGetters(["currentID", "interviewIndex"]),
+  },
+
   data() {
     return {
-      answers: ["Search engine (e.g. Google, Yahoo!)", "Facebook", "Twitter","Blog","Friend or colleague","Other (please specify)"],
-      questions: ["How did you discover Mall Navigator?","How would you feel if you could no longer use Mall Navigator?"],
-      currentQuestion: "",
-      currentAnswer:"",
+      productName: "Mall Navigator",
+      endQuestion: false,
+      currentStepsIndex: 0,
+      currentScore: 0,
+      currentpercentageConclude: 0,
+      currentMCQAnswer: "",
+      customerAnswer: {
+        discover: "",
+        dissapointed: "",
+        reasonDissapoint: "",
+        alternative: "",
+        benefits: "",
+        recommendAny: "",
+        personBenefit: "",
+        improveSuggest: "",
+        contacts: "",
+      },
+      addedScore: 1,
+      steps: [
+        {
+          question: "How did you discover productName?",
+          type: "mcq",
+          answerQuestion: "discover",
+          answer: [
+            "Search engine (e.g. Google, Yahoo!)",
+            "Facebook",
+            "Twitter",
+            "Blog",
+            "Friend or colleague",
+            "Other",
+          ],
+        },
+        {
+          question:
+            "How would you feel if you could no longer use productName?",
+          type: "mcq",
+          answerQuestion: "dissapointed",
+          answer: [
+            "Very Disappointed",
+            "Somewhat Disappointed",
+            "Not Disappointed",
+          ],
+        },
+        {
+          question:
+            "If productName is no longer available, what would you use as an alternative?",
+          answerQuestion: "alternative",
+          type: "mcq",
+          answer: ["I probably wouldn’t use an alternative", "I would use"],
+        },
+        {
+          question:
+            "What is the primary benefit you received from productName?",
+          answerQuestion: "benefits",
+          type: "subjective",
+          answer: "textinput",
+        },
+        {
+          question: "Have you recommended productName to anyone?",
+          answerQuestion: "recommendAny",
+          type: "mcq",
+          answer: ["No", "Yes"],
+        },
+        {
+          question:
+            "What type of person do you think would benefit most from productName?",
+          answerQuestion: "personBenefit",
+          type: "subjective",
+          answer: "textinput",
+        },
+        {
+          question: "How can we improve productName to better meet your needs?",
+          answerQuestion: "improveSuggest",
+          type: "subjective",
+          answer: "textinput",
+        },
+        {
+          question:
+            "Would it be okay if we followed up by email to request a clarification to one or more of your responses?",
+          answerQuestion: "contacts",
+          type: "mcq",
+          answer: ["No", "Yes"],
+        },
+      ],
     };
   },
+
   methods: {
+    appendProductQuestion(question) {
+      return question.replace("productName", this.productName);
+    },
+
+    handleStep() {
+      this.checkAnswer();
+      if (this.checkAnswer()) {
+        this.customerAnswer[this.steps.answerQuestion] = this.currentMCQAnswer;
+        this.currentMCQAnswer = "";
+        console.log(this.customerAnswer);
+        this.currentStepsIndex += 1;
+
+        this.updatePercentage();
+        this.checkEnd();
+      }
+    },
+    checkAnswer() {
+      if (this.currentMCQAnswer === "") {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "You have not checked the answer yet!"
+        );
+        this.$store.commit("showToast");
+        return false;
+      }
+      return true;
+    },
+    checkEnd() {
+      if (this.currentStepsIndex >= this.steps.length) {
+        this.endQuestionMethod();
+      } else {
+        this.currentQuestion = this.steps[this.currentStepsIndex].question;
+      }
+    },
+
+    endQuestionMethod() {
+      this.endQuestion = true;
+      this.updateScoreDatabase();
+      this.$confetti.start();
+      setTimeout(() => {
+        this.$confetti.stop();
+      }, 2000);
+    },
+
+    updatePercentage() {
+      if (this.endQuestion) {
+        this.currentpercentageConclude = 100;
+      } else {
+        this.currentpercentageConclude =
+          this.percentagePerSteps * this.currentStepsIndex;
+      }
+    },
+
+    async updateScoreDatabase() {
+      let conclude = {
+        score: this.currentScore,
+        interviewID: this.interviewIndex,
+      };
+      let updateScore = await customerApi.updateScoreCustomer(
+        this.currentID,
+        conclude
+      );
+      if (updateScore.success == false) {
+        throw new Error("Could not update Customer Score");
+      } else {
+        setTimeout(() => {
+          this.$router.go();
+        }, 2300);
+      }
+    },
   },
+
+  mounted() {},
 };
 </script>
 
 <style lang="scss" scoped>
+.checkboxGroup {
+  margin: 15px;
+}
+
 .card {
   border-radius: 7px;
   margin-left: 40px;

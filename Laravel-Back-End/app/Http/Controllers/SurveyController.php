@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 class SurveyController extends Controller
 {
+
+    public function checkExistSurveyProject($projectID){
+        $searchProjectID = DB::table('survey')->where('projectID','=',$projectID)->exists();
+        return $searchProjectID;
+    }
     /**
      * Display a listing of the resource.
      *

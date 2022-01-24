@@ -91,6 +91,7 @@ Route::prefix('/landing')->group(function () {
 });
 
 Route::prefix('/survey')->group(function (){
+    Route::get('/checkexistproject/{projectID}',[SurveyController::class,'checkExistSurveyProject']);
     Route::get('/index/{projectID}',[SurveyController::class,'index']);
     Route::post('/store/{projectID}', [SurveyController::class, 'store']);
     Route::put('/updateseries/{projectID}',[SurveyController::class, 'updateSeries']);
