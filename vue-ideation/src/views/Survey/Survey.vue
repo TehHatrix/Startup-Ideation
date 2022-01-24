@@ -26,12 +26,15 @@
       <div v-else-if="endQuestion === false">
         <div class="concludeQuestionContainer">
           <transition name="fade" appear>
-            <div class="concludeQuestion" :key="currentQuestion">
+            <div
+              class="concludeQuestion"
+              :key="appendProductQuestion(steps[currentStepsIndex].question)"
+            >
               {{ appendProductQuestion(steps[currentStepsIndex].question) }}
             </div>
           </transition>
         </div>
-        <!-- If answer is Objectives -->
+        <!-- If answer is Objectives & Purely MCQ -->
         <div v-if="answerType === 'mcq'" class="concludeAnswerSubjective">
           <div
             class="checkboxGroup"
@@ -54,8 +57,53 @@
             >
           </div>
         </div>
+        <!-- If answer is Hybrid -->
+        <div v-if="answerType === 'hybrid'" class="concludeAnswerSubjective">
+          <div
+            class="checkboxGroup"
+            v-for="(item, index) in answers"
+            :key="index"
+          >
+            <input
+              class="inp-cbx"
+              :id="index"
+              type="radio"
+              style="display: none"
+              :value="valueWithoutElement(item)"
+              @click="checkHybridAnswer(item)"
+              v-model="currentMCQAnswer"
+            />
+            <label class="cbx" :for="index"
+              ><span
+                ><svg width="12px" height="9px" viewbox="0 0 12 9">
+                  <polyline points="1 5 4 8 11 1"></polyline></svg></span
+              ><span>{{ valueWithoutElement(item) }}</span></label
+            >
+            <input
+              v-if="textBoxExist(item)"
+              type="text"
+              class="inputField"
+              :class="dangerName"
+              name="name"
+              id="name"
+              @input="appendCurrentAnswer"
+              v-model="currentTextboxAnswer"
+              required
+            />
+          </div>
+        </div>
+
         <!-- ! TODO: Create Handle Next/Step method -->
-        <general-button @click.native="handleStep"> Next </general-button>
+        <div class="stepButton">
+          <general-button @click.native="handleStep"> Next </general-button>
+          <general-button
+            v-if="this.currentStepsIndex > 0"
+            @click.native="handleBack"
+          >
+            Back
+          </general-button>
+        </div>
+
         <!-- If answer is Subjective -->
         <!-- <div class="concludeAnswer">
         <div class="answerCard" @click="handleStep('Yes')">
@@ -107,10 +155,13 @@ export default {
     return {
       productName: "Mall Navigator",
       endQuestion: false,
+      hybridAnswer: false,
       currentStepsIndex: 0,
       currentScore: 0,
       currentpercentageConclude: 0,
       currentMCQAnswer: "",
+      finalAnswer: "",
+      currentTextboxAnswer: "",
       customerAnswer: {
         discover: "",
         dissapointed: "",
@@ -126,7 +177,7 @@ export default {
       steps: [
         {
           question: "How did you discover productName?",
-          type: "mcq",
+          type: "hybrid",
           answerQuestion: "discover",
           answer: [
             "Search engine (e.g. Google, Yahoo!)",
@@ -134,7 +185,7 @@ export default {
             "Twitter",
             "Blog",
             "Friend or colleague",
-            "Other",
+            "Other [Textbox]",
           ],
         },
         {
@@ -152,8 +203,11 @@ export default {
           question:
             "If productName is no longer available, what would you use as an alternative?",
           answerQuestion: "alternative",
-          type: "mcq",
-          answer: ["I probably wouldn’t use an alternative", "I would use"],
+          type: "hybrid",
+          answer: [
+            "I probably wouldn’t use an alternative",
+            "I would use [Textbox]",
+          ],
         },
         {
           question:
@@ -185,31 +239,76 @@ export default {
           question:
             "Would it be okay if we followed up by email to request a clarification to one or more of your responses?",
           answerQuestion: "contacts",
-          type: "mcq",
-          answer: ["No", "Yes"],
+          type: "hybrid",
+          answer: ["No", "Yes [Textbox]"],
         },
       ],
     };
   },
 
   methods: {
+    checkHybridAnswer(item) {
+      if (this.textBoxExist(item)) {
+        this.finalAnswer = this.valueWithoutElement(item);
+        this.hybridAnswer = true;
+        return true;
+      } else {
+        this.hybridAnswer = false;
+        return false;
+      }
+    },
+    appendCurrentAnswer() {
+      //Final Answer because dont want to disturb currentMCQAnswer (nanti checkbox cacat)
+      this.finalAnswer = this.currentMCQAnswer;
+      this.finalAnswer += this.currentTextboxAnswer;
+    },
+
+    valueWithoutElement(item) {
+      return item.replace("[Textbox]", "");
+    },
+
+    textBoxExist(item) {
+      if (item.includes("[Textbox]")) {
+        return true;
+      }
+      return false;
+    },
+
     appendProductQuestion(question) {
       return question.replace("productName", this.productName);
+    },
+
+    handleBack() {
+      this.currentMCQAnswer = "";
+      this.currentStepsIndex -= 1;
+      this.updatePercentage();
     },
 
     handleStep() {
       this.checkAnswer();
       if (this.checkAnswer()) {
-        this.customerAnswer[this.steps.answerQuestion] = this.currentMCQAnswer;
+        //If Hybrind Answer, = this.finalAnswer
+        if (this.hybridAnswer) {
+          this.customerAnswer[
+            this.steps[this.currentStepsIndex].answerQuestion
+          ] = this.finalAnswer;
+        //if not, this.currentMCQAnswer
+        } else {
+          this.customerAnswer[
+            this.steps[this.currentStepsIndex].answerQuestion
+          ] = this.currentMCQAnswer;
+        }
+        this.currentTextboxAnswer = "";
         this.currentMCQAnswer = "";
-        console.log(this.customerAnswer);
+        this.finalAnswer = "";
+        console.log(this.customerAnswer)
         this.currentStepsIndex += 1;
-
         this.updatePercentage();
         this.checkEnd();
       }
     },
     checkAnswer() {
+      //Check if null
       if (this.currentMCQAnswer === "") {
         this.$store.commit("setTypeToast", "Error");
         this.$store.commit(
@@ -219,13 +318,19 @@ export default {
         this.$store.commit("showToast");
         return false;
       }
+      //If hybrid
+      if (this.steps[this.currentStepsIndex].type === "hybrid") {
+        //Check for specific question
+        console.log("meow");
+      }
+
       return true;
     },
     checkEnd() {
       if (this.currentStepsIndex >= this.steps.length) {
         this.endQuestionMethod();
       } else {
-        this.currentQuestion = this.steps[this.currentStepsIndex].question;
+        // this.currentQuestion = this.steps[this.currentStepsIndex].question;
       }
     },
 
@@ -271,11 +376,37 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.inputField {
+  border-radius: 5px;
+  padding: 12px 20px;
+  height: 30px;
+  width: 50%;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease 0s;
+
+  &:focus {
+    border: 1px solid rgb(133, 133, 133);
+  }
+}
+
+.stepButton {
+  position: absolute;
+  bottom: 20px;
+  right: 0;
+  display: flex;
+  flex-direction: row-reverse;
+  margin-right: 15px;
+  gap: 40px;
+}
+
 .checkboxGroup {
+  display: flex;
   margin: 15px;
 }
 
 .card {
+  position: relative;
   border-radius: 7px;
   margin-left: 40px;
   background-color: #ffffff;
