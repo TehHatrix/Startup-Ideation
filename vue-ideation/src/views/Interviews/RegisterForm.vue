@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1 :class="{ 'show-final': showFinal }">
-       {{ registerSteps[0].value }} Registered Successfully!
+      {{ registerSteps[0].value }} Registered Successfully!
     </h1>
     <div
       class="register"
@@ -28,17 +28,32 @@
         @click.native="checkStep"
       ></arrow-right>
       <div id="inputContainer" :class="{ showContainer: showContainer }">
-        <form @submit.prevent="checkStep">
+        <form @submit.prevent="checkStep" enctype="multipart/form-data">
           <input
             id="inputField"
             :type="inputType"
             v-model="inputValue"
             ref="registerinput"
+            @change="handleImage"
             required
           />
-          <label id="inputLabel">{{ inputLabel }}</label>
+          <label
+            v-if="inputType === 'file'"
+            for="inputField"
+            class="uploadButton"
+            ><font-awesome-icon icon="fa-solid fa-arrow-up-from-bracket" />
+            Upload Customer Image</label
+          >
+          <span v-if="inputType === 'file'" id="uploadStatus">{{
+            uploadStatus
+          }}</span>
+          <!-- <label id="inputLabel" v-if="inputFile">{{ inputLabel }}</label> -->
+          <label id="inputLabel" :style="inputFile">{{ inputLabel }}</label>
         </form>
-        <div id="inputProgress"></div>
+        <div
+          v-if="inputType === 'text' || inputType === 'phone'"
+          id="inputProgress"
+        ></div>
       </div>
     </div>
   </div>
@@ -60,6 +75,8 @@ export default {
       inputLabel: "",
       inputType: "text",
       inputValue: "",
+      selectedFile: null,
+      uploadStatus: "No file uploaded",
       showContainer: false,
       showFinal: false,
       progress: "0%",
@@ -93,6 +110,12 @@ export default {
           value: "",
           pattern: /^\d{10}$/,
         },
+        {
+          label: "Upload Customer Image (You can leave it blank)",
+          type: "file",
+          value: null,
+          pattern: /"/,
+        },
       ],
     };
   },
@@ -100,9 +123,20 @@ export default {
     closeForm() {
       this.$emit("closeForm");
     },
-    passAddCardParent(){
-      let customer = {name: this.registerSteps[0].value, occupation: this.registerSteps[1].value, email: this.registerSteps[2].value, phone:this.registerSteps[3].value}
-      this.$emit("addCard",customer)
+    handleImage(event) {
+      if (this.inputType === "file") {
+        const formData = new FormData();
+        formData.append("image", event.target.files[0]);
+        this.selectedFile = formData;
+        this.uploadStatus = "Successful";
+      }
+    },
+    passAddCardParent() {
+      this.selectedFile.append("name", this.registerSteps[0].value);
+      this.selectedFile.append("occupation", this.registerSteps[1].value);
+      this.selectedFile.append("email", this.registerSteps[2].value);
+      this.selectedFile.append("phone", this.registerSteps[3].value);
+      this.$emit("addCard", this.selectedFile);
     },
     setStep() {
       this.inputLabel = this.registerSteps[this.position].label;
@@ -128,39 +162,78 @@ export default {
       this.hideStep(this.setStep);
       this.setProgress();
     },
-    checkStep() {
-      if (!this.registerSteps[this.position].pattern.test(this.inputValue)) {
-        this.wrongColor = true;
-        this.wrongAnimation = true;
-        setTimeout(() => {
-          this.wrongAnimation = false;
-        }, 500);
-        this.$refs.registerinput.focus();
+    checkInput(inputValue) {
+      if (this.registerSteps[this.position].type !== "file") {
+        if (!this.registerSteps[this.position].pattern.test(inputValue)) {
+          this.wrongColor = true;
+          this.wrongAnimation = true;
+          // this.setTimeoutAnimation("this.wrongAnimation", false, 500);
+          setTimeout(() => {
+            this.wrongAnimation = false;
+          }, 500);
+          this.$refs.registerinput.focus();
+          return false;
+        }
+      }
+      return true;
+    },
+    checkExistStep() {
+      if (this.registerSteps[this.position]) {
+        this.hideStep(this.setStep);
       } else {
+        this.hideStep(() => {
+          this.closeRegister = true;
+          // this.setTimeoutAnimation("this.showFinal", true, 1000);
+          setTimeout(() => {
+            this.showFinal = true;
+          }, 1000);
+          this.passAddCardParent();
+          setTimeout(() => {
+            this.$router.go();
+          }, 2000);
+        });
+      }
+    },
+    checkStep() {
+      if (this.checkInput(this.inputValue)) {
         this.wrongColor = false;
         this.wrongAnimation = false;
         this.okAnimation = true;
+        // this.setTimeoutAnimation("this.okAnimation", false, 200);
         setTimeout(() => {
           this.okAnimation = false;
         }, 200);
-        this.registerSteps[this.position].value = this.inputValue;
-        this.position += 1;
-        if (this.registerSteps[this.position]) {
-          this.hideStep(this.setStep);
+        if (this.registerSteps[this.position].type === "file") {
+          this.registerSteps[this.position].value = this.selectedFile;
         } else {
-          this.hideStep(() => {
-            this.closeRegister = true;
-            setTimeout(() => {
-              this.showFinal = true;
-            }, 1000);
-            this.passAddCardParent();
-          });
+          this.registerSteps[this.position].value = this.inputValue;
         }
+
+        this.position += 1;
+        this.checkExistStep();
       }
       this.setProgress();
     },
     setProgress() {
       this.progress = (this.position / this.registerSteps.length) * 100 + "%";
+    },
+    // setTimeoutAnimation(animation, boolean, timeout) {
+    //   let thetimeout = timeout;
+    //   // let theanimation = animation;
+    //   let theboolean = boolean;
+    //   setTimeout(() => {
+    //     animation = theboolean;
+    //   }, thetimeout);
+    // },
+  },
+
+  computed: {
+    inputFile() {
+      if (this.inputType === "file") {
+        return "top: 3px;left: 42px;font-size: 0.7rem;font-weight: normal; color: #999;";
+      } else {
+        return "";
+      }
     },
   },
   mounted() {
@@ -177,7 +250,7 @@ export default {
   padding: 10px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2), 0 10px 10px rgba(0, 0, 0, 0.2);
   background-color: #fff;
-  
+
   &.close {
     width: 0;
     padding: 10px 0;
@@ -248,6 +321,42 @@ export default {
       color: #999;
     }
   }
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.uploadButton {
+  width: 140px;
+  height: 50px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: -10px;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color: #000;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.212);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+    box-shadow: 0px 15px 20px rgba(136, 67, 255, 0.425);
+    color: #fff;
+    transform: translateY(-7px);
+  }
+}
+
+#uploadStatus {
+  margin-left: 10px;
 }
 
 #inputLabel {

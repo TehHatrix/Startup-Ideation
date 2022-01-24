@@ -2,10 +2,9 @@
   <div>
     <div class="headerDashboard">
       <h1>Survey Dashboard</h1>
+      <general-button @click.native="showSurvey">Preview Survey</general-button>
       <general-button @click.native="surveyRoute"> Share Survey</general-button>
-      <general-button @click.native="showSummary">
-        Show Summary</general-button
-      >
+      <general-button @click.native="showSummary"> Show Summary</general-button>
     </div>
     <div class="summary">
       <h2>Survey Statistic</h2>
@@ -14,27 +13,26 @@
           <template #logo>
             <sign-up :gradientBoolean="true"></sign-up
           ></template>
-          <template #title> <h4>Answered Survey</h4></template>
-          <template #content> <h1>17</h1> </template>
+          <template #title> <h4>Responses</h4></template>
+          <template #content>
+            <h1>{{ totalResponse }}</h1>
+          </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo> <eyes :gradientBoolean="true"></eyes></template>
-          <template #title> <h4>Total Unique Views</h4></template>
-          <template #content> <h1>130</h1> </template>
-        </dashboard-card>
-        <dashboard-card>
-          <template #logo>
-            <revenue :gradientBoolean="true"> </revenue
-          ></template>
-          <template #title> <h4>Follow Up Emails</h4></template>
-          <template #content> <h1>150</h1> </template>
+          <template #title> <h4>Total Views</h4></template>
+          <template #content>
+            <h1>{{ totalView }}</h1>
+          </template>
         </dashboard-card>
         <dashboard-card>
           <template #logo>
             <revenue-target :gradientBoolean="true"></revenue-target>
           </template>
-          <template #title> <h4>Follow Up Goal Emails</h4></template>
-          <template #content> <h1>200</h1> </template>
+          <template #title> <h4>Responses Goal</h4></template>
+          <template #content>
+            <h1>{{ goalResponse }}</h1>
+          </template>
         </dashboard-card>
       </div>
     </div>
@@ -56,26 +54,34 @@
 import DashboardCard from "@/components/DashboardCard.vue";
 import SignUp from "../../components/icons/sign-up.vue";
 import Eyes from "../../components/icons/eyes.vue";
-import Revenue from "../../components/icons/revenue.vue";
 import RevenueTarget from "../../components/icons/revenueTarget.vue";
 import ChartCard from "@/components/ChartCard.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
+import surveyApi from "@/api/surveyApi.js";
+import { mapGetters } from "vuex";
 export default {
   components: {
     DashboardCard,
     SignUp,
     Eyes,
-    Revenue,
     RevenueTarget,
     ChartCard,
     GeneralButton,
   },
   data() {
     return {
+      //Response Survey data
+      totalResponse: 0,
+      totalView: 0,
+      goalResponse: 0,
+      currentDate: undefined,
+      todayPageView: 0,
+      remainderPageView: 0,
+
       series: [
         {
           name: "Views",
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+          data: [],
         },
       ],
       chartOptions: {
@@ -123,17 +129,7 @@ export default {
           show: false,
         },
         xaxis: {
-          categories: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-          ],
+          type: "datetime",
         },
       },
     };
@@ -145,6 +141,88 @@ export default {
     showSummary() {
       this.$router.push("summary");
     },
+    showSurvey(){
+      this.$router.push({name: "Survey"})
+    }
+  },
+
+  computed: {
+    ...mapGetters(["currentProjectID"]),
+  },
+
+  async created() {
+    //Get Survey Data and Bind
+    let surveyData = await surveyApi.getSurveyData(this.currentProjectID);
+    this.totalResponse = surveyData.data.surveyData[0].responses;
+    this.totalView = surveyData.data.surveyData[0].total_view;
+    this.goalResponse = surveyData.data.surveyData[0].responses_goal;
+    this.currentDate = surveyData.data.surveyData[0].current_date;
+    this.todayPageView = surveyData.data.surveyData[0].today_view;
+    this.remainderPageView = surveyData.data.surveyData[0].remainder_view
+    this.series = [
+      {
+        data: JSON.parse(surveyData.data.surveyData[0].series),
+      },
+    ];
+
+    
+    let today = new Date().toLocaleDateString();
+    let projectdate = new Date(this.currentDate).toLocaleDateString();
+    console.log(today);
+    console.log(projectdate);
+    //If projectdate is today
+    if (projectdate == today) {
+      //Keep replacing with latest today data
+      let newData = this.series[0].data;
+      let newTodayPageView = { x: this.currentDate, y: this.todayPageView };
+      // newData[newData.length] = newTodayPageView;
+      newData.splice(newData.length - 1, 1, newTodayPageView);
+      this.series = [
+        {
+          data: newData,
+        },
+      ];
+      //Update Database
+      let jsonSeries = JSON.stringify(this.series[0].data);
+      let payloadUpdate = {
+        updateSeries: jsonSeries,
+      };
+      await surveyApi.updateSeries(this.currentProjectID, payloadUpdate);
+    }
+
+        //If projectdate is not today
+    else if (projectdate != today) {
+      //Reset today page view and add remainder
+      let pageviewResetRemainder = 0 + this.remainderPageView;
+      let payload = {
+        newTodayPageView: pageviewResetRemainder,
+      };
+      await surveyApi.resetUpdateTodayPageView(this.currentProjectID, payload);
+
+      //Update with new Series of data
+      let newData = this.series[0].data;
+      newData.push({ x: today, y: pageviewResetRemainder });
+      this.series = [
+        {
+          data: newData,
+        },
+      ];
+      //Update Series Database
+      let jsonSeries = JSON.stringify(this.series[0].data);
+      let payloadUpdate = {
+        updateSeries: jsonSeries,
+      };
+      await surveyApi.updateSeries(this.currentProjectID, payloadUpdate);
+
+      //Update Project date
+      let payload2 = {
+        newCurrentDate: today,
+      };
+      this.currentDate = today;
+      await surveyApi.updateCurrentDate(this.currentProjectID, payload2);
+    }
+
+
   },
 };
 </script>

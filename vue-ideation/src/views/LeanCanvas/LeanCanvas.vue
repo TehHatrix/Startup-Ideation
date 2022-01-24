@@ -11,15 +11,14 @@
                     <lean-content 
                     :type="type"
                     :user="user"
-                    :content="leanContent" >
-
+                    :content="leanContent">
                     </lean-content>
                 </div>
-
             </div>
         </section>
     </div>
 </template>
+
 <script>
 import {mapGetters} from 'vuex'
 import LeanContent from '@/components/leanCanvas/LeanContent.vue'

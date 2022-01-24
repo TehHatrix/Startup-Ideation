@@ -4,14 +4,18 @@ use App\Events\communication\ChatUpdated;
 use App\Events\TestTry;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerProblemController;
 use App\Http\Controllers\FreeCanvasContentController;
 use App\Http\Controllers\FreeCanvasController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HypothesisController;
 use App\Http\Controllers\InterviewController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LeanCanvasController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TodoController;
 use App\Models\Project;
 use App\Models\User;
@@ -34,26 +38,74 @@ use Symfony\Component\Mime\MessageConverter;
 // });
 
 
-Route::get('/gethypothesisdata', [HypothesisController::class, 'getHypothesisData']);
+Route::get('/getproblemswithcustSeg', [HypothesisController::class, 'getproblemswithcustSeg']);
+Route::get('/gethypothesis', [HypothesisController::class, 'gethypothesisdata']);
+Route::get('/getproblemHypothesis', [HypothesisController::class, 'getproblemHypothesis']);
+Route::get('/getinterviewIDbyHypothesis/{hypothesisID}', [HypothesisController::class, 'getinterviewIDbyHypothesis']);
+
 Route::get('/getcustomersegmentstopic', [HypothesisController::class, 'getCustomerSegmentsTopic']);
 Route::get('/getproblemstopic', [HypothesisController::class, 'getProblemsTopic']);
 Route::get('/getstatus/{customerproblem_id}', [HypothesisController::class, 'getstatus']);
 Route::get('/getHypothesisID/{customerproblem_id}', [HypothesisController::class, 'getHypothesisID']);
 Route::prefix('/hypothesis')->group(function () {
     Route::post('/store', [HypothesisController::class, 'store']);
-    Route::put('/{id}', [HypothesisController::class, 'update']);
+    Route::put('/update/{hypothesisID}', [HypothesisController::class, 'updateHypothesis']);
     Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class, 'updateCustomerProblem']);
     Route::delete('/custprob/{customerproblem_id}', [HypothesisController::class, 'destroy']);
+    Route::delete('/delete/{hypothesisID}', [HypothesisController::class, 'deleteHypothesis']);
 });
 
 
 Route::prefix('/interview')->group(function () {
+    Route::get('/index/{id}', [InterviewController::class, 'index']);
     Route::post('/store', [InterviewController::class, 'store']);
+    Route::post('/updatescript/{interviewID}', [InterviewController::class, 'updateScript']);
     // Route::put('/{id}', [HypothesisController::class,'update']);
     // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);
     // Route::delete('/custprob/{customerproblem_id}',[HypothesisController::class,'destroy']);
-
 });
+
+Route::prefix('/customer')->group(function () {
+    Route::get('/index/{id}', [CustomerController::class, 'index']);
+    Route::post('/store/{interviewid}', [CustomerController::class, 'store']);
+    Route::post('/update/{custID}', [CustomerController::class, 'update']);
+    Route::post('/update/{custID}/score', [CustomerController::class, 'updateScore']);
+    Route::post('/update/{custID}/logs', [CustomerController::class, 'updateLog']);
+    Route::delete('/delete/{custID}', [CustomerController::class, 'deleteCustomer']);
+    // Route::post('/updatescript/{interviewID}', [CustomerController::class, 'updateScript']);
+    // Route::put('/{id}', [HypothesisController::class,'update']);
+    // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);
+    // Route::delete('/custprob/{customerproblem_id}',[HypothesisController::class,'destroy']);
+});
+
+Route::prefix('/landing')->group(function () {
+    Route::get('/index/{projectID}',[LandingController::class,'index']);
+    Route::post('/store/{projectID}', [LandingController::class, 'store']);
+    Route::put('/update/{projectID}',[LandingController::class, 'update']);
+
+    Route::put('/updateseries/{projectID}',[LandingController::class, 'updateSeries']);
+    Route::put('/updatecurrentdate/{projectID}',[LandingController::class, 'updatecurrentdate']);
+    Route::put('/updatetodaypageview/{projectID}',[LandingController::class, 'updateTodayPageView']);
+    Route::put('/resetremainderpageview/{projectID}',[LandingController::class, 'resetRemainder']);
+    Route::put('/handlerevenuesignup/{projectID}',[LandingController::class, 'handleRevenueSignup']);
+    Route::put('/incrementtodaypageview/{projectID}',[LandingController::class, 'incrementTodayPageView']);
+    Route::put('/incrementtotalpageview/{projectID}',[LandingController::class, 'incrementTotalPageView']);
+    Route::put('/incrementremainderpageview/{projectID}',[LandingController::class, 'incrementRemainderPageView']);
+    Route::get('/checkexistproject/{projectID}',[LandingController::class,'checkExistLandingProject']);
+
+    Route::delete('/delete/{projectID}', [LandingController::class, 'delete']);
+    //Adopter Table
+});
+
+Route::prefix('/survey')->group(function (){
+    Route::get('/checkexistproject/{projectID}',[SurveyController::class,'checkExistSurveyProject']);
+    Route::get('/index/{projectID}',[SurveyController::class,'index']);
+    Route::post('/store/{projectID}', [SurveyController::class, 'store']);
+    Route::put('/updateseries/{projectID}',[SurveyController::class, 'updateSeries']);
+    Route::put('/resetupdatetpw/{projectID}',[SurveyController::class, 'resetUpdateTodayPV']);
+    Route::put('/updatedate/{projectID}',[SurveyController::class, 'updateCurrentDate']);
+});
+
 
 
 // auth 

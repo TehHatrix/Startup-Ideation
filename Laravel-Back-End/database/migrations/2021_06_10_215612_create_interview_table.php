@@ -17,10 +17,11 @@ class CreateInterviewTable extends Migration
             $table->id('interview_ID');
             $table->unsignedBigInteger('hypothesis_ID');
             $table->foreign('hypothesis_ID')->references('hypothesis_ID')->on('hypotheses');
-            $table->string('script')->nullable();
-            $table->string('objective')->nullable();
-            $table->decimal('overall_score',2,1)->nullable();
-            $table->string('progress')->nullable();
+            $table->text('script')->nullable();
+            $table->string('objective');
+            $table->integer('goal');
+            $table->decimal('overall_score',2,1);
+            $table->integer('progress');
             $table->timestamps();
         });
     }

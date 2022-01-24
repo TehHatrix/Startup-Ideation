@@ -1,11 +1,26 @@
 <template>
   <div class="progress">
-    <div class="progress_bar"></div>
+    <div class="progress_bar" :style="ProgressWidth"></div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    interviewMax: {
+      type: Number,
+    },
+    currentCustomerLength:{
+      type: Number,
+    },
+  },
+  computed: {
+    ProgressWidth() {
+      let widthPercentage = (this.currentCustomerLength/this.interviewMax)*100;
+      return "width:" + widthPercentage + "%";
+    }
+  },
+};
 </script>
 
 <style scoped>
@@ -20,7 +35,7 @@ export default {};
 
 .progress_bar {
   height: 100%;
-  width: 50%;
+  width: 0%;
   border-radius: 4px;
   background: linear-gradient(270deg, #8743ff 0%, #4136f1 100%);
   transition: 0.3s;

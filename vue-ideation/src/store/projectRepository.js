@@ -1,6 +1,7 @@
 import api from '@/api/projectApi'
 
 const state = {
+    currentProjectID: 0,
     projects: {},
     project: null,
     collaborator: [],
@@ -9,10 +10,15 @@ const state = {
 const getters = {
     projects: state => state.projects,
     project: state => state.project,
-    collaborator: state => state.collaborator
+    collaborator: state => state.collaborator,
+    currentProjectID: state => state.currentProjectID,
 }
 
 const mutations = {
+    setCurrentProjectID(state,id){
+        state.currentProjectID = id;
+    },
+
     SET_PROJECTS(state, payload) {
         state.projects = payload
     },

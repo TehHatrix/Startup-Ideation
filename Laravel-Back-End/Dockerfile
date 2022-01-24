@@ -30,10 +30,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-#ADD ./php/www.conf /usr/local/etc/php-fpm.d/
-#RUN addgroup -g 1000 laravel && adduser -G laravel -g laravel -s /bin/sh -D laravel
-#RUN mkdir -p /var/www
-#RUN chown laravel:laravel /var/www
+ADD ./php/www.conf /usr/local/etc/php-fpm.d/
+# RUN addgroup -g 1000 laravel && adduser -G laravel -g laravel -s /bin/sh -D laravel
+# RUN mkdir -p /var/www
+# RUN chown laravel:laravel /var/www
 
 # Install extensions
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp

@@ -6,8 +6,9 @@ let instance = axios.create({
 })
 
 instance.interceptors.request.use( request => {
-    request.headers.common['Accept'] = 'application/json',
-    request.headers.common['content-type'] = 'application/json' 
+    request.headers.common['Accept'] = 'application/json'
+    // request.headers.common['content-type'] = 'application/json' 
+    // request.headers.common['content-type'] = 'multipart/form-data' 
     return request
 })
 

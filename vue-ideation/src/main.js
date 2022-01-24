@@ -5,7 +5,8 @@ import store from './store'
 import '@/assets/style.css'
 // import Axios from 'axios'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faStar, faList, faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faBrain, faChalkboard, faUserEdit,faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots } from '@fortawesome/free-solid-svg-icons'
+import { faStar, faList, faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faBrain, faChalkboard, faUserEdit,faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faArrowUpFromBracket, faTrashCan,faPenToSquare,faMoneyCheckDollar } from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueApexCharts from "vue-apexcharts";
 import 'remixicon/fonts/remixicon.css'
@@ -13,7 +14,7 @@ import Echo from 'laravel-echo'
 
 import api from '@/api/config'
 /* add icons to the library */
-library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots )
+library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faCircleCheck,faArrowUpFromBracket,faTrashCan,faPenToSquare,faMoneyCheckDollar )
 Vue.use(VueApexCharts);
 
 // setup laravel echo for pusher 

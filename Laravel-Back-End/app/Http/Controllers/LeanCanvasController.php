@@ -50,7 +50,7 @@ class LeanCanvasController extends Controller
     }
 
     public function addContent(Request $request, $projectId) {
-        $validator = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
             'topic' => 'required|string',
             'publisher_id' => 'integer|required',
             'contentType' => 'integer|required',

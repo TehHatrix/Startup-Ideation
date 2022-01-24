@@ -1,10 +1,26 @@
 const state = {
     previewMode: false,
+    editingMode: false,
     pageHTML : "",
     pageCSS : "",
+    landingName: "",
+    currentTemplate: "",
+    templateHTML: "",
+    templatePricingHTML: "",
+    templateCSS: "",
+    templateFooterHTML: "",
+    landingRevenueGoal: 0,
 };
 
 const getters = {
+    templateHTML: (state) => state.templateHTML,
+    templateCSS: (state) => state.templateCSS,
+    templatePricingHTML: (state) => state.templatePricingHTML,
+    templateFooterHTML: (state) => state.templateFooterHTML,
+    currentTemplate: (state) => state.currentTemplate,
+    landingRevenueGoal: (state) => state.landingRevenueGoal,
+    landingName: (state) => state.landingName,
+    editingMode: (state) => state.editingMode,
 };
 
 const actions = {
@@ -20,6 +36,9 @@ const actions = {
 };
 
 const mutations = {
+    setEditingMode(state,boolean){
+        state.editingMode = boolean
+    },
     setpageCSS(state, css){
         state.pageCSS = css;
     },
@@ -31,6 +50,27 @@ const mutations = {
     },
     setPreviewFalse(state){
         state.previewMode = false;
+    },
+    setLandingName(state, name){
+        state.landingName = name;
+    },
+    setLandingRevenueGoal(state,goal){
+        state.landingRevenueGoal = goal;
+    },
+    setcurrentTemplate(state,templatetype){
+        state.currentTemplate = templatetype;
+    },
+    setTemplateHTML(state,html){
+        state.templateHTML = html;
+    },
+    setTemplatePricingHTML(state,pricinghtml){
+        state.templatePricingHTML = pricinghtml;
+    },
+    setTemplateFooterHTML(state,footerhtml){
+        state.templateFooterHTML = footerhtml;
+    },
+    setTemplateCSS(state,css){
+        state.templateCSS = css;
     },
     clearHTMLCSS(state){
         state.pageHTML = "";

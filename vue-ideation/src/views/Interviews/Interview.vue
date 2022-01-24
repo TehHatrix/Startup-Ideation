@@ -7,8 +7,8 @@
 
 
 <script>
-import InterviewHeader from "@/views/Interviews/InterviewHeader.vue";
-import CustomerInterview from "@/views/Interviews/CustomerInterview.vue";
+import InterviewHeader from "./InterviewHeader.vue";
+import CustomerInterview from "./CustomerInterview.vue";
 export default {
   components: {
     InterviewHeader,
