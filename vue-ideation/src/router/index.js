@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Hypothesis from "../views/Hypothesis.vue";
-// import middleware from "./middleware";
+import middleware from "./middleware";
 import Interview from "../views/Interviews/Interview.vue";
 import LandingEditor from "../views/LandingMaker/LandingEditor.vue";
 import LandingPage from "../views/LandingMaker/LandingPage.vue";

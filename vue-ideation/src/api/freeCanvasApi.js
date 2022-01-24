@@ -1,7 +1,7 @@
 import api from './config'
 
 export default {
-    async addFreeCanvas(projectId, payload) {
+async addFreeCanvas(projectId, payload) {
         return api.post(`api/projects/${projectId}/free-canvas`, payload)
     },
 

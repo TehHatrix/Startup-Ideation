@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import '@/assets/style.css'
-// import Axios from 'axios'
+import Axios from 'axios'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faStar, faList, faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faBrain, faChalkboard, faUserEdit,faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faArrowUpFromBracket, faTrashCan,faPenToSquare,faMoneyCheckDollar } from '@fortawesome/free-solid-svg-icons'
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons'
@@ -59,7 +59,7 @@ Vue.component('apexchart', VueApexCharts)
 // Vue.component('v-select', vSelect)
 // Vue.use(vsSelect)
 Vue.config.productionTip = false
-// Vue.prototype.$http = Axios;
+Vue.prototype.$http = Axios;
 
 
 new Vue({

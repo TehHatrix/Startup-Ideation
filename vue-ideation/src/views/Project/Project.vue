@@ -187,7 +187,7 @@ export default {
         description: "",
       },
       //validationPhase
-      validationPhase: "survey",
+      validationPhase: "landing",
       //definedboolean
       landingvalidated: false,
       hypothesisvalidated: false,
@@ -206,41 +206,30 @@ export default {
   },
 
   async created() {
-    try {
-      await this.$store.dispatch("getProject", this.projectId);
-      // console.log(this.announcement)
+    await this.initialise();
 
-      if (this.announcement === null) {
-        await this.$store.dispatch("getAnnouncement", this.projectId);
-      }
+    //Validation Phase
+    this.$store.commit("setCurrentProjectID", this.projectId);
 
-      //Validation Phase
-      this.$store.commit("setCurrentProjectID", this.projectId);
-
-      switch (this.validationPhase) {
-        case "hypothesis":
-          break;
-        case "landing": {
-          //Check Landing Exist based on project
-          let checkExistLanding = await landingApi.checkExist(this.projectId);
-          if (checkExistLanding.data === 1) {
-            this.landingvalidated = true;
-          }
-          break;
+    switch (this.validationPhase) {
+      case "hypothesis":
+        break;
+      case "landing": {
+        //Check Landing Exist based on project
+        let checkExistLanding = await landingApi.checkExist(this.projectId);
+        if (checkExistLanding.data === 1) {
+          this.landingvalidated = true;
         }
-        case "survey": {
-          //Check Survey Exist
-          let checkExistSurvey = await surveyApi.checkExist(this.projectId);
-          if (checkExistSurvey.data === 1) {
-            this.surveyvalidated = true;
-          }
-          break;
-        }
+        break;
       }
-
-      // console.log('after created')
-    } catch (error) {
-      console.log(error);
+      case "survey": {
+        //Check Survey Exist
+        let checkExistSurvey = await surveyApi.checkExist(this.projectId);
+        if (checkExistSurvey.data === 1) {
+          this.surveyvalidated = true;
+        }
+        break;
+      }
     }
   },
 
@@ -332,24 +321,6 @@ export default {
       }
     },
 
-    resetSettingModal() {
-      this.showSettingModal = false;
-      this.updatedProjectForm.project_name = this.project.project_name;
-      this.updatedProjectForm.project_description =
-        this.project.project_description;
-    },
-
-    openSettingModal() {
-      this.updatedProjectForm.project_name = this.project.project_name;
-      this.updatedProjectForm.project_description =
-        this.project.project_description;
-      this.showSettingModal = true;
-    },
-
-    confirmDelete() {
-      this.showDeleteModal = true;
-    },
-
     async deleteProject() {
       try {
         let { data } = await api.deleteProject(this.projectId);
@@ -407,69 +378,6 @@ export default {
         console.log(error);
       }
     },
-
-    async deleteProject() {
-      try {
-        let { data } = await api.deleteProject(this.projectId);
-        if (data.success) {
-          this.$router.push({ name: "ProjectsList" });
-        } else {
-          alert("fail");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async updateProject() {
-      try {
-        let res = await api.updateProject(
-          this.projectId,
-          this.updatedProjectForm
-        );
-
-        if (res.data.success) {
-          await this.$store.dispatch("getProject", this.projectId);
-          // !!!! check this later thus performance gain significant
-          this.$store.dispatch("getProjects");
-
-          this.resetSettingModal();
-        } else if (!res.data.success || res.status !== 200) {
-          // !temp
-          alert("unsuccessful");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    closeAnnounModal() {
-      this.showAnnounModal = false;
-      this.announForm.title = "";
-      this.announForm.description = "";
-    },
-
-    async addAnnouncement() {
-      try {
-        let { data } = await annApi.postAnnouncement(
-          this.project.id,
-          this.announForm
-        );
-        if (data.success) {
-          await this.$store.dispatch("getAnnouncement", this.project.id);
-          this.closeAnnounModal();
-        } else {
-          alert("error");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  },
-
-  async created() {
-    await this.initialise();
-    // this.connect()
   },
 
   beforeDestroy() {

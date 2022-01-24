@@ -1,4 +1,4 @@
-<template lang="">
+`<template lang="">
     <div>
         <section class="container">
             <div class="page-title">
@@ -448,4 +448,4 @@ export default {
         align-items: center;
     }
     
-</style>
+</style>`
