@@ -162,8 +162,8 @@ export default {
             let taskForMe = this.tasks.filter( task => {
                 return task.assigned_to === this.user.id || task.assigned_to === null ? true : false
             })
-
-            return taskForMe
+            let tasksnew = taskForMe.filter( task => !task.completed)
+            return tasksnew
         }
 
     },

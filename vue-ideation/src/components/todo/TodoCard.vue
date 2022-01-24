@@ -33,7 +33,6 @@
                     </tr>
                 </tbody>
             </table>
-            <button @click="getCompleted">test</button>
         </div>
 
         <!-- confirm delete modal -->
@@ -183,13 +182,7 @@ export default {
             this.tempTask = null
         },
 
-        getCompleted() {            
-            let tasksCompleted = this.tasks.filter( (task) => task.completed)
-            tasksCompleted.forEach(task => {
-                console.log('compolete: ' + task.completed + ' ' + task.task + ' due date: ' + task.due_date)
-            });
-            return tasksCompleted
-        }
+
         
     },
     
