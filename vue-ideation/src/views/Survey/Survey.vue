@@ -1,11 +1,12 @@
 <template>
+  <!-- ! TODO: Email validation input && check Ending && send to userAnswer db -->
   <div class="card">
     <div class="concludeContent">
       <div class="concludeHeader">
         <circular-progress
           :passedPercentage="currentpercentageConclude"
         ></circular-progress>
-        <p class="score">
+        <!-- <p class="score">
           <strong>Current Score </strong>
           <transition name="fade" appear>
             <span class="scoreNumber" :key="currentScore"
@@ -14,7 +15,7 @@
             /></span>
           </transition>
         </p>
-        <!-- <general-button class="stepbackButton" v-if="currentStepsIndex > 0 && endQuestion == false" @click.native="reduceStep()">Step Back</general-button> -->
+        <general-button class="stepbackButton" v-if="currentStepsIndex > 0 && endQuestion == false" @click.native="reduceStep()">Step Back</general-button> -->
       </div>
 
       <div class="showFinal" v-if="endQuestion === true">
@@ -58,7 +59,10 @@
           </div>
         </div>
         <!-- If answer is Hybrid -->
-        <div v-if="answerType === 'hybrid'" class="concludeAnswerSubjective">
+        <div
+          v-else-if="answerType === 'hybrid'"
+          class="concludeAnswerSubjective"
+        >
           <div
             class="checkboxGroup"
             v-for="(item, index) in answers"
@@ -93,7 +97,18 @@
           </div>
         </div>
 
-        <!-- ! TODO: Create Handle Next/Step method -->
+        <div v-else-if="answerType === 'subjective'">
+          <textarea
+            type="text"
+            class="inputField standalone"
+            :class="dangerName"
+            name="name"
+            id="name"
+            v-model="currentTextboxAnswer"
+          >
+          </textarea>
+        </div>
+
         <div class="stepButton">
           <general-button @click.native="handleStep"> Next </general-button>
           <general-button
@@ -103,24 +118,12 @@
             Back
           </general-button>
         </div>
-
-        <!-- If answer is Subjective -->
-        <!-- <div class="concludeAnswer">
-        <div class="answerCard" @click="handleStep('Yes')">
-          <check></check> Yes
-        </div>
-        <div class="answerCard" @click="handleStep('No')">
-          <x-Mark :toggleHover="false"></x-Mark> No
-        </div>
-      </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import xMark from "@/components/icons/x-mark.vue";
-// import check from "@/components/icons/check.vue";
 import CircularProgress from "../../components/CircularProgress.vue";
 import Vue from "vue";
 import VueConfetti from "vue-confetti";
@@ -132,8 +135,6 @@ Vue.use(VueConfetti);
 
 export default {
   components: {
-    // xMark,
-    // check,
     CircularProgress,
     GeneralButton,
   },
@@ -156,6 +157,7 @@ export default {
       productName: "Mall Navigator",
       endQuestion: false,
       hybridAnswer: false,
+      subjectiveAnswer: false,
       currentStepsIndex: 0,
       currentScore: 0,
       currentpercentageConclude: 0,
@@ -287,21 +289,28 @@ export default {
     handleStep() {
       this.checkAnswer();
       if (this.checkAnswer()) {
-        //If Hybrind Answer, = this.finalAnswer
+        //If Hybrid Answer, = this.finalAnswer
         if (this.hybridAnswer) {
           this.customerAnswer[
             this.steps[this.currentStepsIndex].answerQuestion
           ] = this.finalAnswer;
-        //if not, this.currentMCQAnswer
+          //if not, this.currentMCQAnswer
         } else {
-          this.customerAnswer[
-            this.steps[this.currentStepsIndex].answerQuestion
-          ] = this.currentMCQAnswer;
+          if (this.steps[this.currentStepsIndex].type === "subjective") {
+            this.customerAnswer[
+              this.steps[this.currentStepsIndex].answerQuestion
+            ] = this.currentTextboxAnswer;
+          } else {
+            this.customerAnswer[
+              this.steps[this.currentStepsIndex].answerQuestion
+            ] = this.currentMCQAnswer;
+          }
         }
         this.currentTextboxAnswer = "";
         this.currentMCQAnswer = "";
         this.finalAnswer = "";
-        console.log(this.customerAnswer)
+        this.hybridAnswer = false;
+        console.log(this.customerAnswer);
         this.currentStepsIndex += 1;
         this.updatePercentage();
         this.checkEnd();
@@ -309,21 +318,36 @@ export default {
     },
     checkAnswer() {
       //Check if null
-      if (this.currentMCQAnswer === "") {
-        this.$store.commit("setTypeToast", "Error");
-        this.$store.commit(
-          "setMessage",
-          "You have not checked the answer yet!"
-        );
-        this.$store.commit("showToast");
-        return false;
-      }
-      //If hybrid
-      if (this.steps[this.currentStepsIndex].type === "hybrid") {
-        //Check for specific question
-        console.log("meow");
-      }
+      if (
+        this.steps[this.currentStepsIndex].type === "mcq" ||
+        this.steps[this.currentStepsIndex].type === "hybrid"
+      ) {
+        if (this.currentMCQAnswer === "") {
+          this.$store.commit("setTypeToast", "Error");
+          this.$store.commit(
+            "setMessage",
+            "You have not checked the answer yet!"
+          );
+          this.$store.commit("showToast");
+          return false;
+        }
 
+        //If hybrid
+        if (this.steps[this.currentStepsIndex].type === "hybrid") {
+          //Check for specific question
+          console.log("meow");
+        }
+      } else if (this.steps[this.currentStepsIndex].type === "subjective") {
+        if (this.currentTextboxAnswer === "") {
+          this.$store.commit("setTypeToast", "Error");
+          this.$store.commit(
+            "setMessage",
+            "You have not typed the answer yet!"
+          );
+          this.$store.commit("showToast");
+          return false;
+        }
+      }
       return true;
     },
     checkEnd() {
@@ -384,6 +408,10 @@ export default {
   margin-left: 10px;
   border: 1px solid #ccc;
   transition: all 0.3s ease 0s;
+  &.standalone {
+    height: 200px;
+    width: 95%;
+  }
 
   &:focus {
     border: 1px solid rgb(133, 133, 133);
