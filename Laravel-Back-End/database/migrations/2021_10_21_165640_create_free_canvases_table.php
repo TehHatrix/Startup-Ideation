@@ -16,7 +16,7 @@ class CreateFreeCanvasesTable extends Migration
         Schema::create('free_canvases', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('project_id')->constrained();
+            $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

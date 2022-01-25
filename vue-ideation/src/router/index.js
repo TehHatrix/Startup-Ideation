@@ -135,18 +135,7 @@ const routes = [
     name: "Test",
     component: () => import("../views/ProjectDashboard.vue"),
   },
-  // {
-  //   path: '/login',
-  //   name: 'Login',
-  //   beforeEnter: middleware.user,
-  // },
-  // {
-  //   path: '/register',
-  //   name: 'Register',
-  //   component: () => import('../views/Register.vue'),
-  //   beforeEnter: middleware.guest
 
-  // },
   {
     path: "/projects",
     name: "ProjectsList",
@@ -195,6 +184,12 @@ const routes = [
     component: () => import('../views/Chat/ChatPage.vue'),
     beforeEnter: middleware.guest,
     
+  },
+
+  {
+    path: '/lean-canvas/learnmore',
+    name: 'LeanCanvasInformation',
+    component: () => import('../views/LeanCanvasInformation'),
   }
 ];
 
