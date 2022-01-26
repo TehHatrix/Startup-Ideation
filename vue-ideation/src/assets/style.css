@@ -71,9 +71,15 @@ body {
 	padding:0;
 }
 /* .container {
+
+#app{
+
+}
+
+.c-container {
 	margin: auto;
 	width: 80%;
-} */
+}
 
 @media screen and (max-width: var(--tw-screen-sm)) {
 	.container {
