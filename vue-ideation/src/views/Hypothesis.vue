@@ -189,7 +189,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["interviewIndex", "hypothesis", "currentIndex"]),
+    ...mapGetters(["interviewIndex", "hypothesis", "currentIndex","currentProjectID"]),
   },
   methods: {
     async deleteHypothesis(hypothesisID) {
@@ -327,7 +327,6 @@ export default {
           this.$set(this.modaldisabled, value.index, false);
         }
       }
-      // console.log(updateFrequency)
     },
     appendFrequencySeverity(value) {
       if (this.checkPainValue(value)) {
@@ -422,11 +421,13 @@ export default {
     async getHypothesisData() {
       try {
         const customersegWithproblems = await this.$http.get(
-          "http://localhost:80/api/getproblemswithcustSeg"
+          `http://localhost:80/api/getproblemswithcustSeg/${this.currentProjectID}`
         );
         const hypothesisData = await this.$http.get(
-          "http://localhost:80/api/getproblemHypothesis"
+          `http://localhost:80/api/getproblemHypothesis/${this.currentProjectID}`
         );
+        console.log(customersegWithproblems.data);
+        console.log(hypothesisData.data);
         this.custseg_data = customersegWithproblems.data;
         this.defined_hypothesis = hypothesisData.data;
         for (let index in this.custseg_data) {
@@ -457,7 +458,6 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit("closeToast");
   },
 };
 </script>

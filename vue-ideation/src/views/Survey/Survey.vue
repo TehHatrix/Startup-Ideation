@@ -17,7 +17,6 @@
         </p>
         <general-button class="stepbackButton" v-if="currentStepsIndex > 0 && endQuestion == false" @click.native="reduceStep()">Step Back</general-button> -->
       </div>
-
       <div class="showFinal" v-if="endQuestion === true">
         <transition name="fade" appear>
           <h3>Survey completed! Thank you!</h3>
@@ -47,6 +46,7 @@
               :id="index"
               type="radio"
               style="display: none"
+              @click="checkForDissapointed(item)"
               :value="item"
               v-model="currentMCQAnswer"
             />
@@ -57,6 +57,17 @@
               ><span>{{ item }}</span></label
             >
           </div>
+          <textarea
+            v-if="dissapointedTextBox"
+            type="text"
+            class="inputField dissapointed"
+            :class="dangerName"
+            name="name"
+            id="name"
+            placeholder="Please tell us why are you dissapointed with our product.."
+            v-model="currentTextboxAnswer"
+          >
+          </textarea>
         </div>
         <!-- If answer is Hybrid -->
         <div
@@ -85,7 +96,7 @@
             >
             <input
               v-if="textBoxExist(item)"
-              type="text"
+              :type="textOrEmail"
               class="inputField"
               :class="dangerName"
               name="name"
@@ -127,9 +138,9 @@
 import CircularProgress from "../../components/CircularProgress.vue";
 import Vue from "vue";
 import VueConfetti from "vue-confetti";
-import customerApi from "@/api/customerApi.js";
 import { mapGetters } from "vuex";
 import GeneralButton from "../../components/GeneralButton.vue";
+import surveyApi from "@/api/surveyApi.js";
 
 Vue.use(VueConfetti);
 
@@ -148,13 +159,22 @@ export default {
     answers() {
       return this.steps[this.currentStepsIndex].answer;
     },
-
+    textOrEmail() {
+      if (this.steps[this.currentStepsIndex].answerQuestion === "contacts") {
+        return "email";
+      } else {
+        return "text";
+      }
+    },
     ...mapGetters(["currentID", "interviewIndex"]),
   },
 
   data() {
     return {
+      previewMode: false,
+      passedProjectID: 0,
       productName: "Mall Navigator",
+      dissapointedTextBox: false,
       endQuestion: false,
       hybridAnswer: false,
       subjectiveAnswer: false,
@@ -249,6 +269,14 @@ export default {
   },
 
   methods: {
+    checkForDissapointed(item) {
+      if (item === "Very Disappointed" || item === "Somewhat Disappointed") {
+        this.dissapointedTextBox = true;
+      } else {
+        this.dissapointedTextBox = false;
+      }
+    },
+
     checkHybridAnswer(item) {
       if (this.textBoxExist(item)) {
         this.finalAnswer = this.valueWithoutElement(item);
@@ -261,6 +289,10 @@ export default {
     },
     appendCurrentAnswer() {
       //Final Answer because dont want to disturb currentMCQAnswer (nanti checkbox cacat)
+      //If the question is not contact (to not include the yes)
+      // if(this.steps[this.currentStepsIndex].answerQuestion !== 'contacts'){
+
+      // }
       this.finalAnswer = this.currentMCQAnswer;
       this.finalAnswer += this.currentTextboxAnswer;
     },
@@ -280,8 +312,18 @@ export default {
       return question.replace("productName", this.productName);
     },
 
-    handleBack() {
+    reset() {
+      this.currentTextboxAnswer = "";
       this.currentMCQAnswer = "";
+      this.finalAnswer = "";
+      this.hybridAnswer = false;
+      this.dissapointedTextBox = false;
+    },
+
+    handleBack() {
+      this.reset();
+      // this.dissapointedTextBox = false;
+      // this.currentMCQAnswer = "";
       this.currentStepsIndex -= 1;
       this.updatePercentage();
     },
@@ -291,9 +333,19 @@ export default {
       if (this.checkAnswer()) {
         //If Hybrid Answer, = this.finalAnswer
         if (this.hybridAnswer) {
-          this.customerAnswer[
-            this.steps[this.currentStepsIndex].answerQuestion
-          ] = this.finalAnswer;
+          if (
+            this.steps[this.currentStepsIndex].answerQuestion === "contacts" &&
+            this.currentMCQAnswer.trim() === "Yes"
+          ) {
+            this.customerAnswer[
+              this.steps[this.currentStepsIndex].answerQuestion
+            ] = this.currentTextboxAnswer;
+          } else {
+            this.customerAnswer[
+              this.steps[this.currentStepsIndex].answerQuestion
+            ] = this.finalAnswer;
+          }
+
           //if not, this.currentMCQAnswer
         } else {
           if (this.steps[this.currentStepsIndex].type === "subjective") {
@@ -306,10 +358,10 @@ export default {
             ] = this.currentMCQAnswer;
           }
         }
-        this.currentTextboxAnswer = "";
-        this.currentMCQAnswer = "";
-        this.finalAnswer = "";
-        this.hybridAnswer = false;
+        if (this.dissapointedTextBox) {
+          this.customerAnswer["reasonDissapoint"] = this.currentTextboxAnswer;
+        }
+        this.reset();
         console.log(this.customerAnswer);
         this.currentStepsIndex += 1;
         this.updatePercentage();
@@ -317,11 +369,50 @@ export default {
       }
     },
     checkAnswer() {
+      //Check Answer for contact question
+      if (
+        this.steps[this.currentStepsIndex].answerQuestion === "contacts" &&
+        this.currentMCQAnswer.trim() === "Yes"
+      ) {
+        let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (
+          pattern.test(this.currentTextboxAnswer) === false ||
+          this.currentTextboxAnswer === ""
+        ) {
+          this.$store.commit("setTypeToast", "Error");
+          this.$store.commit("setMessage", "Please input a proper email!");
+          this.$store.commit("showToast");
+          return false;
+        }
+      }
       //Check if null
       if (
         this.steps[this.currentStepsIndex].type === "mcq" ||
         this.steps[this.currentStepsIndex].type === "hybrid"
       ) {
+        if (this.hybridAnswer) {
+          if (this.currentTextboxAnswer === "") {
+            this.$store.commit("setTypeToast", "Error");
+            this.$store.commit(
+              "setMessage",
+              "Please tell us the answer inside the textbox!"
+            );
+            this.$store.commit("showToast");
+            return false;
+          }
+        }
+        if (this.dissapointedTextBox) {
+          if (this.currentTextboxAnswer === "") {
+            this.$store.commit("setTypeToast", "Error");
+            this.$store.commit(
+              "setMessage",
+              "Please tell us why are you dissapointed inside the textbox!"
+            );
+            this.$store.commit("showToast");
+            return false;
+          }
+        }
+
         if (this.currentMCQAnswer === "") {
           this.$store.commit("setTypeToast", "Error");
           this.$store.commit(
@@ -330,12 +421,6 @@ export default {
           );
           this.$store.commit("showToast");
           return false;
-        }
-
-        //If hybrid
-        if (this.steps[this.currentStepsIndex].type === "hybrid") {
-          //Check for specific question
-          console.log("meow");
         }
       } else if (this.steps[this.currentStepsIndex].type === "subjective") {
         if (this.currentTextboxAnswer === "") {
@@ -353,14 +438,12 @@ export default {
     checkEnd() {
       if (this.currentStepsIndex >= this.steps.length) {
         this.endQuestionMethod();
-      } else {
-        // this.currentQuestion = this.steps[this.currentStepsIndex].question;
       }
     },
 
     endQuestionMethod() {
       this.endQuestion = true;
-      this.updateScoreDatabase();
+      this.storeUserSurvey();
       this.$confetti.start();
       setTimeout(() => {
         this.$confetti.stop();
@@ -376,26 +459,30 @@ export default {
       }
     },
 
-    async updateScoreDatabase() {
-      let conclude = {
-        score: this.currentScore,
-        interviewID: this.interviewIndex,
-      };
-      let updateScore = await customerApi.updateScoreCustomer(
-        this.currentID,
-        conclude
+    async storeUserSurvey() {
+      let storeUserSurvey = await surveyApi.storeUserSurvey(
+        this.passedProjectID,
+        this.customerAnswer
       );
-      if (updateScore.success == false) {
-        throw new Error("Could not update Customer Score");
-      } else {
-        setTimeout(() => {
-          this.$router.go();
-        }, 2300);
-      }
+      console.log(storeUserSurvey);
+      // if (updateScore.success == false) {
+      //   throw new Error("Could not update Customer Score");
+      // }
     },
   },
 
-  mounted() {},
+  mounted() {
+    
+  },
+
+  created() {
+    if (this.$route.params.projectID != undefined) {
+      this.previewMode = false;
+      this.passedProjectID = atob(this.$route.params.projectID);
+    } else {
+      this.previewMode = true;
+    }
+  },
 };
 </script>
 
@@ -410,6 +497,10 @@ export default {
   transition: all 0.3s ease 0s;
   &.standalone {
     height: 200px;
+    width: 95%;
+  }
+  &.dissapointed {
+    height: 130px;
     width: 95%;
   }
 

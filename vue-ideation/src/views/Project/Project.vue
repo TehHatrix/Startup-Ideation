@@ -21,10 +21,10 @@
                         <p>To Do List</p>
                 </router-link>
 
-                <router-link :to="{name: 'ChatPage', params: projectId}" class="card-white"  >
+                <!-- <router-link :to="{name: 'ChatPage', params: projectId}" class="card-white"  >
                         <font-awesome-icon icon="fa-comment-dots" size="3x"></font-awesome-icon>
                         <p>Project Chat</p>
-                </router-link>
+                </router-link> -->
 
                 <router-link :to="{name: 'LeanCanvas', params: projectId}" class="card-white">
                     <font-awesome-icon icon="fa-brain" size="3x"></font-awesome-icon>
@@ -143,9 +143,10 @@
             Complete the current validation phase to unlock new phase along the
             way.
           </p>
-          <general-button v-if="validated" @click.native="handleResume()">Resume Validating</general-button>
-          <landing-form-modal v-if="validationPhase === 'landing' && landingvalidated === false" @click.native="handleValidate"></landing-form-modal>
-          <pre-survey-modal v-if="validationPhase === 'survey' && surveyvalidated === false"></pre-survey-modal>
+          <general-button v-if="validationPhase === 'hypothesis'" @click.native="routeHypothesis()">Validate Hypothesis</general-button>
+          <general-button v-else-if="validated" @click.native="handleResume()">Resume Validating</general-button>
+          <landing-form-modal v-else-if="validationPhase === 'landing' && landingvalidated === false" @click.native="handleValidate"></landing-form-modal>
+          <pre-survey-modal v-else-if="validationPhase === 'survey' && surveyvalidated === false"></pre-survey-modal>
         </div>
       </div>
     </div>
@@ -185,9 +186,9 @@ export default {
       announForm: {
         title: "",
         description: "",
-      },
+      }, 
       //validationPhase
-      validationPhase: "landing",
+      validationPhase: "hypothesis",
       //definedboolean
       landingvalidated: false,
       hypothesisvalidated: false,
@@ -258,6 +259,12 @@ export default {
   },
 
   methods: {
+    routeHypothesis(){
+      this.$router.push({name:"Hypothesis"})
+
+    },
+
+    
     handleResume() {
       this.$store.commit("setCurrentProjectID", this.projectId);
       if (this.validationPhase == "hypothesis") {

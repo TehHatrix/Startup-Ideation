@@ -76,6 +76,53 @@ class SurveyController extends Controller
         ]);
     }
 
+
+    public function storeUserSurvey(Request $request,$projectID)
+    {
+        $validator = Validator::make($request->all(), [
+            'discover' => 'string|required',
+            'dissapointed' => 'string|required',
+            'reasonDissapoint' => 'string|nullable',
+            'alternative' => 'string|required',
+            'benefits' => 'string|required',
+            'recommendAny' => 'string|required',
+            'personBenefit' => 'string|required',
+            'improveSuggest' => 'string|required',
+            'contacts' => 'string|required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        //Get Survey ID
+        $surveyID = DB::table('survey')->where('projectID',$projectID)->value('surveyID');
+        $insertUserAnswer = DB::table('user_answer')->insert([
+            'surveyID' => $surveyID,
+            'discover' => $data['discover'],
+            'dissapointed' => $data['dissapointed'],
+            'reasonDissapoint' => $data['reasonDissapoint'],
+            'alternative' => $data['alternative'],
+            'benefits' => $data['benefits'],
+            'recommendAny' => $data['recommendAny'],
+            'personBenefit' => $data['personBenefit'],
+            'improveSuggest' => $data['improveSuggest'],
+            'contacts' => $data['contacts'],
+        ]);
+        $incrementResponse = DB::table('survey')->where('surveyID',$surveyID)->increment('responses');
+        return  response()->json([
+            'incrementResponse' => $incrementResponse,
+            'result' => $insertUserAnswer,
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+
+
+
     /**
      * Display the specified resource.
      *

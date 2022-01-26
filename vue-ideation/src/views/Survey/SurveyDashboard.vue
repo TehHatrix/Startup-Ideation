@@ -3,8 +3,8 @@
     <div class="headerDashboard">
       <h1>Survey Dashboard</h1>
       <general-button @click.native="showSurvey">Preview Survey</general-button>
-      <general-button @click.native="surveyRoute"> Share Survey</general-button>
-      <general-button @click.native="showSummary"> Show Summary</general-button>
+      <share-survey-modal :shareableLink="encodeShareLink">Share Survey</share-survey-modal>
+      <general-button @click.native="showSummary"> Summarize Survey</general-button>
     </div>
     <div class="summary">
       <h2>Survey Statistic</h2>
@@ -59,6 +59,7 @@ import ChartCard from "@/components/ChartCard.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
 import surveyApi from "@/api/surveyApi.js";
 import { mapGetters } from "vuex";
+import ShareSurveyModal from '../../components/ShareSurveyModal.vue';
 export default {
   components: {
     DashboardCard,
@@ -67,6 +68,7 @@ export default {
     RevenueTarget,
     ChartCard,
     GeneralButton,
+    ShareSurveyModal,
   },
   data() {
     return {
@@ -135,9 +137,6 @@ export default {
     };
   },
   methods: {
-    surveyRoute() {
-      this.$router.push("/survey");
-    },
     showSummary() {
       this.$router.push("summary");
     },
@@ -147,6 +146,10 @@ export default {
   },
 
   computed: {
+    encodeShareLink(){
+      let encodeProjectID = btoa(this.currentProjectID);
+      return window.location.origin + "/survey/share/" + encodeProjectID;
+    },
     ...mapGetters(["currentProjectID"]),
   },
 
@@ -168,8 +171,6 @@ export default {
     
     let today = new Date().toLocaleDateString();
     let projectdate = new Date(this.currentDate).toLocaleDateString();
-    console.log(today);
-    console.log(projectdate);
     //If projectdate is today
     if (projectdate == today) {
       //Keep replacing with latest today data

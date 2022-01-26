@@ -38,7 +38,10 @@ export default {
   },
   methods: {
     async addCardInterview(customer_info) {
-      await customerApi.createCustomer(this.interviewIndex, customer_info);
+      console.log(customer_info);
+      let test = await customerApi.createCustomer(this.interviewIndex, customer_info);
+      console.log("🚀 ~ file: CustomerInterview.vue ~ line 42 ~ addCardInterview ~ test", test);
+      
       this.customerCards.push(customer_info);
     },
 

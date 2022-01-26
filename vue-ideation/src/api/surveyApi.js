@@ -9,10 +9,14 @@ export default {
     return api.post(`/api/survey/store/${projectID}`,payload);
   },
 
+  async storeUserSurvey(projectID,payload){
+    return api.post(`/api/survey/storeUserSurvey/${projectID}`,payload);
+  },
+
+
   async getSurveyData(projectID){
     return api.get(`/api/survey/index/${projectID}`)
   },
-
 
   async updateSeries(projectID,payload){
     return api.put(`/api/survey/updateseries/${projectID}`,payload);
@@ -24,6 +28,8 @@ export default {
   
   async updateCurrentDate(projectID,payload){
     return api.put(`/api/survey/updatedate/${projectID}`,payload);
-  }
+  },
+
+
 
 };

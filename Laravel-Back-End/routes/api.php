@@ -38,9 +38,9 @@ use Symfony\Component\Mime\MessageConverter;
 // });
 
 
-Route::get('/getproblemswithcustSeg', [HypothesisController::class, 'getproblemswithcustSeg']);
+Route::get('/getproblemswithcustSeg/{projectID}', [HypothesisController::class, 'getproblemswithcustSeg']);
 Route::get('/gethypothesis', [HypothesisController::class, 'gethypothesisdata']);
-Route::get('/getproblemHypothesis', [HypothesisController::class, 'getproblemHypothesis']);
+Route::get('/getproblemHypothesis/{projectID}', [HypothesisController::class, 'getproblemHypothesis']);
 Route::get('/getinterviewIDbyHypothesis/{hypothesisID}', [HypothesisController::class, 'getinterviewIDbyHypothesis']);
 
 Route::get('/getcustomersegmentstopic', [HypothesisController::class, 'getCustomerSegmentsTopic']);
@@ -101,6 +101,7 @@ Route::prefix('/survey')->group(function (){
     Route::get('/checkexistproject/{projectID}',[SurveyController::class,'checkExistSurveyProject']);
     Route::get('/index/{projectID}',[SurveyController::class,'index']);
     Route::post('/store/{projectID}', [SurveyController::class, 'store']);
+    Route::post('/storeUserSurvey/{projectID}', [SurveyController::class, 'storeUserSurvey']);
     Route::put('/updateseries/{projectID}',[SurveyController::class, 'updateSeries']);
     Route::put('/resetupdatetpw/{projectID}',[SurveyController::class, 'resetUpdateTodayPV']);
     Route::put('/updatedate/{projectID}',[SurveyController::class, 'updateCurrentDate']);
