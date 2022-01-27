@@ -18,6 +18,11 @@ const mutations = {
     GET_ONE_CANVAS(state, payload) {
         state.canvas = payload
     },
+
+    SET_FREE_CANVAS_NULL(state) {
+        state.freeCanvas = null
+        state.canvas = null
+    }
 }
 
 const actions = {

@@ -1,5 +1,5 @@
 <template lang="">
-    <div class="container" v-if="project">
+    <div class="c-container" v-if="project">
         
         <div class="dashboard-title">
             <div class="dashboard-title-name">

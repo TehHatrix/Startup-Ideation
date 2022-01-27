@@ -38,7 +38,11 @@ export default {
   },
   methods: {
     async addCardInterview(customer_info) {
-      await customerApi.createCustomer(this.interviewIndex, customer_info);
+      let res = await customerApi.createCustomer(this.interviewIndex, customer_info);
+      console.log(res.data)
+      if(res.data.success) {
+        console.log(res.data.file)
+      }
       this.customerCards.push(customer_info);
     },
 

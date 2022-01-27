@@ -41,3 +41,7 @@ Broadcast::channel('chat.{projectId}', function ($user, $projectId) {
     return $userArr[0]->id == $user->id;
     // return true;
 });
+
+Broadcast::channel('ProjectList.{userId}', function($user, $userId) {
+    return $user->id == $userId;
+});

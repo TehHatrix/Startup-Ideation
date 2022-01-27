@@ -1,93 +1,103 @@
 <template lang="">
-    <div class="container">
-        <section class="grid grid-cols-5 gap-4">
-            <div class="col-span-1">
-                <div class="todo-categories">
-                    <div class="title" >
-                        Categories
-                    </div>
-                    <div class="body" @click="currentCategory = categoriesArr[0]" :class="currentCategory === categoriesArr[0] ? 'selected-category' : '' " >
-                        {{ categoriesArr[0] }}
-                    </div>
-                    <div class="body" @click="currentCategory = categoriesArr[1]" :class="currentCategory === categoriesArr[1] ? 'selected-category' : '' " >
-                        {{ categoriesArr[1] }}
-                    </div>
-                    <div class="body" @click="currentCategory = categoriesArr[2]" :class="currentCategory === categoriesArr[2] ? 'selected-category' : '' " >
-                        {{ categoriesArr[2] }}
-                    </div>
-
-                </div>
-            </div>
-            <div class="col-span-4">
-                <div class="todo-title">
-                    <span>Todo List  --  {{ currentCategory }}  --  </span>
-                    <button v-if="!showAddCard" class="add-button" @click="showAddCard = true">Create Task</button>
-                    <button v-else class="close-button" @click="closeAddCard" >Close</button>
-                </div>
-
-                <div v-if="showAddCard" class="add-task-card">
-                    <span>Add Task</span>
-                    <form @submit.prevent="addTask">
-                        <div class="task-form-container">
-                            <input type="text" id="task" v-model="taskForm.task" placeholder="Task" required>
-                            <select id="assigned_to" v-model="taskForm.assigned_to">
-                                <option :value="null" selected>Everyone</option>
-                                <option v-for="(user, index) in project.collaborator" :key="index" :value="user.id">{{ user.name }}</option>
-                            </select>
-                            <input id="due_date" type="date" v-model="taskForm.due_date">
+    <div>
+        <div class="c-container" v-if="!loading">
+            <section class="grid grid-cols-5 gap-4">
+                <div class="col-span-1">
+                    <!-- category card -->
+                    <div class="todo-categories">
+                        <div class="title" >
+                            Categories
                         </div>
-                        <div>
-                            <button>Create Task</button>
+                        <div class="body" @click="currentCategory = categoriesArr[0]" :class="currentCategory === categoriesArr[0] ? 'selected-category' : '' " >
+                            {{ categoriesArr[0] }}
                         </div>
-                    </form>
-                </div>
+                        <div class="body" @click="currentCategory = categoriesArr[1]" :class="currentCategory === categoriesArr[1] ? 'selected-category' : '' " >
+                            {{ categoriesArr[1] }}
+                        </div>
+                        <div class="body" @click="currentCategory = categoriesArr[2]" :class="currentCategory === categoriesArr[2] ? 'selected-category' : '' " >
+                            {{ categoriesArr[2] }}
+                        </div>
+                        <div class="body" @click="currentCategory = categoriesArr[3]" :class="currentCategory === categoriesArr[3] ? 'selected-category' : '' " >
+                            {{ categoriesArr[3] }}
+                        </div>
 
-                <!-- all task card -->
-                <div v-if="currentCategory === categoriesArr[0] ">
-                        <todo-card 
-                        :project="project"
-                        :user="user" 
-                        :tasks="getDefault()"></todo-card>
+                    </div>
                 </div>
-
-                <div v-if="currentCategory === categoriesArr[1] ">
-                        <todo-card 
-                        :project="project"
-                        :user="user" 
-                        :tasks="getCompleted()"></todo-card>
+                <div class="col-span-4">
+                    <!-- header card -->
+                    <div class="todo-title">
+                        <span>Todo List  --  {{ currentCategory }}  --  </span>
+                        <button v-if="!showAddCard" class="add-button" @click="showAddCard = true">Create Task</button>
+                        <button v-else class="close-button" @click="closeAddCard" >Close</button>
+                    </div>
+                    <div v-if="showAddCard" class="add-task-card">
+                        <span>Add Task</span>
+                        <form @submit.prevent="addTask">
+                            <div class="task-form-container">
+                                <input type="text" id="task" v-model="taskForm.task" placeholder="Task" required>
+                                <select id="assigned_to" v-model="taskForm.assigned_to">
+                                    <option :value="null" selected>Everyone</option>
+                                    <option v-for="(user, index) in project.collaborator" :key="index" :value="user.id">{{ user.name }}</option>
+                                </select>
+                                <input id="due_date" type="date" v-model="taskForm.due_date">
+                            </div>
+                            <div>
+                                <button>Create Task</button>
+                            </div>
+                        </form>
+                    </div>
+        
+                    <!-- all task card -->
+                    <div v-if="currentCategory === categoriesArr[0] ">
+                            <todo-card
+                            :project="project"
+                            :user="user"
+                            :tasks="defaultTask"></todo-card>
+                    </div>
+                    <div v-if="currentCategory === categoriesArr[1] ">
+                            <todo-card
+                            :project="project"
+                            :user="user"
+                            :tasks="completedTask"></todo-card>
+                    </div>
+                    <div v-if="currentCategory === categoriesArr[2] ">
+                            <todo-card
+                            :project="project"
+                            :user="user"
+                            :tasks="forMeTask"></todo-card>
+                    </div>
                 </div>
-                <div v-if="currentCategory === categoriesArr[2] ">
-                        <todo-card 
-                        :project="project"
-                        :user="user" 
-                        :tasks="getForMe()"></todo-card>
-                </div>
+            </section>
+        </div>
+        <div v-else>
+            <loading-screen />
+        </div>
 
-            </div>
-
-        </section>
     </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 import TodoCardVue from '../../components/todo/TodoCard.vue'
 import api from '@/api/todoApi'
-
+import LoadingScreen from '@/components/general/LoadingScreen.vue'
 export default {
     name: 'TodoPage',
     components: {
-        'todo-card': TodoCardVue
+        'todo-card': TodoCardVue,
+        'loading-screen': LoadingScreen,
     },
 
     data() {
         return {
+            loading: true,
             disabled: false,
             showAddCard: false,
             projectId: this.$route.params.id,
             categoriesArr: [
                 'All Task',
                 'Completed Task',
-                'For Me'
+                'For Me',
+                'Next 7 Days'
             ],
             currentCategory: null,
 
@@ -102,10 +112,10 @@ export default {
     async created() {
         try {
             this.currentCategory = this.categoriesArr[0]
-            if(this.tasks === null) {
-                await this.$store.dispatch('getTodos', this.projectId)
+            let {data} = await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
+            if(data.success) {
+                this.loading = false
             }
-            
         } catch (error) {
             console.log(error)
         }
@@ -116,7 +126,12 @@ export default {
             'project',
             'user',
             'tasks',
+            'defaultTask',
+            'completedTask',
+            'forMeTask',
+        
         ]),
+
     },
 
     methods: { 
@@ -125,7 +140,7 @@ export default {
 
                 let {data} = await api.addTask(this.projectId, this.taskForm)
                 if(data.success) {
-                    await this.$store.dispatch('getTodos', this.projectId)
+                    await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
                     this.closeAddCard()
                 } 
             } catch(error) {
@@ -140,31 +155,7 @@ export default {
             this.taskForm.due_date = null
         },
 
-        getDefault() {
-            let defaultTasks = this.tasks.filter( task => !task.completed)
-            defaultTasks.sort( (a, b) => {
-                let da = new Date(a.due_date ? a.due_date : 0),
-                    db = new Date(b.due_date ? b.due_date : 0)
-                
-                return da - db
-            })
-            
-            return defaultTasks
-        },
 
-        getCompleted() {            
-            let tasksCompleted = this.tasks.filter( (task) => task.completed)
-
-            return tasksCompleted
-        },
-
-        getForMe() {
-            let taskForMe = this.tasks.filter( task => {
-                return task.assigned_to === this.user.id || task.assigned_to === null ? true : false
-            })
-            let tasksnew = taskForMe.filter( task => !task.completed)
-            return tasksnew
-        }
 
     },
     
@@ -175,7 +166,7 @@ export default {
     .selected-category {
         background: #d1d9e1;
         &:hover {
-            background: #d1d9e1 ;
+            background: #d1d9e1 !important;
         }
     }
 
@@ -184,9 +175,7 @@ export default {
         border-radius: 1rem;
         box-shadow: 0 0 40px rgb(0 0 0 / 5%);
         margin-bottom: 2rem;
-        min-height: 15rem;
-        max-height: 15rem;
-    
+
         .title {
             background: #14213d;
             color: #fff;
@@ -204,6 +193,14 @@ export default {
             padding: .5rem .5rem;
             font-weight: 500;
             cursor: pointer;
+
+            &:last-child {
+                border: none;
+                border-bottom-left-radius: 1rem;
+                border-bottom-right-radius: 1rem;
+
+
+            }
 
             &:hover {
                 background: #f5f5f5;

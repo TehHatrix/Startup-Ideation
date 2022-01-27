@@ -1,6 +1,6 @@
 `<template lang="">
     <div>
-        <section class="container">
+        <section class="c-container">
             <div class="page-title">
                 <span>Free Canvas</span>
                 <button @click="openAddModal" >New</button>

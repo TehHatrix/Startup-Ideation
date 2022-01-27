@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CollaboratorAdded;
 use App\Models\LeanCanvas;
 use Illuminate\Http\Request;
 use App\Models\Project;
@@ -285,6 +286,8 @@ class ProjectController extends Controller
         $project = Project::find($projectId);
         $project->users()->attach($user->id);
 
+        broadcast(new CollaboratorAdded($user->id));
+
         return response()->json([
             'success' => true,
             'errors' => null
@@ -306,6 +309,8 @@ class ProjectController extends Controller
         $data = $validator->validated();
         $project = Project::find($projectId);
         $project->users()->detach($data['id']);
+
+        broadcast(new CollaboratorAdded($data['id']));
 
         return response()->json([
             'success' => true,

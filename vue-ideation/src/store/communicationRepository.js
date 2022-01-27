@@ -12,6 +12,10 @@ const getters = {
 const mutations = {
     SET_ANNOUNCEMENT(state, payload) {
         state.announcement = payload
+    },
+
+    SET_ANNOUNCEMENT_NULL(state) {
+        state.announcement = null
     }
 }
 

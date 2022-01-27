@@ -38,24 +38,31 @@ class CustomerController extends Controller
      */
     public function store(Request $request, $interviewID)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'string|required',
-            'occupation' => 'string|required',
-            'email' => 'string|required',
-            'phone' => 'string|required',
-            'image' => 'image|nullable'
+
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'string|required',
+        //     'occupation' => 'string|required',
+        //     'email' => 'string|required',
+        //     'phone' => 'string|required',
+        //     'image' => 'image|nullable'
+        // ]);
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'errors' => $validator->errors()
+        //     ]);
+        // }
+        $file = $request->file('image');
+
+        return response()->json([
+            'file' => $file,
+            'success' => true
         ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ]);
-        }
-        $data = $validator->validated();
+        // $data = $validator->validated();
         /** @var \Illuminate\Filesystem\FilesystemManager $disk */
         $disk = Storage::disk('gcs');
         
-        $file = $request->file('image');
+
         $appendImage = $disk->put('customer-pictures',$file);
         $fileName= basename($appendImage);
         $folderFileName= "customer-pictures/".$fileName;

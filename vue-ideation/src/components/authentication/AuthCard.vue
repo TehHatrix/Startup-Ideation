@@ -81,7 +81,7 @@ export default {
                     this.formSignUp.password_confirmation = ''
 
                     this.isSignUp = false
-                }
+                } 
             } catch (error) {
                 console.log(error)
             }

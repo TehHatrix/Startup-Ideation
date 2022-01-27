@@ -1,0 +1,187 @@
+
+// header for title box white 
+// input: height, 
+.c-header-div {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 0 40px rgb(0 0 0 / 5%);
+    margin-bottom: 2rem;
+    padding: 1rem 1rem;
+    min-height: 2rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .title {
+        letter-spacing: .2rem;
+        font-weight: bold;
+        font-size: 1.7rem;
+    }
+
+    .c-header-btn-container {
+        
+    }
+}
+
+// .c-body-card {
+//     background: #fff;
+//     border-radius: 1rem;
+//     box-shadow: 0 0 40px rgb(0 0 0 / 5%);
+//     height: 30rem;   
+//     padding: 2rem 1rem;
+//     overflow: scroll;
+// }
+
+.c-body-card {
+        
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 0 0 40px rgb(0 0 0 / 5%);
+
+    .c-body-title {
+        background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        color: white;
+        padding: .7rem .7rem;
+        font-weight: 600;
+        letter-spacing: .15rem;
+        font-size: 1.3rem;
+    }
+
+    .c-body-content {
+        margin-top: 1rem;
+        overflow: scroll;
+        padding: .7rem;
+        height: 70vh;
+
+    }
+}
+
+.c-info-card {
+    
+}
+
+.c-expand-card {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+    margin-bottom: 1rem;
+    padding: 0 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid black;
+    transition: all .3s ease-in;
+
+    &:hover {
+        background-color: #f7f7f7;
+        transform: scale( 1.05 );
+        box-shadow: 0px 5px 10px 0px rgb( 0, 0, 0, .2 );
+    }
+
+    &:hover .c-expand-option {
+        opacity: 1;
+    }
+
+    .c-expand-content {
+        .c-expand-title {
+            display: block;
+            letter-spacing: 2px;
+            font-size: 17px;
+        }
+        .c-expand-message {
+            display: block;
+            font-size: 14px;
+            color: #929292;
+    
+        }
+    }
+
+    .c-expand-option {
+        width: 20px;
+        height: 20px;
+        margin: 8px 0;
+
+        border-radius: 50%;
+        color: white;
+        opacity: 0;
+
+        font-size: 1rem;
+        text-align: center;
+        line-height: 20px;
+
+        cursor: pointer;
+        transition: all .2s;
+
+
+        &.edit {
+            background-color: #3dc98c;
+        }
+
+        &.delete {
+            background-color: #c93d4d;
+        }
+    }   
+}
+
+.c-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 2.5rem;
+    height: 1.5rem;
+
+    .c-toggle-checkbox {
+        opacity: 0;
+        width: 0;
+        height: 0;
+
+        &:checked + .c-switch-btn {
+            background-color: lightgreen;
+            box-shadow: 0 0 8px 0 lightgreen;
+        }
+
+        &:checked + .c-switch-btn::before {
+            left: calc(100% - 4px);
+            transform: translateX(-100%);
+        }
+    }
+
+    .c-switch-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: 30px;
+        background-color: #e9e9ea;
+        cursor: pointer;
+        transition: 0.4s;
+        -webkit-transition: 0.4s;
+
+        &::before {
+            position: absolute;
+            content: "";
+            // height: 26px;
+            // width: 26px;
+            height: 1rem;
+            width: 1.1rem;
+            left: 4px;
+            bottom: 4px;
+            border-radius: inherit;
+            background-color: #fff;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+            transition: 0.4s ease all, left 0.4s cubic-bezier(0.18, 0.89, 0.35, 1.15);
+        }
+
+        &:active::before {
+            width: 2rem;
+        }
+    }
+
+}

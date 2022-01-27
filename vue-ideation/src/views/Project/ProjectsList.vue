@@ -1,6 +1,6 @@
 <template lang="">
-    <div>
-      <section class=" container ">
+    <div v-if="!loading">
+      <section class=" c-container ">
         <div class="project-title" >
           <div>
             <h1 class="project-title-h1"  >Project List</h1>
@@ -42,6 +42,10 @@
         </project-modal>
       </section>
     </div>
+
+    <div v-else>
+      <loading-screen></loading-screen>
+    </div>
 </template>
 <script>
 import api from "@/api/projectApi";
@@ -49,6 +53,7 @@ import { mapGetters } from "vuex";
 import ProjectModal from '@/components/ProjectModal.vue'
 import ProjectCard from '@/components/ProjectCard.vue'
 import GeneralButton from '../../components/GeneralButton.vue';
+import LoadingScreenVue from '../../components/general/LoadingScreen.vue';
 
 export default {
   name: "ProjectsList",
@@ -56,6 +61,7 @@ export default {
     'project-modal': ProjectModal,
     'project-card': ProjectCard,
     'general-button': GeneralButton,
+    'loading-screen': LoadingScreenVue
   },
   data() {
     return {
@@ -64,6 +70,8 @@ export default {
         project_description: "",
       },
       showModal: false,
+
+      loading: true,
     };
   },
   methods: {
@@ -81,20 +89,43 @@ export default {
         if (res.data.success) {
           this.project.project_name = this.project.project_description = "";
           this.showModal = false;
-          await this.$store.dispatch("getProjects");
-          // this.$router.go()
+          let res = await this.$store.dispatch("getProjects");
+          if(res.data.success) {
+            console.log('success added  ')
+          }
         }
       } catch (error) {
         console.log(error);
       }
     },
+
+    connect() {
+      window.Echo.private(`ProjectList.${this.user.id}`)
+                  .listen('CollaboratorAdded', async (e) => {
+                    console.log(e + 'from pusher ')
+                    this.loading = true
+                    let res = await this.$store.dispatch('getProjects')
+                    if(res.data.success) {
+                      this.loading = false 
+                    }
+                  })
+    },
+
+    disconnect() {
+      window.Echo.leaveChannel(`ProjectList.${this.user.id}`)
+    }
+
+  
   },
   computed: {
     ...mapGetters(["user", "projects"]),
   },
   async mounted() {
     try {
-      await this.$store.dispatch("getProjects");
+      let res = await this.$store.dispatch("getProjects");
+      if(res.data.success) {
+        this.loading = false
+      }
     } catch (error) {
       console.log(error);
     }
@@ -102,7 +133,19 @@ export default {
 
   created() {
     this.$store.commit("DESTROY_PROJECT_LOCALLY");
+    this.$store.commit('SET_TASKS_NULL')
+    this.$store.commit('SET_FREE_CANVAS_NULL')
+    this.$store.commit('SET_FREE_CANVAS_CONTENT_NULL')
+    this.$store.commit('SET_ANNOUNCEMENT_NULL')
+    // this.$store.commit('RESET_CURRENT_PROJECT')
+
+    this.connect()
+
   },
+
+  beforeDestroy() {
+    this.disconnect()
+  }
 };
 </script>
 <style lang="scss" scoped>

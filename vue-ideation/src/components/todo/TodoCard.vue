@@ -13,7 +13,14 @@
                 </thead>
                 <tbody>
                     <tr v-for="(task, index) in tasks" :key="index"  >
-                        <td class="t-center"><input type="checkbox" @change="setComplete(task)" v-model="task.completed" ></td>
+                        <!-- <td class="t-center"><input type="checkbox" @change="setComplete(task)" v-model="task.completed" ></td> -->
+                        <td>
+
+                            <label class="c-toggle-switch" >
+                                <input type="checkbox" class="c-toggle-checkbox" @change="setComplete(task)" v-model="task.completed" >
+                                <span class="c-switch-btn"></span>
+                            </label>    
+                        </td>
                         <td colspan="3" >{{ task.task }}</td>
                         <td >
                             <span v-if="task.assigned_to === null">Everyone</span>
@@ -76,11 +83,17 @@
                 </div>
             </form>
         </modal>
+
+        <!-- loading modal -->
+        <loading-modal :showModal="loadingApi">
+
+        </loading-modal>
     </div>
 </template>
 <script>
 import ProjectModalVue from '../ProjectModal.vue'
 import api from '@/api/todoApi'
+import LoadingModalVue from '../LoadingModal.vue'
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -94,7 +107,8 @@ export default {
     },
 
     components: {
-        'modal': ProjectModalVue
+        'modal': ProjectModalVue,
+        'loading-modal': LoadingModalVue
     },
 
     data() {
@@ -111,29 +125,31 @@ export default {
                 completed: false
             },
 
-            projectId: this.$route.params.id
+            projectId: this.$route.params.id,
+
+            loadingApi: false,
         }
     },
 
     methods: {
         async setComplete(task) {
             try {
-                let res = await api.updateTask(this.projectId, task.id, task )                
+                this.loadingApi = true
+                let res = await api.updateTask(this.projectId, task.id, task )        
                 if(res.data.success) {
-                    await this.$store.dispatch('getTodos', this.projectId)
-                } else {
-                    console.table(res.data.errors)
-                }
+                    await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
+                    this.loadingApi = false
+                } 
             } catch (error) {
                 console.log(error)
-            }
+            } 
         },
 
         async deleteTask() {
             try {
                 let { data } = await api.deleteTask(this.projectId, this.tempTask.id)
                 if(data.success) {
-                    await this.$store.dispatch('getTodos', this.projectId)
+                    await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
                     this.closeDeleteModal()
                 } else {
                     console.log(data)
@@ -147,7 +163,7 @@ export default {
             try {
                 let { data } = await api.updateTask(this.projectId, this.taskForm.id, this.taskForm)
                 if(data.success) {
-                    await this.$store.dispatch('getTodos', this.projectId)
+                    await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
                     this.closeUpdateModal()
                 }
             } catch (error) {
@@ -181,6 +197,7 @@ export default {
             this.showConfirmModal = false
             this.tempTask = null
         },
+
 
 
         

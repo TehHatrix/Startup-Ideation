@@ -34,7 +34,7 @@ const actions = {
         let { data } = await auth.logout() 
         if(data.success) {
             commit('SET_USER', null)
-            commit('SET_AUTHENTICATED',false)
+            commit('SET_AUTHENTICATED', false)
             // localStorage.removeItem('user')
         } else {
             console.log('fail to logout')

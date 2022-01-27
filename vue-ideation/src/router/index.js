@@ -189,7 +189,13 @@ const routes = [
   {
     path: '/lean-canvas/learnmore',
     name: 'LeanCanvasInformation',
-    component: () => import('../views/LeanCanvasInformation'),
+    component: () => import('../views/LeanCanvasInformation.vue'),
+  },
+
+  {
+    path: '/projects/:id/lean-canvas/guide',
+    name: 'LeanCanvasGuide',
+    component: () => import('../views/LeanCanvasGuide/LeanCanvasGuide.vue')
   }
 ];
 
