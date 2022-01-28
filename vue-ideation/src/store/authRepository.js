@@ -17,6 +17,11 @@ const mutations = {
     SET_AUTHENTICATED(state,boolean){
         state.authenticated = boolean
     },
+
+    SET_USER_NULL(state) {
+        state.user = null
+        state.authenticated = false 
+    }
 }
 
 const actions = {

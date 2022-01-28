@@ -210,8 +210,8 @@ export default {
         background: #fff;
         border-radius: 1rem;
         box-shadow: 0 0 40px rgb(0 0 0 / 5%);
-        height: 30rem;
-        max-height: 30rem;
+        height: 80vh;
+        max-height: 80vh;
         padding: 2rem 1rem;
         overflow: scroll;
     }

@@ -16,7 +16,7 @@ instance.interceptors.response.use(
     response => response,
     error => {
         if(error.response.status === 401) {
-            localStorage.removeItem('user')
+            this.$store.commit('SET_USER_NULL')
             window.location.reload()
         }
         return Promise.reject(error)

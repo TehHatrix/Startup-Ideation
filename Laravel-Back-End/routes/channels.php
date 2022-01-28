@@ -19,15 +19,8 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('first-test', function() {
-    return Auth::check();
-});
-
-Broadcast::channel('first-try', function($user) {
-    return true;
-});
-
-Broadcast::channel('project', function ($user, $projectId) {
+// everything in the a project 
+Broadcast::channel('Project.{projectId}', function ($user, $projectId) {
     $project = Project::find($projectId);
     $userArr = $project->users()->wherePivot('user_id', '=', $user->id)->get();
     return $userArr[0]->id == $user->id;
@@ -42,6 +35,8 @@ Broadcast::channel('chat.{projectId}', function ($user, $projectId) {
     // return true;
 });
 
+
+// outside project 
 Broadcast::channel('ProjectList.{userId}', function($user, $userId) {
     return $user->id == $userId;
 });
