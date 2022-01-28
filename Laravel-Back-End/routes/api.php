@@ -82,6 +82,7 @@ Route::prefix('/landing')->group(function () {
     Route::get('/index/{projectID}',[LandingController::class,'index']);
     Route::post('/store/{projectID}', [LandingController::class, 'store']);
     Route::put('/update/{projectID}',[LandingController::class, 'update']);
+    Route::put('/updateGoalName/{projectID}',[LandingController::class, 'updateGoalName']);
 
     Route::put('/updateseries/{projectID}',[LandingController::class, 'updateSeries']);
     Route::put('/updatecurrentdate/{projectID}',[LandingController::class, 'updatecurrentdate']);
@@ -102,9 +103,14 @@ Route::prefix('/survey')->group(function (){
     Route::get('/index/{projectID}',[SurveyController::class,'index']);
     Route::post('/store/{projectID}', [SurveyController::class, 'store']);
     Route::post('/storeUserSurvey/{projectID}', [SurveyController::class, 'storeUserSurvey']);
+    Route::put('/updategoalname/{projectID}',[SurveyController::class, 'updateGoalName']);
     Route::put('/updateseries/{projectID}',[SurveyController::class, 'updateSeries']);
     Route::put('/resetupdatetpw/{projectID}',[SurveyController::class, 'resetUpdateTodayPV']);
     Route::put('/updatedate/{projectID}',[SurveyController::class, 'updateCurrentDate']);
+    Route::put('/incrementtotalpageview/{projectID}',[SurveyController::class, 'incrementTotalPageView']);
+    Route::put('/incrementremainderpageview/{projectID}',[SurveyController::class, 'incrementRemainderPageView']);
+    Route::put('/incrementtodaypageview/{projectID}',[SurveyController::class, 'incrementTodayPageView']);
+    Route::delete('/delete/{projectID}', [SurveyController::class, 'delete']);
 });
 
 

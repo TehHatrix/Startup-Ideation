@@ -13,9 +13,12 @@ export default {
     return api.post(`/api/survey/storeUserSurvey/${projectID}`,payload);
   },
 
-
   async getSurveyData(projectID){
     return api.get(`/api/survey/index/${projectID}`)
+  },
+
+  async updateGoalName(projectID,payload){
+    return api.put(`api/survey/updategoalname/${projectID}`,payload)
   },
 
   async updateSeries(projectID,payload){
@@ -29,6 +32,20 @@ export default {
   async updateCurrentDate(projectID,payload){
     return api.put(`/api/survey/updatedate/${projectID}`,payload);
   },
+
+  async incrementRemainderPageView(projectID){
+    return api.put(`/api/survey/incrementremainderpageview/${projectID}`);
+  },
+  async incrementTotalPageView(projectID){
+    return api.put(`/api/survey/incrementtotalpageview/${projectID}`);
+  },
+  async incrementTodayPageView(projectID){
+    return api.put(`/api/survey/incrementtodaypageview/${projectID}`);
+  },
+
+  async deleteSurvey(projectID){
+    return api.delete(`api/survey/delete/${projectID}`);
+  }
 
 
 

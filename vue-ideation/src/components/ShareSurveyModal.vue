@@ -1,7 +1,7 @@
 <template>
   <div>
     <general-button @click.native="showModal = true">
-      Share Modal
+      Share Survey
     </general-button>
 
     <div id="modal-comp">

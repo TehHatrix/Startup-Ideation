@@ -13,7 +13,8 @@
                 </thead>
                 <tbody>
                     <tr v-for="(task, index) in tasks" :key="index"  >
-                        <td class="t-center"><input type="checkbox" @change="setComplete(task)" v-model="task.completed" ></td>
+                        {{task.completed}} {{index}}
+                        <td class="t-center"><input type="checkbox" @change="setComplete(task)" :value="task.completed" v-model="task.completed"></td>
                         <td colspan="3" >{{ task.task }}</td>
                         <td >
                             <span v-if="task.assigned_to === null">Everyone</span>

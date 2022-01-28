@@ -19,7 +19,12 @@
       </div>
       <div class="showFinal" v-if="endQuestion === true">
         <transition name="fade" appear>
-          <h3>Survey completed! Thank you!</h3>
+          <span>
+          <h1><strong>Survey completed! Thank you! </strong></h1>
+          <h3>Thanks a bunch for filling that out. It means a lot to us, just like you do! We really appreciate you giving us a moment of your time today..</h3>
+          <p>You can close the window now.</p>
+          </span>
+        
         </transition>
       </div>
 
@@ -61,7 +66,7 @@
             v-if="dissapointedTextBox"
             type="text"
             class="inputField dissapointed"
-            :class="dangerName"
+            :class="dangerInput"
             name="name"
             id="name"
             placeholder="Please tell us why are you dissapointed with our product.."
@@ -98,7 +103,7 @@
               v-if="textBoxExist(item)"
               :type="textOrEmail"
               class="inputField"
-              :class="dangerName"
+              :class="dangerInput"
               name="name"
               id="name"
               @input="appendCurrentAnswer"
@@ -112,7 +117,7 @@
           <textarea
             type="text"
             class="inputField standalone"
-            :class="dangerName"
+            :class="dangerInput"
             name="name"
             id="name"
             v-model="currentTextboxAnswer"
@@ -141,6 +146,7 @@ import VueConfetti from "vue-confetti";
 import { mapGetters } from "vuex";
 import GeneralButton from "../../components/GeneralButton.vue";
 import surveyApi from "@/api/surveyApi.js";
+import projectApi from "@/api/projectApi.js";
 
 Vue.use(VueConfetti);
 
@@ -150,6 +156,11 @@ export default {
     GeneralButton,
   },
   computed: {
+    dangerInput() {
+      return {
+        danger: this.wrongInput,
+      };
+    },
     percentagePerSteps() {
       return 100 / this.steps.length;
     },
@@ -171,9 +182,11 @@ export default {
 
   data() {
     return {
+      wrongInput: false,
+      currentDate: undefined,
       previewMode: false,
       passedProjectID: 0,
-      productName: "Mall Navigator",
+      productName: "[Your Product Name]",
       dissapointedTextBox: false,
       endQuestion: false,
       hybridAnswer: false,
@@ -195,7 +208,6 @@ export default {
         improveSuggest: "",
         contacts: "",
       },
-      addedScore: 1,
       steps: [
         {
           question: "How did you discover productName?",
@@ -318,6 +330,7 @@ export default {
       this.finalAnswer = "";
       this.hybridAnswer = false;
       this.dissapointedTextBox = false;
+      this.wrongInput = false;
     },
 
     handleBack() {
@@ -382,6 +395,7 @@ export default {
           this.$store.commit("setTypeToast", "Error");
           this.$store.commit("setMessage", "Please input a proper email!");
           this.$store.commit("showToast");
+          this.wrongInput = true;
           return false;
         }
       }
@@ -398,6 +412,7 @@ export default {
               "Please tell us the answer inside the textbox!"
             );
             this.$store.commit("showToast");
+            this.wrongInput = true;
             return false;
           }
         }
@@ -409,6 +424,7 @@ export default {
               "Please tell us why are you dissapointed inside the textbox!"
             );
             this.$store.commit("showToast");
+            this.wrongInput = true;
             return false;
           }
         }
@@ -430,6 +446,7 @@ export default {
             "You have not typed the answer yet!"
           );
           this.$store.commit("showToast");
+          this.wrongInput = true;
           return false;
         }
       }
@@ -464,29 +481,70 @@ export default {
         this.passedProjectID,
         this.customerAnswer
       );
-      console.log(storeUserSurvey);
-      // if (updateScore.success == false) {
-      //   throw new Error("Could not update Customer Score");
-      // }
+      if (storeUserSurvey.data.success === false) {
+        throw new Error("Could not Store User Survey");
+      }
     },
   },
 
-  mounted() {
-    
-  },
+  mounted() {},
 
-  created() {
+  async created() {
     if (this.$route.params.projectID != undefined) {
       this.previewMode = false;
       this.passedProjectID = atob(this.$route.params.projectID);
     } else {
       this.previewMode = true;
     }
+
+    if (this.previewMode === false) {
+      //Get Survey Data
+      let surveyData = await surveyApi.getSurveyData(this.passedProjectID);
+      if (surveyData.data.success) {
+        this.currentDate = surveyData.data.surveyData[0].current_date;
+      } else {
+        throw new Error("Cannot Get Survey Data");
+      }
+      //Get Product Name
+      let projectData = await projectApi.getProject(this.passedProjectID);
+      this.productName = projectData.data.project.project_name
+      //Count Page View
+      let today = new Date().toLocaleDateString();
+      let projectdate = new Date(this.currentDate).toLocaleDateString();
+      // Means dashboard not updated & reseted (remainder page view will be added when dashboard is visited).
+      if (projectdate != today) {
+        await surveyApi.incrementRemainderPageView(this.passedProjectID);
+        await surveyApi.incrementTotalPageView(this.passedProjectID);
+      }
+      //Currentdate == today
+      else {
+        //Todaypageview++
+        await surveyApi.incrementTodayPageView(this.passedProjectID);
+        //Totalpageview++
+        await surveyApi.incrementTotalPageView(this.passedProjectID);
+      }
+    }
   },
+
+  // destroyed () {
+  //   this.$store.commit("setPreviewFalse");
+  // },
 };
 </script>
 
 <style lang="scss" scoped>
+.showFinal{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  h1{
+    font-size: 50px;
+    text-transform: uppercase;
+  }
+}
+
+
 .inputField {
   border-radius: 5px;
   padding: 12px 20px;
@@ -495,6 +553,11 @@ export default {
   margin-left: 10px;
   border: 1px solid #ccc;
   transition: all 0.3s ease 0s;
+
+  &.danger {
+    border: 1px solid #ff3156;
+  }
+
   &.standalone {
     height: 200px;
     width: 95%;

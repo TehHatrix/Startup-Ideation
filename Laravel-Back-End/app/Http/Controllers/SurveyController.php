@@ -157,6 +157,30 @@ class SurveyController extends Controller
         //
     }
 
+    public function updateGoalName(Request $request, $projectid){
+        $validator = Validator::make($request->all(), [
+            'surveyName' => 'string|required',
+            'signUpGoal' => 'numeric|required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $updateDetails = [
+            'survey_name' => $data['surveyName'],
+            'responses_goal' => $data['signUpGoal'],
+        ];
+        $updateGoalName = DB::table('survey')->where('projectID',$projectid)->update($updateDetails);
+        return  response()->json([
+            'result' => $updateGoalName,
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
     public function updateSeries(Request $request,$projectid){
         $validator = Validator::make($request->all(), [
             'updateSeries' => 'json',
@@ -217,6 +241,40 @@ class SurveyController extends Controller
             'errors' => null
         ]);
     }
+
+
+    public function incrementTotalPageView($projectid){
+        DB::table('survey')->where('projectID',$projectid)->increment('total_view');
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+    public function incrementRemainderPageView($projectid){
+        DB::table('survey')->where('projectID',$projectid)->increment('remainder_view');
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+    public function incrementTodayPageView($projectid){
+        DB::table('survey')->where('projectID',$projectid)->increment('today_view');
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+
+    public function delete($projectid){
+        $surveyID = DB::table('survey')->where('projectID',$projectid)->value('surveyID');
+        DB::table('user_answer')->where('surveyID',$surveyID)->delete();
+        DB::table('survey')->where('surveyID',$surveyID)->delete();
+        return response()->json(['success' => true, 'message' => 'successfully deleted']);
+    }
+
 
     /**
      * Remove the specified resource from storage.

@@ -38,11 +38,15 @@ export default {
   },
   methods: {
     async addCardInterview(customer_info) {
-      console.log(customer_info);
       let test = await customerApi.createCustomer(this.interviewIndex, customer_info);
-      console.log("🚀 ~ file: CustomerInterview.vue ~ line 42 ~ addCardInterview ~ test", test);
+      if (test.data.success){
+        this.customerCards.push(customer_info);
+      }
+      else{
+        throw new Error("Cannot create Customer")
+      }
       
-      this.customerCards.push(customer_info);
+      
     },
 
     async getCustomerInterview() {

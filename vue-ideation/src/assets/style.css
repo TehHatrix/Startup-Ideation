@@ -6,11 +6,54 @@
 @import url("./css/_button.css");
 
 
+
+/* @font-face {
+    font-family: "Poppins";
+    font-display: auto;
+    src: local("Poppins"), url("./fonts/Poppins/Poppins-Bold.ttf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
+} */
+
+
+/* @font-face {
+    font-family: "Poppins";
+    font-display: auto;
+    src: local("Poppins"), url("./fonts/Poppins/Poppins-Thin.ttf") format("truetype");
+	font-weight: thin;
+	font-style: normal;
+} */
+
+
 @font-face {
     font-family: "Poppins";
     font-display: auto;
-    src: local("Poppins"), url("./fonts/Poppins/Poppins-Regular.ttf") format("truetype")
-  }
+    src: local("Poppins"), url("./fonts/Poppins/Poppins-Medium.ttf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+    font-family: "Poppins";
+    font-display: auto;
+    src: local("Poppins"), url("./fonts/Poppins/Poppins-Light.ttf") format("truetype");
+	font-weight: thin;
+	font-style: normal;
+}
+
+
+@font-face {
+    font-family: "Poppins";
+    font-display: auto;
+    src: local("Poppins"), url("./fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+	
+}
+
+
+
+
 
 :root {
     --tw-bg-opacity: 1;
@@ -52,7 +95,10 @@ html{
 	overflow-x: hidden;
 	-ms-overflow-style: none;
 	scrollbar-width: none;
+	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 }
 
 ::-webkit-scrollbar{
@@ -69,11 +115,6 @@ body {
 	font-family: 'Poppins';
 	margin: 0;
 	padding:0;
-}
-/* .container {
-
-#app{
-
 }
 
 .c-container {

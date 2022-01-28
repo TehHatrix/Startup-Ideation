@@ -25,7 +25,7 @@ export default {};
   font-size: 13px;
   // text-transform: uppercase;
   letter-spacing: 1.0px;
-  font-weight: 500;
+  font-weight: normal;
   color: #000;
   background-color: rgb(255, 255, 255);
   border: none;
