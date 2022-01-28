@@ -16,9 +16,9 @@
         <div class="modal" v-if="showModal">
           <transition name="fade" appear>
             <div class="preInterview">
-              <h1>P/M Fit Survey Form</h1>
+             <p class="formTitle">Create your survey</p>
               <slot name="hypothesisTitle"> </slot>
-              <h3>Survey Name</h3>
+              <p class="formField">Name</p>
               <input
                 v-model="surveyName"
                 type="text"
@@ -29,7 +29,7 @@
                 placeholder="ie. March Survey"
                 required
               />
-              <h3>Survey Sign Ups Goals</h3>
+              <p class="formField">Sign Ups Goals</p>
               <div class="goalsCurrency">
                 <span class="currency"
                   ><font-awesome-icon icon="fa-solid fa-user-plus" /></span>
@@ -122,17 +122,32 @@ export default {
 </script>
 
 <style lang = 'scss' scoped>
+
+.formTitle{
+  font-size: 35px;
+  font-weight: bold;
+  margin-bottom: -5px;
+}
+
+.formField{
+    color:#828494;
+    font-weight: normal;
+}
+
+
+
 ::v-deep button {
   margin-top: 35px;
 }
 
 .inputField {
   border-radius: 5px;
-  padding: 12px 20px;
+  padding: 20px 20px;
   height: 30px;
   width: 100%;
   border: 1px solid #ccc;
   transition: all 0.3s ease 0s;
+  background-color: #f6fafd;
 
   &:focus {
     border: 1px solid rgb(133, 133, 133);
@@ -148,7 +163,7 @@ export default {
   .currency {
     display: flex;
     gap: 5px;
-    height: 30px;
+    height: 40px;
     justify-content: center;
     align-items: center;
     border-radius: 5px;

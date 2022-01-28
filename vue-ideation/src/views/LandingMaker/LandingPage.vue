@@ -171,7 +171,7 @@ export default {
       //Currentdate == today
       else {
         //Todaypageview++
-        await landingApi.incrementTodayPageview(this.currentProjectID);
+        await landingApi.incrementTodayPageView(this.currentProjectID);
         //Totalpageview++
         await landingApi.incrementTotalPageView(this.currentProjectID);
       }

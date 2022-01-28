@@ -1,7 +1,7 @@
 <template>
   <div>
     <general-button @click.native="showModal = true">
-      Share Modal
+      Share Landing Page
     </general-button>
 
     <div id="modal-comp">

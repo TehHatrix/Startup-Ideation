@@ -13,16 +13,17 @@
                 </thead>
                 <tbody>
                     <tr v-for="(task, index) in tasks" :key="index"  >
-                        <td v-if="!task.completed" class="t-center"><input type="checkbox" @change="setComplete(task)" v-model="task.completed" ></td>
-                        <td v-if="!task.completed" colspan="3" >{{ task.task }}</td>
-                        <td v-if="!task.completed" >
+                        {{task.completed}} {{index}}
+                        <td class="t-center"><input type="checkbox" @change="setComplete(task)" :value="task.completed" v-model="task.completed"></td>
+                        <td colspan="3" >{{ task.task }}</td>
+                        <td >
                             <span v-if="task.assigned_to === null">Everyone</span>
                             <div v-for="(user, index) in project.collaborator" :key="index">
                                 <span v-if="user.id === task.assigned_to">{{ user.name }}</span>
                             </div>
                         </td>
-                        <td v-if="!task.completed" >{{ task.due_date === null ? 'no due date' : task.due_date }}</td>
-                        <td v-if="!task.completed" class="action-container">
+                        <td>{{ task.due_date === null ? 'no due date' : task.due_date }}</td>
+                        <td class="action-container">
                             <span class="edit" @click="openUpdateModal(task)">
                                 <font-awesome-icon  icon="fa-pen"></font-awesome-icon>
                             </span>
@@ -81,16 +82,16 @@
 <script>
 import ProjectModalVue from '../ProjectModal.vue'
 import api from '@/api/todoApi'
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
 
 export default {
     name: 'TodoCard',
 
-    props: ['project', 'user'],
+    props: ['project', 'user', 'tasks'],
     computed: {
-        ...mapGetters([
-            'tasks'
-        ]),
+        // ...mapGetters([
+        //     'tasks'
+        // ]),
     },
 
     components: {
@@ -110,15 +111,17 @@ export default {
                 assigned_to: null,
                 completed: false
             },
+
+            projectId: this.$route.params.id
         }
     },
 
     methods: {
         async setComplete(task) {
             try {
-                let res = await api.updateTask(this.project.id, task.id, task )                
+                let res = await api.updateTask(this.projectId, task.id, task )                
                 if(res.data.success) {
-                    await this.$store.dispatch('getTodos', this.project.id)
+                    await this.$store.dispatch('getTodos', this.projectId)
                 } else {
                     console.table(res.data.errors)
                 }
@@ -129,9 +132,9 @@ export default {
 
         async deleteTask() {
             try {
-                let { data } = await api.deleteTask(this.project.id, this.tempTask.id)
+                let { data } = await api.deleteTask(this.projectId, this.tempTask.id)
                 if(data.success) {
-                    await this.$store.dispatch('getTodos', this.project.id)
+                    await this.$store.dispatch('getTodos', this.projectId)
                     this.closeDeleteModal()
                 } else {
                     console.log(data)
@@ -143,9 +146,9 @@ export default {
 
         async updateTask() {
             try {
-                let { data } = await api.updateTask(this.project.id, this.taskForm.id, this.taskForm)
+                let { data } = await api.updateTask(this.projectId, this.taskForm.id, this.taskForm)
                 if(data.success) {
-                    await this.$store.dispatch('getTodos', this.project.id)
+                    await this.$store.dispatch('getTodos', this.projectId)
                     this.closeUpdateModal()
                 }
             } catch (error) {
@@ -178,7 +181,9 @@ export default {
         closeDeleteModal() {
             this.showConfirmModal = false
             this.tempTask = null
-        }
+        },
+
+
         
     },
     

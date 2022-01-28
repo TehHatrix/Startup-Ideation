@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Hypothesis from "../views/Hypothesis.vue";
-// import middleware from "./middleware";
+import middleware from "./middleware";
 import Interview from "../views/Interviews/Interview.vue";
 import LandingEditor from "../views/LandingMaker/LandingEditor.vue";
 import LandingPage from "../views/LandingMaker/LandingPage.vue";
@@ -135,18 +135,7 @@ const routes = [
     name: "Test",
     component: () => import("../views/ProjectDashboard.vue"),
   },
-  // {
-  //   path: '/login',
-  //   name: 'Login',
-  //   beforeEnter: middleware.user,
-  // },
-  // {
-  //   path: '/register',
-  //   name: 'Register',
-  //   component: () => import('../views/Register.vue'),
-  //   beforeEnter: middleware.guest
 
-  // },
   {
     path: "/projects",
     name: "ProjectsList",
@@ -187,7 +176,20 @@ const routes = [
     path: '/projects/:id/freecanvas/:canvasId',
     name: 'EditorPage',
     component: () => import('../views/FreeCanvas/EditorPage.vue'),
-    // beforeEnter: middleware.guest,
+    beforeEnter: middleware.guest,
+  },
+  {
+    path: '/project/:id/projectchat',
+    name: 'ChatPage',
+    component: () => import('../views/Chat/ChatPage.vue'),
+    beforeEnter: middleware.guest,
+    
+  },
+
+  {
+    path: '/lean-canvas/learnmore',
+    name: 'LeanCanvasInformation',
+    component: () => import('../views/LeanCanvasInformation'),
   }
 ];
 

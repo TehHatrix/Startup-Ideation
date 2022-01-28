@@ -32,6 +32,10 @@ class FreeCanvasController extends Controller
             'name' => $data['name']
         ]);
 
+        $content = $canvas->contents()->create([
+            'content' => ''
+        ]);
+
         // return response(['FreeCanvas' => $canvas, 'success' => true], 200);
         return response()->json([
             'FreeCanvas' => $canvas,

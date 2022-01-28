@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -54,7 +53,6 @@ class CustomerController extends Controller
         $data = $validator->validated();
         /** @var \Illuminate\Filesystem\FilesystemManager $disk */
         $disk = Storage::disk('gcs');
-        
         $file = $request->file('image');
         $appendImage = $disk->put('customer-pictures',$file);
         $fileName= basename($appendImage);

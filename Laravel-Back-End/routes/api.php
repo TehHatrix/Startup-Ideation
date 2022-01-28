@@ -1,5 +1,7 @@
 <?php
 
+use App\Events\communication\ChatUpdated;
+use App\Events\TestTry;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
@@ -11,9 +13,14 @@ use App\Http\Controllers\HypothesisController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LeanCanvasController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TodoController;
+use App\Models\Project;
+use App\Models\User;
+use Illuminate\Support\Facades\Broadcast;
+use Symfony\Component\Mime\MessageConverter;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,9 +38,9 @@ use App\Http\Controllers\TodoController;
 // });
 
 
-Route::get('/getproblemswithcustSeg', [HypothesisController::class, 'getproblemswithcustSeg']);
+Route::get('/getproblemswithcustSeg/{projectID}', [HypothesisController::class, 'getproblemswithcustSeg']);
 Route::get('/gethypothesis', [HypothesisController::class, 'gethypothesisdata']);
-Route::get('/getproblemHypothesis', [HypothesisController::class, 'getproblemHypothesis']);
+Route::get('/getproblemHypothesis/{projectID}', [HypothesisController::class, 'getproblemHypothesis']);
 Route::get('/getinterviewIDbyHypothesis/{hypothesisID}', [HypothesisController::class, 'getinterviewIDbyHypothesis']);
 
 Route::get('/getcustomersegmentstopic', [HypothesisController::class, 'getCustomerSegmentsTopic']);
@@ -75,6 +82,7 @@ Route::prefix('/landing')->group(function () {
     Route::get('/index/{projectID}',[LandingController::class,'index']);
     Route::post('/store/{projectID}', [LandingController::class, 'store']);
     Route::put('/update/{projectID}',[LandingController::class, 'update']);
+    Route::put('/updateGoalName/{projectID}',[LandingController::class, 'updateGoalName']);
 
     Route::put('/updateseries/{projectID}',[LandingController::class, 'updateSeries']);
     Route::put('/updatecurrentdate/{projectID}',[LandingController::class, 'updatecurrentdate']);
@@ -94,9 +102,15 @@ Route::prefix('/survey')->group(function (){
     Route::get('/checkexistproject/{projectID}',[SurveyController::class,'checkExistSurveyProject']);
     Route::get('/index/{projectID}',[SurveyController::class,'index']);
     Route::post('/store/{projectID}', [SurveyController::class, 'store']);
+    Route::post('/storeUserSurvey/{projectID}', [SurveyController::class, 'storeUserSurvey']);
+    Route::put('/updategoalname/{projectID}',[SurveyController::class, 'updateGoalName']);
     Route::put('/updateseries/{projectID}',[SurveyController::class, 'updateSeries']);
     Route::put('/resetupdatetpw/{projectID}',[SurveyController::class, 'resetUpdateTodayPV']);
     Route::put('/updatedate/{projectID}',[SurveyController::class, 'updateCurrentDate']);
+    Route::put('/incrementtotalpageview/{projectID}',[SurveyController::class, 'incrementTotalPageView']);
+    Route::put('/incrementremainderpageview/{projectID}',[SurveyController::class, 'incrementRemainderPageView']);
+    Route::put('/incrementtodaypageview/{projectID}',[SurveyController::class, 'incrementTodayPageView']);
+    Route::delete('/delete/{projectID}', [SurveyController::class, 'delete']);
 });
 
 
@@ -134,16 +148,39 @@ Route::group([
     
     // free canvas route
     Route::apiResource('projects.free-canvas', FreeCanvasController::class);
-    Route::apiResource('free-canvas.content', FreeCanvasContentController::class);
-
+    // Route::apiResource('free-canvas.content', FreeCanvasContentController::class);
+    Route::get('free-canvas/{canvasId}/content', [FreeCanvasContentController::class, 'show']);
+    Route::put('free-canvas/{canvasId}/content', [FreeCanvasContentController::class, 'update']);
+    
     // communication route
     //   -> announcement 
     Route::get('/projects/{projectId}/announcement', [AnnouncementController::class, 'index']);
     Route::post('/projects/{projectId}/announcement', [AnnouncementController::class, 'store']);
     Route::put('/projects/{projectId}/announcement/{announcementId}', [AnnouncementController::class, 'update']);
     Route::delete('projects/{projectId}/announcement/{announcementId}', [AnnouncementController::class, 'destroy']);
-
     
+    // -> project chat
+    Route::get('/projects/{projectId}/message', [MessageController::class, 'index']);
+    Route::post('/projects/{projectId}/message', [MessageController::class, 'store']);
+    Route::delete('/projects/{projectId}/message/{messageId}', [MessageController::class, 'destroy']);
 });
 
+// test route
+Route::get('/channel/test', function() {
+    // broadcast(new ChatUpdated());
+    return 'success';
+});
 
+Route::get('/test/channel', function() {
+    broadcast(new TestTry());
+});
+
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
+// delete this later
+Route::get('/test', function() {
+    $project = Project::find(1);
+    $user = $project->users()->wherePivot('user_id', '=', '2')->get();
+
+    return $user[0]->id;
+});

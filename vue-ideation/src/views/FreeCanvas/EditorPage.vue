@@ -10,7 +10,8 @@
                 </span>
             </section>
             <section class="page-body">
-                <tiptap />
+                <MCE />
+
             </section>
         </div>
 
@@ -18,24 +19,25 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import Tiptap from './NoteEditor.vue'
+import MCE from './MCEEditor.vue'
 
 export default {
     name: 'EditorPage',
     components: {
-        Tiptap
+        MCE
     },
 
     async created() {
         try {
             await this.$store.dispatch('showCanvas', {id: this.$route.params.id, canvasId: this.$route.params.canvasId})
+            await this.$store.dispatch('getFreeCanvasContent', this.$route.params.canvasId)
         } catch (error) {
             console.log(error)
         }
     },
     computed: {
         ...mapGetters([
-            'canvas'
+            'canvas',
         ]),
     },
 
@@ -89,9 +91,11 @@ export default {
         border-radius: 1rem;
         box-shadow: 0 0 40px rgb(0 0 0 / 5%);
         padding: 2rem 1rem;
-        max-height: 45rem;
+        height: 80vh;
+        max-height: 80vh;
         overflow: scroll;
-        
+
+
     }
 
 

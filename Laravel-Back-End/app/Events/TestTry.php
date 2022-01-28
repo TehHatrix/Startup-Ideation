@@ -14,15 +14,13 @@ class TestTry implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct()
     {
-        $this->message = $message;
     }
 
     /**
@@ -35,7 +33,5 @@ class TestTry implements ShouldBroadcast
         return new PrivateChannel('first-try');
     }
 
-    public function broadcastAs() {
-        return 'first-try';
-    }
+
 }

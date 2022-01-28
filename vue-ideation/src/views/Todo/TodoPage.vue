@@ -46,7 +46,21 @@
                 <div v-if="currentCategory === categoriesArr[0] ">
                         <todo-card 
                         :project="project"
-                        :user="user" ></todo-card>
+                        :user="user" 
+                        :tasks="getDefault()"></todo-card>
+                </div>
+
+                <div v-if="currentCategory === categoriesArr[1] ">
+                        <todo-card 
+                        :project="project"
+                        :user="user" 
+                        :tasks="getCompleted()"></todo-card>
+                </div>
+                <div v-if="currentCategory === categoriesArr[2] ">
+                        <todo-card 
+                        :project="project"
+                        :user="user" 
+                        :tasks="getForMe()"></todo-card>
                 </div>
 
             </div>
@@ -69,7 +83,7 @@ export default {
         return {
             disabled: false,
             showAddCard: false,
-
+            projectId: this.$route.params.id,
             categoriesArr: [
                 'All Task',
                 'Completed Task',
@@ -89,7 +103,7 @@ export default {
         try {
             this.currentCategory = this.categoriesArr[0]
             if(this.tasks === null) {
-                await this.$store.dispatch('getTodos', this.project.id)
+                await this.$store.dispatch('getTodos', this.projectId)
             }
             
         } catch (error) {
@@ -109,9 +123,9 @@ export default {
         async addTask() {
             try {
 
-                let {data} = await api.addTask(this.project.id, this.taskForm)
+                let {data} = await api.addTask(this.projectId, this.taskForm)
                 if(data.success) {
-                    await this.$store.dispatch('getTodos', this.project.id)
+                    await this.$store.dispatch('getTodos', this.projectId)
                     this.closeAddCard()
                 } 
             } catch(error) {
@@ -125,6 +139,36 @@ export default {
             this.taskForm.assigned_to = null
             this.taskForm.due_date = null
         },
+
+        getDefault() {
+            let defaultTasks = this.tasks.filter( task => !task.completed)
+            defaultTasks.sort( (a, b) => {
+                let da = new Date(a.due_date ? a.due_date : 0),
+                    db = new Date(b.due_date ? b.due_date : 0)
+                
+                return da - db
+            })
+
+            
+            
+            
+            return defaultTasks
+        },
+
+        getCompleted() {            
+            let tasksCompleted = this.tasks.filter( (task) => task.completed)
+
+            return tasksCompleted
+        },
+
+        getForMe() {
+            let taskForMe = this.tasks.filter( task => {
+                return task.assigned_to === this.user.id || task.assigned_to === null ? true : false
+            })
+            let tasksnew = taskForMe.filter( task => !task.completed)
+            return tasksnew
+        }
+
     },
     
 }

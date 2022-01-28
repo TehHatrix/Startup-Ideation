@@ -1,5 +1,7 @@
 <?php
 
+use App\Events\Hello;
+use App\Events\TestTry;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,4 +25,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return 'home';
+});
+
+Route::get('/test', function() {
+    broadcast(new Hello());
+});
+
+Route::get('/channel/hello', function() {
+    broadcast(new TestTry());
 });

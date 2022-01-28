@@ -16,9 +16,10 @@ use Illuminate\Support\Facades\Validator;
 class HypothesisController extends Controller
 {
 
-    public function getproblemswithcustSeg()
+    public function getproblemswithcustSeg($projectID)
     {
-        $problemswithcustSeg = DB::table('problems')->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.id', 'problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
+        $canvasID = DB::table('lean_canvases')->where('project_id',$projectID)->value('id');
+        $problemswithcustSeg = DB::table('problems')->where('problems.canvas_id','=',$canvasID)->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.id', 'problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
         return $problemswithcustSeg;
     }
 
@@ -28,9 +29,10 @@ class HypothesisController extends Controller
         return $hypothesis;
     }
 
-    public function getproblemHypothesis()
+    public function getproblemHypothesis($projectID)
     {
-        $hypothesisProblem = DB::table('hypotheses')->join('problems', 'problems.id', '=', 'hypotheses.problem_id')->select('problems.id', 'hypotheses.hypothesis_ID', 'hypotheses.pain_level_severity', 'hypotheses.pain_level_freq', 'hypotheses.feedback_cycle')->get();
+        $canvasID = DB::table('lean_canvases')->where('project_id',$projectID)->value('id');
+        $hypothesisProblem = DB::table('hypotheses')->where('problems.canvas_id','=',$canvasID)->join('problems', 'problems.id', '=', 'hypotheses.problem_id')->select('problems.id', 'hypotheses.hypothesis_ID', 'hypotheses.pain_level_severity', 'hypotheses.pain_level_freq', 'hypotheses.feedback_cycle')->get();
         return $hypothesisProblem;
     }
 

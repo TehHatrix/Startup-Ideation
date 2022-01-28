@@ -84,7 +84,7 @@ export default {
   margin-right: auto;
   left: 0;
   right: 0;
-  z-index: 99;
+  z-index: 999999;
   text-align: left;
   padding: 21px 0;
   background-color: #fff;

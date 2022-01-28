@@ -12,6 +12,10 @@ export default {
     return api.put(`api/landing/update/${projectID}`, payload);
   },
 
+  async updateLandingGoalName(payload,projectID){
+    return api.put(`api/landing/updateGoalName/${projectID}`, payload);
+  },
+
   async deleteLandingPage(projectID) {
     return api.delete(`api/landing/delete/${projectID}`);
   },
@@ -37,7 +41,7 @@ export default {
     return api.put(`api/landing/handlerevenuesignup/${projectID}`, payload);
   },
 
-  async incrementTodayPageview(projectID) {
+  async incrementTodayPageView(projectID) {
     return api.put(`api/landing/incrementtodaypageview/${projectID}`);
   },
   async incrementTotalPageView(projectID) {

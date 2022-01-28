@@ -1,5 +1,5 @@
 <template lang="">
-    <div class="container">
+    <div class="container" v-if="project">
         
         <div class="dashboard-title">
             <div class="dashboard-title-name">
@@ -14,12 +14,17 @@
         </div>
         <section id="quick-access">
             <h2>Quick Access</h2>
-            <div class="grid-cols-3 grid gap-4">
+            <div class="grid-cols-4 grid gap-4">
 
                 <router-link :to="{name: 'TodoPage', params: projectId}" class="card-white"  >
                         <font-awesome-icon icon="fa-list" size="3x"></font-awesome-icon>
                         <p>To Do List</p>
                 </router-link>
+
+                <!-- <router-link :to="{name: 'ChatPage', params: projectId}" class="card-white"  >
+                        <font-awesome-icon icon="fa-comment-dots" size="3x"></font-awesome-icon>
+                        <p>Project Chat</p>
+                </router-link> -->
 
                 <router-link :to="{name: 'LeanCanvas', params: projectId}" class="card-white">
                     <font-awesome-icon icon="fa-brain" size="3x"></font-awesome-icon>
@@ -138,9 +143,10 @@
             Complete the current validation phase to unlock new phase along the
             way.
           </p>
-          <general-button v-if="validated" @click.native="handleResume()">Resume Validating</general-button>
-          <landing-form-modal v-if="validationPhase === 'landing' && landingvalidated === false" @click.native="handleValidate"></landing-form-modal>
-          <pre-survey-modal v-if="validationPhase === 'survey' && surveyvalidated === false"></pre-survey-modal>
+          <general-button v-if="validationPhase === 'hypothesis'" @click.native="routeHypothesis()">Validate Hypothesis</general-button>
+          <general-button v-else-if="validated" @click.native="handleResume()">Resume Validating</general-button>
+          <landing-form-modal v-else-if="validationPhase === 'landing' && landingvalidated === false" @click.native="handleValidate"></landing-form-modal>
+          <pre-survey-modal v-else-if="validationPhase === 'survey' && surveyvalidated === false"></pre-survey-modal>
         </div>
       </div>
     </div>
@@ -160,7 +166,7 @@ import landingApi from "@/api/landingApi";
 import LandingFormModal from "@/components/PreLandingModal.vue";
 import PreSurveyModal from "@/components/PreSurveyModal.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
-import surveyApi from "@/api/surveyApi.js"
+import surveyApi from "@/api/surveyApi.js";
 
 export default {
   name: "Project",
@@ -180,7 +186,7 @@ export default {
       announForm: {
         title: "",
         description: "",
-      },
+      }, 
       //validationPhase
       validationPhase: "survey",
       //definedboolean
@@ -201,45 +207,30 @@ export default {
   },
 
   async created() {
-    try {
-      await this.$store.dispatch("getProject", this.projectId);
-      // console.log(this.announcement)
+    await this.initialise();
 
-      if (this.announcement === null) {
-        await this.$store.dispatch("getAnnouncement", this.projectId);
-      }
+    //Validation Phase
+    this.$store.commit("setCurrentProjectID", this.projectId);
 
-      //Validation Phase
-      this.$store.commit("setCurrentProjectID", this.projectId);
-
-      switch (this.validationPhase) {
-        case "hypothesis":
-          
-          break;
-        case "landing": {
-          //Check Landing Exist based on project
-          let checkExistLanding = await landingApi.checkExist(this.projectId);
-          if (checkExistLanding.data === 1) {
-            this.landingvalidated = true;
-          }
-          break;
+    switch (this.validationPhase) {
+      case "hypothesis":
+        break;
+      case "landing": {
+        //Check Landing Exist based on project
+        let checkExistLanding = await landingApi.checkExist(this.projectId);
+        if (checkExistLanding.data === 1) {
+          this.landingvalidated = true;
         }
-        case "survey":
-          {
-            //Check Survey Exist
-          let checkExistSurvey = await surveyApi.checkExist(this.projectId);
-          if (checkExistSurvey.data === 1){
-            this.surveyvalidated = true;
-          }
-          break;
-          }
-
-        
+        break;
       }
-
-      // console.log('after created')
-    } catch (error) {
-      console.log(error);
+      case "survey": {
+        //Check Survey Exist
+        let checkExistSurvey = await surveyApi.checkExist(this.projectId);
+        if (checkExistSurvey.data === 1) {
+          this.surveyvalidated = true;
+        }
+        break;
+      }
     }
   },
 
@@ -268,6 +259,12 @@ export default {
   },
 
   methods: {
+    routeHypothesis(){
+      this.$router.push({name:"Hypothesis"})
+
+    },
+
+    
     handleResume() {
       this.$store.commit("setCurrentProjectID", this.projectId);
       if (this.validationPhase == "hypothesis") {
@@ -275,7 +272,10 @@ export default {
       } else if (this.validationPhase == "landing") {
         this.$router.push({ name: "LandingDashboard" });
       } else if (this.validationPhase == "survey") {
-        this.$router.push({ name: "SurveyDashboard", params:{projectID:this.projectId} });
+        this.$router.push({
+          name: "SurveyDashboard",
+          params: { projectID: this.projectId },
+        });
       }
     },
 
@@ -308,6 +308,24 @@ export default {
 
     confirmDelete() {
       this.showDeleteModal = true;
+    },
+
+    connect() {
+      // eslint-disable-next-line no-unused-vars
+      window.Echo.private("").listen("", (e) => {});
+    },
+
+    disconnect() {
+      window.Echo.leaveChannel("");
+    },
+
+    async initialise() {
+      try {
+        await this.$store.dispatch("getProject", this.projectId);
+        await this.$store.dispatch("getAnnouncement", this.projectId);
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     async deleteProject() {
@@ -354,11 +372,11 @@ export default {
     async addAnnouncement() {
       try {
         let { data } = await annApi.postAnnouncement(
-          this.project.id,
+          this.projectId,
           this.announForm
         );
         if (data.success) {
-          await this.$store.dispatch("getAnnouncement", this.project.id);
+          await this.$store.dispatch("getAnnouncement", this.projectId);
           this.closeAnnounModal();
         } else {
           alert("error");
@@ -367,6 +385,10 @@ export default {
         console.log(error);
       }
     },
+  },
+
+  beforeDestroy() {
+    // this.disconnect()
   },
 };
 </script>
