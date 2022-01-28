@@ -117,7 +117,7 @@ const routes = [
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/survey/summary",
+    path: "/survey/summary/:projectID",
     name: "SurveySummary",
     component: SurveySummary,
     meta: { requiresAuth: true },

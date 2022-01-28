@@ -149,7 +149,7 @@ export default {
   },
   methods: {
     showSummary() {
-      this.$router.push("summary");
+      this.$router.push({name: "SurveySummary",params:{projectID: this.currentProjectID}});
     },
     showSurvey() {
       this.$router.push({ name: "Survey" });
