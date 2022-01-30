@@ -1,34 +1,27 @@
 <template>
   <div id="app">
-    <div v-if="authenticated">
-      <button @click="logout">Logout</button>
-    </div>
-    <transition name="toast">
-      <div v-if="toastBoolean">
-        <general-toast></general-toast>
-      </div>
-    </transition>
-
-    <router-view> </router-view>
+    <sidebar v-if="authenticated">
+      <transition name="toast">
+        <div v-if="toastBoolean">
+          <general-toast></general-toast>
+        </div>
+      </transition>
+      <router-view> </router-view>
+    </sidebar>
+    <router-view v-else> </router-view>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import GeneralToast from "./components/GeneralToast.vue";
+import Sidebar from "./components/Sidebar.vue";
 export default {
   components: {
     GeneralToast,
+    Sidebar,
   },
   methods: {
-    async logout() {
-      try {
-        await this.$store.dispatch("logout");
-        await this.$router.push({ name: "HomeGuest" });
-      } catch (err) {
-        console.log(err);
-      }
-    },
   },
 
   computed: {
@@ -41,8 +34,8 @@ export default {
 </script>
 
 <style>
-#confetti-canvas{
-    z-index: 1000;
+#confetti-canvas {
+  z-index: 1000;
 }
 /* .toast-enter-from {
   opacity: 0;

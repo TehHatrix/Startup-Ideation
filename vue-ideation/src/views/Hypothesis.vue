@@ -426,8 +426,6 @@ export default {
         const hypothesisData = await this.$http.get(
           `http://localhost:80/api/getproblemHypothesis/${this.currentProjectID}`
         );
-        console.log(customersegWithproblems.data);
-        console.log(hypothesisData.data);
         this.custseg_data = customersegWithproblems.data;
         this.defined_hypothesis = hypothesisData.data;
         for (let index in this.custseg_data) {

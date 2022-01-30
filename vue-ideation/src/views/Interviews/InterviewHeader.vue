@@ -71,17 +71,31 @@
           >
         </p>
       </div>
-      <div class="progress">
-        <p>
-          <font-awesome-icon icon="fa-solid fa-list-check" />
-          <strong> Progress</strong>
-        </p>
-        <ProgressBar
-          :interviewMax="interviewGoals"
-          :currentCustomerLength="customerScoresLength"
-          style="margin: auto"
-        />
-        <p>{{ progressInterview }} more interviews to go!</p>
+      <div class="progressContainer">
+        <div class="progress">
+          <p>
+            <font-awesome-icon icon="fa-solid fa-list-check" />
+            <strong> Progress</strong>
+          </p>
+          <ProgressBar
+            :interviewMax="interviewGoals"
+            :currentCustomerLength="customerScoresLength"
+            style="margin: auto"
+          />
+          <div v-if="interviewDone" class="interviewDone">
+            <div v-if="rating >= 3.5" >
+              Completed. The problem is validated with <span style="color: #00A006;">great</span> score!
+              <br/> This customer segment is a potential early adopter.
+              <success-button @click.native="routeHypothesis">Validate more customer!</success-button>
+            </div>
+            <div v-else class="bad" >
+              Completed. However, the score is <span style="color: #FF0000;">bad</span>!
+              <br/> You may want to validate another customer.
+              <disabled-button @click.native="routeHypothesis">Re-define Hypothesis!</disabled-button>
+            </div>
+          </div>
+          <p v-else>{{ progressInterview }} more interviews to go!</p>
+        </div>
       </div>
     </div>
     <transition name="fade" appear>
@@ -116,6 +130,8 @@ import ProgressBar from "@/views/Interviews/ProgressBar.vue";
 import interviewApi from "@/api/interviewApi.js";
 import interviewLogsContent from "./InterviewLogsContent.vue";
 import GeneralButton from "../../components/GeneralButtonNonHover.vue";
+import SuccessButton from "../../components/SuccessButton.vue";
+import DisabledButton from "../../components/DisabledButton.vue";
 import { mapGetters } from "vuex";
 
 export default {
@@ -125,6 +141,8 @@ export default {
     ProgressBar,
     interviewLogsContent,
     GeneralButton,
+    SuccessButton,
+    DisabledButton,
   },
   data() {
     return {
@@ -140,6 +158,10 @@ export default {
     };
   },
   methods: {
+    routeHypothesis(){
+      this.$router.push({name:"Hypothesis"})
+    },
+
     handleScriptLink() {
       this.scriptModal = true;
     },
@@ -176,6 +198,13 @@ export default {
   },
   computed: {
     ...mapGetters(["interviewIndex"]),
+    interviewDone() {
+      if (this.interviewGoals - this.customerScores.length == 0) {
+        return true;
+      }
+      return false;
+    },
+
     customerScoresLength() {
       return this.customerScores ? this.customerScores.length : 0;
     },
@@ -266,9 +295,10 @@ export default {
   background: #fff;
   border-radius: 7px;
   display: flex;
-  justify-content: flex-start;
+  /* justify-content: center; */
+  align-items: center;
   gap: 50px;
-  height: 140px;
+  height: auto;
   width: 90%;
   margin: auto;
   position: relative;
@@ -312,10 +342,20 @@ export default {
     display: flex;
     flex-direction: column;
     margin-right: 13px;
-
+    gap: 5px;
     p {
       text-align: center;
     }
+  }
+
+  .bad{
+    ::v-deep button{
+      cursor: pointer;
+    }
+  }
+
+  .interviewDone{
+    text-align: center;
   }
 }
 </style>

@@ -28,6 +28,18 @@ class SurveyController extends Controller
         //
     }
 
+    public function getUserAnswer($projectID)
+    {
+        $surveyID = DB::table('survey')->where('projectID',$projectID)->value('surveyID');
+        $surveyData = DB::table('user_answer')->where('surveyID',$surveyID)->get();
+        return response()->json([
+            'success' => true,
+            'userAnswer' => $surveyData,
+        ]);
+        //
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *

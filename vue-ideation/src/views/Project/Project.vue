@@ -188,7 +188,7 @@ export default {
         description: "",
       }, 
       //validationPhase
-      validationPhase: "survey",
+      validationPhase: "hypothesis",
       //definedboolean
       landingvalidated: false,
       hypothesisvalidated: false,
