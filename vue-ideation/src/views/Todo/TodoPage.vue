@@ -27,25 +27,28 @@
                     <!-- header card -->
                     <div class="todo-title">
                         <span>Todo List  --  {{ currentCategory }}  --  </span>
-                        <button v-if="!showAddCard" class="add-button" @click="showAddCard = true">Create Task</button>
-                        <button v-else class="close-button" @click="closeAddCard" >Close</button>
+                        <button v-if="!showAddCard" class="general-button-colored" @click="showAddCard = true">Create Task</button>
+                        <button v-else class="general-button-danger" @click="closeAddCard" >Close</button>
                     </div>
-                    <div v-if="showAddCard" class="add-task-card">
-                        <span>Add Task</span>
-                        <form @submit.prevent="addTask">
-                            <div class="task-form-container">
-                                <input type="text" id="task" v-model="taskForm.task" placeholder="Task" required>
-                                <select id="assigned_to" v-model="taskForm.assigned_to">
-                                    <option :value="null" selected>Everyone</option>
-                                    <option v-for="(user, index) in project.collaborator" :key="index" :value="user.id">{{ user.name }}</option>
-                                </select>
-                                <input id="due_date" type="date" v-model="taskForm.due_date">
-                            </div>
-                            <div>
-                                <button>Create Task</button>
-                            </div>
-                        </form>
-                    </div>
+                    <!-- create task card -->
+                    <transition name="slide-fade" >
+                        <div v-if="showAddCard" class="add-task-card">
+                            <span id="add-task" >Add Task</span>
+                            <form @submit.prevent="addTask">
+                                <div class="task-form-container">
+                                    <input type="text" id="task" v-model="taskForm.task" placeholder="Task" required>
+                                    <select id="assigned_to" v-model="taskForm.assigned_to">
+                                        <option :value="null" selected>Everyone</option>
+                                        <option v-for="(user, index) in project.collaborator" :key="index" :value="user.id">{{ user.name }}</option>
+                                    </select>
+                                    <input id="due_date" type="date" v-model="taskForm.due_date">
+                                </div>
+                                <div >
+                                    <button class="general-button">Create Task</button>
+                                </div>
+                            </form>
+                        </div>
+                    </transition>
         
                     <!-- all task card -->
                     <div v-if="currentCategory === categoriesArr[0] ">
@@ -106,10 +109,13 @@ export default {
                 assigned_to: null,
                 due_date: null,
             },
+
+            processing: false,
         }
     },
 
     async created() {
+        this.connect()
         try {
             this.currentCategory = this.categoriesArr[0]
             let {data} = await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
@@ -118,7 +124,11 @@ export default {
             }
         } catch (error) {
             console.log(error)
-        }
+        } 
+    },
+
+    beforeDestroy() {
+        this.disconnect()
     },
 
     computed: {
@@ -137,12 +147,17 @@ export default {
     methods: { 
         async addTask() {
             try {
+                if(!this.processing && this.showAddCard) {
+                    this.processing = true
+                    let {data} = await api.addTask(this.projectId, this.taskForm)
+                    if(data.success) {
+                        this.processing = false
+                        this.closeAddCard()
+                    } else {
+                        this.processing = false
+                    }
 
-                let {data} = await api.addTask(this.projectId, this.taskForm)
-                if(data.success) {
-                    await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
-                    this.closeAddCard()
-                } 
+                }
             } catch(error) {
                 console.log(error)
             }
@@ -154,6 +169,20 @@ export default {
             this.taskForm.assigned_to = null
             this.taskForm.due_date = null
         },
+
+        connect() {
+            window.Echo.private(`Project.${this.projectId}`)
+                        .listen('TaskUpdated', async () => {
+                            await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
+                        })
+        }, 
+
+        disconnect() {
+            window.Echo.leaveChannel(`Project.${this.projectId}`)
+            console.log('disconnect')
+        }
+
+        
 
 
 
@@ -177,7 +206,8 @@ export default {
         margin-bottom: 2rem;
 
         .title {
-            background: #14213d;
+            // background: #14213d;
+            background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
             color: #fff;
             text-align: center;
             font-weight: 600;
@@ -210,6 +240,7 @@ export default {
 
     .todo-title {
         background: #fff;
+        
         border-radius: 1rem;
         box-shadow: 0 0 40px rgb(0 0 0 / 5%);
         margin-bottom: 2rem;
@@ -222,8 +253,8 @@ export default {
 
         span {
             letter-spacing: 0.2rem;
-            font-weight: 600;
-            font-size: 1.2rem;
+            font-weight: bold;
+            font-size: 2rem;
         }
     }
 
@@ -246,7 +277,7 @@ export default {
     .add-button {
         border: none;
         border-radius: .4rem;
-        background: #14213d;
+        // background: #14213d;
         color: white;
         border: 1px solid #14213d;
         padding: .5rem .5rem;
@@ -276,14 +307,27 @@ export default {
         }
     }
 
+    #add-task {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: .2rem
+    }
 
     .task-form-container {
         margin-top: 1rem;
+        margin-bottom: 1rem;
         #task {
             width: 70%;
             height: 2rem;
             outline: none;  
 
+            border: 1px solid #222021;
+            outline: 0;
+            background: white;
+            border-radius: .5rem;
+            color: #343434;
+            margin: auto;
+            padding: 0 .5rem 0 .5rem;
         }
         #assigned_to {
 
@@ -296,7 +340,31 @@ export default {
             width: 15%;
             height: 2rem;
 
+            border: 1px solid #222021;
+            outline: 0;
+            background: white;
+            border-radius: .5rem;
+            color: #343434;
+            margin: auto;
+            padding: 0 .5rem 0 .5rem;
+
         }
+
+        & + div {
+            text-align: right;
+        }
+    }
+
+    .slide-fade-enter-active {
+        transition: all .3s ease;
+    }
+    .slide-fade-leave-active {
+        transition: all .3s ease;
+    }
+    .slide-fade-enter, .slide-fade-leave-to
+        /* .slide-fade-leave-active below version 2.1.8 */ {
+        transform: translateX(10px);
+        opacity: 0;
     }
 
 </style>

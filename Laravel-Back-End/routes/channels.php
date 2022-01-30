@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\FreeCanvasContent;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
@@ -39,4 +40,13 @@ Broadcast::channel('chat.{projectId}', function ($user, $projectId) {
 // outside project 
 Broadcast::channel('ProjectList.{userId}', function($user, $userId) {
     return $user->id == $userId;
+});
+
+// free canvas channel 
+Broadcast::channel('FreeCanvas.{canvasId}', function($user, $canvasId) {
+    $content = FreeCanvasContent::where('free_canvas_id', $canvasId)->first();
+    $canvas = $content->canvas;
+    $project = $canvas->project()->get();
+    $userArr = $project->users()->wherePivot('user_id', '=', $user->id)->get();
+    return $userArr[0]->id == $user->id;
 });

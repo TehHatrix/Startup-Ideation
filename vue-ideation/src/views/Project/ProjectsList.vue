@@ -72,26 +72,39 @@ export default {
       showModal: false,
 
       loading: true,
+      processing: false,
     };
   },
   methods: {
-    async setProject() {
-      try {
-        let res = await api.setProject(this.project);
-        console.log(res + "from project dashboard");
-      } catch (error) {
-        console.log(error);
-      }
-    },
     async addProject() {
       try {
-        let res = await api.setProject(this.project);
-        if (res.data.success) {
-          this.project.project_name = this.project.project_description = "";
-          this.showModal = false;
-          let res = await this.$store.dispatch("getProjects");
-          if(res.data.success) {
-            console.log('success added  ')
+        if(!this.processing && this.showModal) {
+          this.processing = true
+          let res = await api.setProject(this.project);
+          if (res.data.success) {
+            this.project.project_name = this.project.project_description = "";
+            let res = await this.$store.dispatch("getProjects");
+            if(res.data.success) {
+              this.showModal = false;
+              this.processing = false
+
+              this.$store.commit("setTypeToast", "Success");
+              this.$store.commit(
+                "setMessage",
+                'Successfully Create Project'
+              );
+              this.$store.commit("showTimeoutToast");  
+            } else {
+              this.showModal = false;
+              this.processing = false
+
+              this.$store.commit("setTypeToast", "Error");
+              this.$store.commit(
+                "setMessage",
+                res.data.errors
+              );
+              this.$store.commit("showTimeoutToast");  
+            }
           }
         }
       } catch (error) {

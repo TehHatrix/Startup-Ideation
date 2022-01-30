@@ -141,21 +141,21 @@ const routes = [
     name: "ProjectsList",
     component: () => import("../views/Project/ProjectsList.vue"),
     meta: { requiresAuth: true },
-    // beforeEnter: middleware.guest,
+    beforeEnter: middleware.guest,
   },
   {
     path: "/projects/:id",
     name: "Project",
     component: () => import("../views/Project/Project.vue"),
     meta: { requiresAuth: true },
-    // beforeEnter: middleware.guest,
+    beforeEnter: middleware.guest,
   },
   {
     path: "/projects/:id/todos",
     name: "TodoPage",
     component: () => import("../views/Todo/TodoPage.vue"),
     meta: { requiresAuth: true },
-    // beforeEnter: middleware.guest,
+    beforeEnter: middleware.guest,
   },
 
   {
@@ -163,13 +163,13 @@ const routes = [
     name: "LeanCanvas",
     component: () => import("../views/LeanCanvas/LeanCanvas.vue"),
     meta: { requiresAuth: true },
-    // beforeEnter: middleware.guest,
+    beforeEnter: middleware.guest,
   },
   {
     path: '/projects/:id/freecanvas',
     name: 'FreeCanvas',
     component: () => import('../views/FreeCanvas/FreeCanvas.vue'),
-    // beforeEnter: middleware.guest
+    beforeEnter: middleware.guest
   },
 
   {

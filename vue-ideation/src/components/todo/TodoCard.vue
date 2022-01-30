@@ -15,7 +15,6 @@
                     <tr v-for="(task, index) in tasks" :key="index"  >
                         <!-- <td class="t-center"><input type="checkbox" @change="setComplete(task)" v-model="task.completed" ></td> -->
                         <td>
-
                             <label class="c-toggle-switch" >
                                 <input type="checkbox" class="c-toggle-checkbox" @change="setComplete(task)" v-model="task.completed" >
                                 <span class="c-switch-btn"></span>
@@ -128,6 +127,7 @@ export default {
             projectId: this.$route.params.id,
 
             loadingApi: false,
+            processing: false
         }
     },
 
@@ -137,7 +137,7 @@ export default {
                 this.loadingApi = true
                 let res = await api.updateTask(this.projectId, task.id, task )        
                 if(res.data.success) {
-                    await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
+                    // await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
                     this.loadingApi = false
                 } 
             } catch (error) {
@@ -147,12 +147,20 @@ export default {
 
         async deleteTask() {
             try {
-                let { data } = await api.deleteTask(this.projectId, this.tempTask.id)
-                if(data.success) {
-                    await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
-                    this.closeDeleteModal()
-                } else {
-                    console.log(data)
+                if(!this.processing && this.showConfirmModal) {
+                    this.processing = true
+                    let { data } = await api.deleteTask(this.projectId, this.tempTask.id)
+                    if(data.success) {
+                        await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
+                        this.closeDeleteModal()
+                        this.processing = false
+                    } else {
+                        console.log(data)
+                        this.$store.commit('setTypeToast', 'Error')
+                        this.$store.commit('setMessage', 'Error Deleting Task')
+                        this.$store.commit('showTimeoutToast')
+                        this.processing = false
+                    }
                 }
             } catch (error) {   
                 console.log(error)
@@ -226,7 +234,9 @@ export default {
         table-layout: fixed;
         border: 1px solid white;
         th {
-            background-color: #14213d;   
+            // background-color: #14213d;   
+            background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
+
             color: #fff;
             padding: .5rem .5rem;
             font-weight: 500;

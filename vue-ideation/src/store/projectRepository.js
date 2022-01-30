@@ -69,7 +69,8 @@ const actions = {
         if(res.data.success === false) return res
         commit('SET_PROJECT_LOCALLY', res.data.project)
         commit('SET_COLLABORATOR', res.data.project.collaborator)
-        sessionStorage.project = JSON.stringify(res.data.project)
+
+        return res
     },
 
 

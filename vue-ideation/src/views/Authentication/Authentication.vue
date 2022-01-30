@@ -9,10 +9,21 @@ import AuthCard from '@/components/authentication/AuthCard.vue'
 export default {
     name: 'Authentication',
     components: {
-        'auth-card': AuthCard
-    }
+        'auth-card': AuthCard,
+    },
+
+    
 }
 </script>
-<style lang="">
-    
+<style lang="css">
+    .auth-page   {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	font-family: 'Montserrat', sans-serif;
+	margin-top: 6rem;
+}
+
+
 </style>

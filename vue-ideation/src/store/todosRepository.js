@@ -61,17 +61,12 @@ const mutations = {
 const actions = {
     async getTodos({ commit }, payload) {
         let res = await api.getTask(payload.projectId)
-
         if(res.data.success) {
             commit('GET_TASKS', res.data.tasks)
             commit('SET_TASK_DEFAULT', res.data.tasks)
             commit('SET_COMPLETED_TASK', res.data.tasks)
             commit('SET_FOR_ME_TASK', {tasks: res.data.tasks, user: payload.userId})
-
         }
-
-
-
         return res
     },
 

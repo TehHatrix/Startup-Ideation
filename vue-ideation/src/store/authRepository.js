@@ -27,12 +27,13 @@ const mutations = {
 const actions = {
     async login ({ commit }, payload) {
         await auth.createSession()
-        const { data } = await auth.login(payload)
-        console.log(data.user);
-        commit('SET_USER', data.user)
-        commit('SET_AUTHENTICATED',true)
+        let res = await auth.login(payload)
+        if(res.data.success) {
+            commit('SET_USER', res.data.user)
+            commit('SET_AUTHENTICATED',true)
+        }
         // state.user = JSON.stringify(data.user)
-        return data
+        return res
     },
 
     async logout({commit}) {

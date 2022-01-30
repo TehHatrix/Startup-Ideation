@@ -62,7 +62,7 @@ class MessageController extends Controller
 
         return response()->json([
             'success' => true,
-            'erros' => null
+            'erros' => null,
         ]);
 
     }
@@ -112,7 +112,7 @@ class MessageController extends Controller
 
         return response()->json([
             'success' => false,
-            'errors' => 'note authorized'
+            'errors' => 'not authorized'
         ]);
     }
 }

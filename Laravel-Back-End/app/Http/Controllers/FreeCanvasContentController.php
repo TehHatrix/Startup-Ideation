@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FreeCanvasContentUpdated;
 use App\Models\FreeCanvasContent as Content;
 use App\Models\FreeCanvas;
 use App\Models\FreeCanvasContent;
@@ -76,8 +77,11 @@ class FreeCanvasContentController extends Controller
         $content->content = $data['content'];
         $content->save();
 
-        return response()->json([
+        broadcast(new FreeCanvasContentUpdated($canvas))->toOthers();
 
+        return response()->json([
+            'success' => true,
+            'content' => $content,
         ]);
 
     }

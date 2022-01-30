@@ -32,6 +32,8 @@ const actions = {
             if(res.data.success) {
                 commit('GET_CANVAS', res.data.FreeCanvas)
             }
+
+            return res
         } catch (error) {
             console.log(error)
         }
