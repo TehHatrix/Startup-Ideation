@@ -37,7 +37,7 @@
     </div>
 
     <!-- announcement card  -->
-    <section class="grid grid-cols-3 gap-4">
+    <section class="grid grid-cols-3 gap-2">
         <div class="col-span-2">
           <announcement-card></announcement-card>
         </div>
@@ -47,6 +47,8 @@
         </div>
 
     </section>
+
+
 
 
 

@@ -6,7 +6,15 @@
                 <font-awesome-icon icon="fa-user-edit" id="setting" @click="openAddModal" ></font-awesome-icon>
             </div>
             <div class="card-body">
-                <table>
+                
+                <div class="user-list" v-for="(collab, index) in collaborator" :key="index">
+                    <span>{{ collab.username }}</span>
+                    <button id="collab-btn" class="general-button-danger" @click="openDeleteModal(collab.id)">
+                        <font-awesome-icon icon="trash-alt" ></font-awesome-icon>
+                    </button>
+                </div>
+
+                <!-- <table>
                     <thead>
                         <tr>
                             <th>Username</th>
@@ -25,7 +33,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
             </div>
         </div>
 
@@ -150,9 +158,10 @@ export default {
             background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
             border-top-left-radius: 1rem;
             border-top-right-radius: 1rem;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             letter-spacing: 0.1rem;
-            padding: 0.75rem 0.5rem;
+            padding: 0.5rem 0.5rem;
+            font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -160,36 +169,35 @@ export default {
 
         .card-body {
             overflow: scroll;
-            max-height: 20rem;
-            min-height: 20rem;
-        }
-    }
-
-    table {
-        width: 100%;
-        table-layout: fixed;
-        border-collapse: collapse;
-    }
-
-    td, tr, th {
-        padding: 0.75rem 0.75rem;
-        padding-bottom: 0.3rem;
-        border-bottom: 1px solid black;
-    }
-
-    .user-row:hover {
-        transform: scale(0.95);
-        transition: all .3s ease-in;
-
-
-        &:hover .delete-button {
-            opacity: 1;
+            height: 10rem;
             
+            .user-list {
+                padding: .5rem 1rem;
+                border-bottom: 1px solid #000;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                span {
+                    font-weight: 500;
+                    font-size: 1.1rem;
+                }
+
+                #collab-btn {
+                    padding: .3rem .5rem;
+                }
+            }
         }
+
     }
+
 
     #setting {
         cursor: pointer;
+        &:hover {
+            transform: scale(110%);
+        }
     }
     
 
