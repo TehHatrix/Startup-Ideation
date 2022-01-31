@@ -9,12 +9,13 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
-class FreeCanvasContentUpdated
+class FreeCanvasContentUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $canvasId;
-    
+    public $userId;
     /**
      * Create a new event instance.
      *
@@ -23,6 +24,7 @@ class FreeCanvasContentUpdated
     public function __construct($canvasId)
     {
         $this->canvasId = $canvasId;
+        $this->userId = Auth::id();
     }
 
     /**

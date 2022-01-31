@@ -36,7 +36,8 @@
 
             <div class="button-modal">
               <!-- <button type="submit" >Submit</button> -->
-              <general-button type=submit >Submit</general-button>
+              <!-- <general-button type=submit >Submit</general-button> -->
+              <button class="general-button">Submit</button>
             </div>
           </form>
         </project-modal>
@@ -221,5 +222,8 @@ export default {
 
   .button-modal {
     text-align: right;
+    button {
+      width: 8rem;
+    }
   }
 </style>

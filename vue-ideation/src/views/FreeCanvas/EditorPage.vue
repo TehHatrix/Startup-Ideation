@@ -71,7 +71,9 @@ export default {
     computed: {
         ...mapGetters([
             'canvas',
-            'FreeCanvasContent'
+            'FreeCanvasContent',
+            'user',
+            'collaborator'
         ]),
 
     },
@@ -129,7 +131,11 @@ export default {
         connect() {
             window.Echo.private(`FreeCanvas.${this.$route.params.canvasId}`)
                         .listen('FreeCanvasContentUpdated', async () => {
-                            await this.$store.dispatch('getFreeCanvasContent', this.$route.params.canvasId)
+                            console.log('j')
+                            let data = await this.$store.dispatch('getFreeCanvasContent', this.$route.params.canvasId)
+                            if(data.success) {
+                                this.editorContent.content = this.FreeCanvasContent
+                            }
                         }) 
         },
 

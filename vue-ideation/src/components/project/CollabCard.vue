@@ -10,14 +10,12 @@
                     <thead>
                         <tr>
                             <th>Username</th>
-                            <th>Name</th>
                             <th>Role</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="user-row" v-for="(collab, index) in collaborator" :key="index">
                             <td>{{ collab.username }}</td>
-                            <td>{{ collab.name }}</td>
                             <td v-if="collab.id === project.creator_id">Owner</td>
                             <td v-else>
                                 Collaborator
@@ -35,14 +33,14 @@
         <modal
          :showModal="showAddModal"
          @close="closeAddModal">
-            <h2>Add Collaborator</h2>
+            <h2 class="modal-title">Add Collaborator</h2>
             <form @submit.prevent="addCollab">
                 <div class="input-container">
                     <input type="text" id="username" class="material-input" v-model="tempUserSearch" required>
                     <label for="username" class="material-label">Username</label>
                 </div>
-                <div class="input-container">
-                    <button class="c-btn-primary">Add</button>
+                <div class="text-right">
+                    <button class="general-button">Add</button>
 
                 </div>
             </form>
@@ -52,10 +50,10 @@
         <modal 
          :showModal="showDeleteModal"
          @close="closeDeleteModal">
-            <h2>Confirm Delete</h2>
-            <div >
-                <button @click="removeCollab" class="c-btn-danger">Confirm</button>
-                <button @click="closeDeleteModal" class="c-btn-primary-outline">Cancel</button>
+            <h2 class="modal-title">Confirm Remove Collaborator</h2>
+            <div class="grid grid-cols-2 gap-2">
+                <button @click="closeDeleteModal" class="general-button full-width">Cancel</button>
+                <button @click="removeCollab" class="general-button-danger full-width">Confirm</button>
             </div>
         </modal>
     </div>
@@ -144,11 +142,14 @@ export default {
 </script>
 <style lang="scss" scoped>
     .card-black {
-        background-color: #14121f;
+        background-color: #fff;
         border-radius: 1rem;
-        color: white;
+        color: black;
         .card-title {  
             color: white;
+            background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
             font-size: 1.25rem;
             letter-spacing: 0.1rem;
             padding: 0.75rem 0.5rem;
@@ -173,7 +174,7 @@ export default {
     td, tr, th {
         padding: 0.75rem 0.75rem;
         padding-bottom: 0.3rem;
-        border-bottom: 1px solid white;
+        border-bottom: 1px solid black;
     }
 
     .user-row:hover {
@@ -191,9 +192,6 @@ export default {
         cursor: pointer;
     }
     
-    .tip {
-        color: rgb(0, 0, 0, 0.6);
-    }
 
     .delete-button {
         opacity: 0;
@@ -208,12 +206,17 @@ export default {
         line-height: 20px;
         cursor: pointer;
         transition: all .2s;
+        color: white;
     }
 
     .btn-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .text-right > .general-button{
+        width: 8rem;
     }
 
 

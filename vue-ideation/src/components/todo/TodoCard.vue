@@ -45,10 +45,10 @@
         <modal 
          :showModal="showConfirmModal"
          @close="closeDeleteModal">
-            <h2>Confirm Delete</h2>
-            <div class="btn-container">
-                <button class="c-btn-primary-outline" @click="closeDeleteModal" >Cancel</button>
-                <button class="c-btn-danger" @click="deleteTask" >Delete</button>
+            <h2 class="modal-title">Confirm Delete</h2>
+            <div class="grid grid-cols-2 gap-2">
+                <button class="general-button full-width" @click="closeDeleteModal" >Cancel</button>
+                <button class="general-button-danger full-width" @click="deleteTask" >Delete</button>
             </div>
         </modal>
 
@@ -56,7 +56,7 @@
         <modal
          :showModal="showUpdateModal"
          @close="showUpdateModal = false">
-            <h2>Update Task</h2>
+            <h2 class="modal-title">Update Task</h2>
             <form @submit.prevent="updateTask">
                 <div class="input-container">
                     <input type="text" id="task" class="material-input" v-model="taskForm.task" required>                    
@@ -272,9 +272,11 @@ export default {
     }
 
     .btn-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        text-align: right;
+
+        button {
+            width: 8rem;
+        }
     }
 
     /* select starting stylings ------------------------------*/

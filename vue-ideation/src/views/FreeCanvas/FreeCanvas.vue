@@ -30,7 +30,7 @@
 
                         <div class="book-wrapper">
                             <div class="book-notebook">
-                                <div class="book-cover" @click="goContent(canvas.id)">
+                                <div class="book-cover" :class="coverColor(canvas.name)" @click="goContent(canvas.id)">
                                     <div class="book-skin">
                                         <span> {{ canvas.name }} </span>
                                     </div>    
@@ -261,6 +261,15 @@ export default {
         closeDeleteModal() {
             this.tempId = null
             this.showDeleteModal = false
+        },
+
+        coverColor(name) {
+            let code = name.charCodeAt(0)
+            code = String(code).charAt(0)
+            if(code >= 0 && code < 3) return ''
+            else if(code >= 3 && code < 5) return 'blue'
+            else if(code >= 5 && code < 8) return 'green'
+            else return 'yellow'
         }
     }
     
