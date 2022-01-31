@@ -38,7 +38,7 @@
 
             <li class="nav-link">
               <a href="#">
-                <i class="bx bx-bar-chart-alt-2 icon"></i>
+                <i class='bx bx-list-ul icon'></i> 
                 <!-- <span class="color"><font-awesome-icon icon="fa-list icon" class="fonticon" ></font-awesome-icon></span> -->
                 <span class="text nav-text">To Do List</span>
               </a>
@@ -46,21 +46,24 @@
 
             <li class="nav-link">
               <a href="#">
-                <i class="bx bx-bell icon"></i>
+                <i class='bx bx-message-dots icon' ></i>
+
                 <span class="text nav-text">Project Chat</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
-                <i class="bx bx-pie-chart-alt icon"></i>
+                <i class='bx bx-brain icon' ></i> 
+
                 <span class="text nav-text">Lean Canvas</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
-                <i class="bx bx-heart icon"></i>
+                <i class='bx bx-chalkboard icon' ></i>
+
                 <span class="text nav-text">Free Canvas</span>
               </a>
             </li>
