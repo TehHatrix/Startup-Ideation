@@ -125,6 +125,7 @@
           </tr>
         </tbody>
       </table>
+      <div v-if="noData" class="noDataWarning">Please fill in the customer segment and problems inside the Lean Canvas first before validating hypothesis!</div>
     </div>
   </div>
 </template>
@@ -151,6 +152,7 @@ export default {
   },
   data() {
     return {
+      noData: false,
       updateFrequency: [],
       updateSeverity: [],
       updateFeedback: [],
@@ -437,6 +439,9 @@ export default {
         );
         this.custseg_data = customersegWithproblems.data;
         this.defined_hypothesis = hypothesisData.data;
+        if (this.custseg_data.length === 0 && this.defined_hypothesis.length === 0){
+          this.noData = true;
+        }
         for (let index in this.custseg_data) {
           // //if problem id in cust seg inside hypothesis
           let hypothesisIndex = this.findIndexMatchingID(
@@ -541,5 +546,12 @@ p {
 #problems {
   margin-left: 30px;
   margin-right: 30px;
+}
+
+.noDataWarning{
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #FF3156;
 }
 </style>

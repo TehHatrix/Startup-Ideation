@@ -111,7 +111,7 @@ const routes = [
   },
   {
     path: "/survey/share/:projectID",
-    name: "Survey",
+    name: "SurveyShare",
     component: Survey,
     // meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,

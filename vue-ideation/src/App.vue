@@ -1,14 +1,18 @@
 <template>
   <div id="app">
+    <transition name="toast">
+      <div v-if="toastBoolean">
+        <general-toast></general-toast>
+      </div>
+    </transition>
     <sidebar v-if="authenticated && noSidebarRoute === false">
-      <transition name="toast">
-        <div v-if="toastBoolean">
-          <general-toast></general-toast>
-        </div>
+      <transition name="fade">
+        <router-view> </router-view>
       </transition>
-      <router-view> </router-view>
     </sidebar>
-    <router-view v-else> </router-view>
+    <transition v-else name="fade">
+      <router-view> </router-view>
+    </transition>
   </div>
 </template>
 
@@ -23,13 +27,15 @@ export default {
   },
   computed: {
     ...mapGetters(["authenticated", "project"]),
-    noSidebarRoute(){
-      if(this.$route.name === 'LandingEditor' || this.$route.name === 'LandingPage'){
+    noSidebarRoute() {
+      if (
+        this.$route.name === "LandingEditor" ||
+        this.$route.name === "LandingPage" || this.$route.name === "SurveyShare"
+      ) {
         return true;
       }
       return false;
     },
-
 
     toastBoolean() {
       return this.$store.state.toastRepository.showToast;
@@ -50,6 +56,21 @@ export default {
   opacity: 1;
   transform: translateY(0);
 } */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 0.25s;
+}
+
+.fade-enter-active {
+  transition-delay: 0.25s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
 
 .toast-enter-active {
   transition: all 0.5s ease;

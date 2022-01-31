@@ -25,7 +25,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["currentID","interviewIndex"]),
+    ...mapGetters(["currentID", "interviewIndex"]),
   },
   methods: {
     async handleNotepad(e) {
@@ -37,23 +37,27 @@ export default {
           this.currentID,
           textObject
         );
-        if (logsUpdate.data.success === false){
-          throw new Error ("Could not update Customer Logs")
+        if (logsUpdate.data.success === false) {
+          throw new Error("Could not update Customer Logs");
+        } else {
+          this.$emit("changeLogs", textObject);
         }
-      }
-      else if (this.noteType === "script"){
-        let scriptUpdate = await interviewApi.updateScript(this.interviewIndex,textObject);
-        if (scriptUpdate.data.success === false){
-          throw new Error ("Could not update Interview Script")
+      } else if (this.noteType === "script") {
+        let scriptUpdate = await interviewApi.updateScript(
+          this.interviewIndex,
+          textObject
+        );
+        if (scriptUpdate.data.success === false) {
+          throw new Error("Could not update Interview Script");
+        } else {
+          this.$emit("changeScript", textObject);
         }
-      }
-      else{
-        throw new Error("Note Type could not found!")
+      } else {
+        throw new Error("Note Type could not found!");
       }
     },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 

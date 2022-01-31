@@ -116,6 +116,7 @@
         <div class="modalContentContainer">
           <interview-logs-content
             :interviewLogsContent="interviewScript"
+            @changeScript="updateScript"
             noteType="script"
           ></interview-logs-content>
           <div class="bottomButton">
@@ -165,6 +166,10 @@ export default {
     };
   },
   methods: {
+    updateScript(textObject){
+      this.interviewScript = textObject.text
+    },
+
     routeHypothesis() {
       this.$router.push({ name: "Hypothesis" });
     },

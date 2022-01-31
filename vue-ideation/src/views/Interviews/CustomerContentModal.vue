@@ -77,7 +77,7 @@
               </div>
               <div class="interviewdata_content">
                 <p>
-                  {{ customerLogs }}
+                  {{ customerLogsData }}
                 </p>
               </div>
             </div>
@@ -91,7 +91,8 @@
         <transition name="fade" appear>
           <interview-logs-content
             v-if="modalCustomer == false && modalScript"
-            :interviewLogsContent="customerLogs"
+            :interviewLogsContent="customerLogsData"
+            @changeLogs="updateLogs"
             noteType="logs"
           ></interview-logs-content>
         </transition>
@@ -144,6 +145,7 @@ export default {
       modalCustomer: true,
       modalConclude: false,
       modalScript: false,
+      customerLogsData: this.customerLogs,
       customer: {
         custname: "",
         custocc: "",
@@ -159,13 +161,6 @@ export default {
   },
   computed: {
     ...mapGetters([
-      // "modalCustomer",
-      // "modalConclude",
-      // "modalScript",
-      // "interviewLogsContent",
-      // "script",
-      // "interviewScript",
-      // "customerlog",
       "fromCustomer",
       "currentID",
       "interviewIndex",
@@ -175,6 +170,10 @@ export default {
     },
   },
   methods: {
+    updateLogs(logsText){
+      this.customerLogsData = logsText.text;
+    },
+
     showModalConclude() {
       this.modalConclude = true;
       this.modalCustomer = false;

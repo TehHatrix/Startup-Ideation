@@ -184,6 +184,7 @@ import surveyApi from "@/api/surveyApi.js";
 import hypothesisApi from "@/api/hypothesisApi.js";
 import arrowLeft from "@/components/icons/arrow-left.vue";
 import arrowRight from "@/components/icons/arrow-right.vue";
+import leanCanvasApi from "@/api/leanCanvasApi.js";
 
 export default {
   name: "Project",
@@ -360,8 +361,22 @@ export default {
       }
     },
 
-    routeHypothesis() {
-      this.$router.push({ name: "Hypothesis" });
+    async routeHypothesis() {
+      let leanCanvasData = await leanCanvasApi.getAllContent(this.projectId);
+      console.log(leanCanvasData);
+      if (
+        leanCanvasData.data.content[0].length === 0 &&
+        leanCanvasData.data.content[1].length === 0
+      ) {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "Please fill in customer segment and problems section inside Lean Canvas before proceeding."
+        );
+        this.$store.commit("showToast");
+      } else {
+        this.$router.push({ name: "Hypothesis" });
+      }
     },
 
     handleResume() {
