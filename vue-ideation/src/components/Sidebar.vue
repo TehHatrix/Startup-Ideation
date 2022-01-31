@@ -31,41 +31,45 @@
           <ul class="menu-links">
             <li class="nav-link">
               <a href="#">
-                <i class="bx bx-home-alt icon"></i>
-                <span class="text nav-text">Dashboard</span>
+                <router-link :to="{name: 'Project', params: projectId}">
+                  <i class="bx bx-home-alt icon"></i>
+                  <span class="text nav-text">Dashboard</span>
+
+                </router-link>
               </a>
             </li>
 
             <li class="nav-link">
-              <a href="#">
-                <i class='bx bx-list-ul icon'></i> 
-                <!-- <span class="color"><font-awesome-icon icon="fa-list icon" class="fonticon" ></font-awesome-icon></span> -->
-                <span class="text nav-text">To Do List</span>
-              </a>
+                <router-link :to="{name: 'TodoPage', params: projectId}">
+                  <i class='bx bx-list-ul icon'></i> 
+                  <!-- <span class="color"><font-awesome-icon icon="fa-list icon" class="fonticon" ></font-awesome-icon></span> -->
+                  <span class="text nav-text">To Do List</span>
+                </router-link>
             </li>
 
             <li class="nav-link">
-              <a href="#">
-                <i class='bx bx-message-dots icon' ></i>
+                <router-link :to="{name: 'ChatPage', params: projectId}">
+                  <i class='bx bx-message-dots icon' ></i>
 
-                <span class="text nav-text">Project Chat</span>
-              </a>
+                  <span class="text nav-text">Project Chat</span>
+
+                </router-link>
             </li>
 
             <li class="nav-link">
-              <a href="#">
-                <i class='bx bx-brain icon' ></i> 
+                <router-link :to="{name: 'LeanCanvas', params: projectId}" >
+                  <i class='bx bx-brain icon' ></i> 
 
-                <span class="text nav-text">Lean Canvas</span>
-              </a>
+                  <span class="text nav-text">Lean Canvas</span>
+
+                </router-link>
             </li>
 
             <li class="nav-link">
-              <a href="#">
-                <i class='bx bx-chalkboard icon' ></i>
-
-                <span class="text nav-text">Free Canvas</span>
-              </a>
+                <router-link :to="{name: 'FreeCanvas', params: projectId}">
+                  <i class='bx bx-chalkboard icon' ></i>
+                  <span class="text nav-text">Free Canvas</span>
+                </router-link>
             </li>
 
             <li class="nav-link">
@@ -100,6 +104,7 @@ export default {
   data() {
     return {
       togglesidebar: false,
+      projectId: this.$route.params.id
     };
   },
   computed: {
