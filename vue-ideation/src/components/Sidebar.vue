@@ -39,35 +39,36 @@
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-bar-chart-alt-2 icon"></i>
-                <span class="text nav-text">Revenue</span>
+                <!-- <span class="color"><font-awesome-icon icon="fa-list icon" class="fonticon" ></font-awesome-icon></span> -->
+                <span class="text nav-text">To Do List</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-bell icon"></i>
-                <span class="text nav-text">Notifications</span>
+                <span class="text nav-text">Project Chat</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-pie-chart-alt icon"></i>
-                <span class="text nav-text">Analytics</span>
+                <span class="text nav-text">Lean Canvas</span>
               </a>
             </li>
 
             <li class="nav-link">
               <a href="#">
                 <i class="bx bx-heart icon"></i>
-                <span class="text nav-text">Likes</span>
+                <span class="text nav-text">Free Canvas</span>
               </a>
             </li>
 
             <li class="nav-link">
-              <a href="#">
+              <a href="#" @click="handleResume">
                 <i class="bx bx-wallet icon"></i>
-                <span class="text nav-text">Wallets</span>
+                <span class="text nav-text">Resume Validating</span>
               </a>
             </li>
           </ul>
@@ -93,23 +94,26 @@
 
 <script>
 export default {
-data() {
+  data() {
     return {
-        togglesidebar: false,
-    }
-},
-computed: {
+      togglesidebar: false,
+    };
+  },
+  computed: {
     toggleClose() {
-        return{
-            close: this.togglesidebar === false
-        }
-    }
-},
-methods: {
-    toggleSidebar() {
-        this.togglesidebar = !this.togglesidebar
+      return {
+        close: this.togglesidebar === false,
+      };
     },
-        async logout() {
+  },
+  methods: {
+    handleResume() {
+      // this.$router.push({})
+    },
+    toggleSidebar() {
+      this.togglesidebar = !this.togglesidebar;
+    },
+    async logout() {
       try {
         await this.$store.dispatch("logout");
         await this.$router.push({ name: "HomeGuest" });
@@ -117,8 +121,7 @@ methods: {
         console.log(err);
       }
     },
-},
-
+  },
 };
 </script>
 
@@ -139,6 +142,17 @@ body {
 ::selection {
   background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
   color: #fff;
+}
+
+.color {
+  color: black;
+}
+
+.fonticon {
+  ::v-deep svg {
+    height: 20px;
+    width: 20px;
+  }
 }
 
 /* ===== Sidebar ===== */
