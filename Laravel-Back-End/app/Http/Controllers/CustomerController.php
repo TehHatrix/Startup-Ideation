@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -38,31 +37,29 @@ class CustomerController extends Controller
      */
     public function store(Request $request, $interviewID)
     {
-
-        // $validator = Validator::make($request->all(), [
-        //     'name' => 'string|required',
-        //     'occupation' => 'string|required',
-        //     'email' => 'string|required',
-        //     'phone' => 'string|required',
-        //     'image' => 'image|nullable'
-        // ]);
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'errors' => $validator->errors()
-        //     ]);
-        // }
+        $validator = Validator::make($request->all(), [
+            'name' => 'string|required',
+            'occupation' => 'string|required',
+            'email' => 'string|required',
+            'phone' => 'string|required',
+            'image' => 'image|nullable'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
         $file = $request->file('image');
 
         return response()->json([
             'file' => $file,
             'success' => true
         ]);
-        // $data = $validator->validated();
+        $data = $validator->validated();
         /** @var \Illuminate\Filesystem\FilesystemManager $disk */
         $disk = Storage::disk('gcs');
-        
-
+        $file = $request->file('image');
         $appendImage = $disk->put('customer-pictures',$file);
         $fileName= basename($appendImage);
         $folderFileName= "customer-pictures/".$fileName;

@@ -1,13 +1,17 @@
 <template>
   <div>
     <div class="headerDashboard">
-      <h1>Survey Dashboard</h1>
+      <p class="surveyName">{{ surveyName }} Dashboard</p>
       <general-button @click.native="showSurvey">Preview Survey</general-button>
-      <general-button @click.native="surveyRoute"> Share Survey</general-button>
-      <general-button @click.native="showSummary"> Show Summary</general-button>
+      <share-survey-modal :shareableLink="encodeShareLink"></share-survey-modal>
+      <general-button @click.native="showSummary"> Summary</general-button>
+      <disabled-button class="updatetrashButton" @click.native="handleDelete()"
+        ><font-awesome-icon icon="fa-solid fa-trash-can"
+      /></disabled-button>
+      <survey-update-modal class="updatetrashButton"></survey-update-modal>
     </div>
     <div class="summary">
-      <h2>Survey Statistic</h2>
+      <h2>{{ surveyName }} Statistic</h2>
       <div class="cardFlexContainer">
         <dashboard-card>
           <template #logo>
@@ -59,6 +63,9 @@ import ChartCard from "@/components/ChartCard.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
 import surveyApi from "@/api/surveyApi.js";
 import { mapGetters } from "vuex";
+import ShareSurveyModal from "../../components/ShareSurveyModal.vue";
+import DisabledButton from "@/components/DisabledButton.vue";
+import SurveyUpdateModal from "../../components/SurveyUpdateModal.vue";
 export default {
   components: {
     DashboardCard,
@@ -67,10 +74,14 @@ export default {
     RevenueTarget,
     ChartCard,
     GeneralButton,
+    ShareSurveyModal,
+    DisabledButton,
+    SurveyUpdateModal,
   },
   data() {
     return {
       //Response Survey data
+      surveyName: "",
       totalResponse: 0,
       totalView: 0,
       goalResponse: 0,
@@ -135,41 +146,63 @@ export default {
     };
   },
   methods: {
-    surveyRoute() {
-      this.$router.push("/survey");
-    },
     showSummary() {
-      this.$router.push("summary");
+      this.$router.push({
+        name: "SurveySummary",
+        params: { projectID: this.currentProjectID },
+      });
     },
-    showSurvey(){
-      this.$router.push({name: "Survey"})
-    }
+    showSurvey() {
+      this.$router.push({ name: "Survey" });
+    },
+    async handleDelete() {
+      alert("Are you sure you want to delete this Landing Page?");
+      await surveyApi.deleteSurvey(this.currentProjectID);
+      this.$router.push({
+        name: "Project",
+        params: { id: this.currentProjectID },
+      });
+    },
   },
 
   computed: {
+    encodeShareLink() {
+      let encodeProjectID = btoa(this.currentProjectID);
+      return window.location.origin + "/survey/share/" + encodeProjectID;
+    },
     ...mapGetters(["currentProjectID"]),
   },
 
   async created() {
     //Get Survey Data and Bind
     let surveyData = await surveyApi.getSurveyData(this.currentProjectID);
+    this.surveyName = surveyData.data.surveyData[0].survey_name;
     this.totalResponse = surveyData.data.surveyData[0].responses;
     this.totalView = surveyData.data.surveyData[0].total_view;
     this.goalResponse = surveyData.data.surveyData[0].responses_goal;
+    if (
+      this.totalResponse >= this.goalResponse &&
+      surveyData.data.surveyData[0].validated === false
+    ) {
+      await surveyApi.setValidated(this.currentProjectID);
+      this.$store.commit("setTypeToast", "Success");
+      this.$store.commit(
+        "setMessage",
+        "Congrats you have achieved the goal! This product has a Product/Market Fit Potential!"
+      );
+      this.$store.commit("showToast");
+    }
     this.currentDate = surveyData.data.surveyData[0].current_date;
     this.todayPageView = surveyData.data.surveyData[0].today_view;
-    this.remainderPageView = surveyData.data.surveyData[0].remainder_view
+    this.remainderPageView = surveyData.data.surveyData[0].remainder_view;
     this.series = [
       {
         data: JSON.parse(surveyData.data.surveyData[0].series),
       },
     ];
 
-    
     let today = new Date().toLocaleDateString();
     let projectdate = new Date(this.currentDate).toLocaleDateString();
-    console.log(today);
-    console.log(projectdate);
     //If projectdate is today
     if (projectdate == today) {
       //Keep replacing with latest today data
@@ -190,7 +223,7 @@ export default {
       await surveyApi.updateSeries(this.currentProjectID, payloadUpdate);
     }
 
-        //If projectdate is not today
+    //If projectdate is not today
     else if (projectdate != today) {
       //Reset today page view and add remainder
       let pageviewResetRemainder = 0 + this.remainderPageView;
@@ -221,19 +254,35 @@ export default {
       this.currentDate = today;
       await surveyApi.updateCurrentDate(this.currentProjectID, payload2);
     }
-
-
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.updatetrashButton {
+  ::v-deep button {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+  }
+  .fa-trash-can {
+    margin: -1px;
+  }
+  .fa-pen-to-square {
+    margin: -1px;
+  }
+}
+
 * {
   margin: 10px;
 }
 
 .headerDashboard {
   display: flex;
+  .surveyName {
+    font-size: 30px;
+    font-weight: bold;
+  }
 }
 .cardFlexContainer {
   display: flex;

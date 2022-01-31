@@ -172,7 +172,6 @@ export default {
         this.currentID,
         conclude
       );
-      console.log(updateScore)
       if (updateScore.success == false) {
         throw new Error("Could not update Customer Score");
       } 

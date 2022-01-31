@@ -13,6 +13,11 @@ class SurveyController extends Controller
         $searchProjectID = DB::table('survey')->where('projectID','=',$projectID)->exists();
         return $searchProjectID;
     }
+
+    public function checkValidated($projectID){
+        $searchProjectID = DB::table('survey')->where('projectID','=',$projectID)->value('validated');
+        return $searchProjectID;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -27,6 +32,18 @@ class SurveyController extends Controller
         ]);
         //
     }
+
+    public function getUserAnswer($projectID)
+    {
+        $surveyID = DB::table('survey')->where('projectID',$projectID)->value('surveyID');
+        $surveyData = DB::table('user_answer')->where('surveyID',$surveyID)->get();
+        return response()->json([
+            'success' => true,
+            'userAnswer' => $surveyData,
+        ]);
+        //
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -76,6 +93,53 @@ class SurveyController extends Controller
         ]);
     }
 
+
+    public function storeUserSurvey(Request $request,$projectID)
+    {
+        $validator = Validator::make($request->all(), [
+            'discover' => 'string|required',
+            'dissapointed' => 'string|required',
+            'reasonDissapoint' => 'string|nullable',
+            'alternative' => 'string|required',
+            'benefits' => 'string|required',
+            'recommendAny' => 'string|required',
+            'personBenefit' => 'string|required',
+            'improveSuggest' => 'string|required',
+            'contacts' => 'string|required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        //Get Survey ID
+        $surveyID = DB::table('survey')->where('projectID',$projectID)->value('surveyID');
+        $insertUserAnswer = DB::table('user_answer')->insert([
+            'surveyID' => $surveyID,
+            'discover' => $data['discover'],
+            'dissapointed' => $data['dissapointed'],
+            'reasonDissapoint' => $data['reasonDissapoint'],
+            'alternative' => $data['alternative'],
+            'benefits' => $data['benefits'],
+            'recommendAny' => $data['recommendAny'],
+            'personBenefit' => $data['personBenefit'],
+            'improveSuggest' => $data['improveSuggest'],
+            'contacts' => $data['contacts'],
+        ]);
+        $incrementResponse = DB::table('survey')->where('surveyID',$surveyID)->increment('responses');
+        return  response()->json([
+            'incrementResponse' => $incrementResponse,
+            'result' => $insertUserAnswer,
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+
+
+
     /**
      * Display the specified resource.
      *
@@ -108,6 +172,30 @@ class SurveyController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function updateGoalName(Request $request, $projectid){
+        $validator = Validator::make($request->all(), [
+            'surveyName' => 'string|required',
+            'signUpGoal' => 'numeric|required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $updateDetails = [
+            'survey_name' => $data['surveyName'],
+            'responses_goal' => $data['signUpGoal'],
+        ];
+        $updateGoalName = DB::table('survey')->where('projectID',$projectid)->update($updateDetails);
+        return  response()->json([
+            'result' => $updateGoalName,
+            'success' => true,
+            'errors' => null
+        ]);
     }
 
     public function updateSeries(Request $request,$projectid){
@@ -170,6 +258,48 @@ class SurveyController extends Controller
             'errors' => null
         ]);
     }
+
+
+    public function incrementTotalPageView($projectid){
+        DB::table('survey')->where('projectID',$projectid)->increment('total_view');
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+    public function incrementRemainderPageView($projectid){
+        DB::table('survey')->where('projectID',$projectid)->increment('remainder_view');
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+    public function incrementTodayPageView($projectid){
+        DB::table('survey')->where('projectID',$projectid)->increment('today_view');
+        return  response()->json([
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
+
+    public function delete($projectid){
+        $surveyID = DB::table('survey')->where('projectID',$projectid)->value('surveyID');
+        DB::table('user_answer')->where('surveyID',$surveyID)->delete();
+        DB::table('survey')->where('surveyID',$surveyID)->delete();
+        return response()->json(['success' => true, 'message' => 'successfully deleted']);
+    }
+
+    public function setValidated($projectID){
+        $validated = DB::table('survey')->where('projectID',$projectID)->update(['validated' => true]);
+        return  response()->json([
+            'success' => true,
+            'setValidated' => $validated,
+        ]);
+    }
+
 
     /**
      * Remove the specified resource from storage.

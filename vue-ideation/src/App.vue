@@ -1,38 +1,42 @@
 <template>
   <div id="app">
-    <div v-if="authenticated">
-      <button @click="logout">Logout</button>
-    </div>
     <transition name="toast">
       <div v-if="toastBoolean">
         <general-toast></general-toast>
       </div>
     </transition>
-
-    <router-view> </router-view>
+    <sidebar v-if="authenticated && noSidebarRoute === false">
+      <transition name="fade">
+        <router-view> </router-view>
+      </transition>
+    </sidebar>
+    <transition v-else name="fade">
+      <router-view> </router-view>
+    </transition>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import GeneralToast from "./components/GeneralToast.vue";
+import Sidebar from "./components/Sidebar.vue";
 export default {
   components: {
     GeneralToast,
+    Sidebar,
   },
-  methods: {
-    async logout() {
-      try {
-        await this.$store.dispatch("logout");
-        await this.$router.push({ name: "HomeGuest" });
-      } catch (err) {
-        console.log(err);
-      }
-    },
-  },
-
   computed: {
     ...mapGetters(["authenticated", "project"]),
+    noSidebarRoute() {
+      if (
+        this.$route.name === "LandingEditor" ||
+        this.$route.name === "LandingPage" || this.$route.name === "SurveyShare"
+      ) {
+        return true;
+      }
+      return false;
+    },
+
     toastBoolean() {
       return this.$store.state.toastRepository.showToast;
     },
@@ -41,8 +45,8 @@ export default {
 </script>
 
 <style>
-#confetti-canvas{
-    z-index: 1000;
+#confetti-canvas {
+  z-index: 1000;
 }
 /* .toast-enter-from {
   opacity: 0;
@@ -52,6 +56,21 @@ export default {
   opacity: 1;
   transform: translateY(0);
 } */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 0.25s;
+}
+
+.fade-enter-active {
+  transition-delay: 0.25s;
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
 
 .toast-enter-active {
   transition: all 0.5s ease;

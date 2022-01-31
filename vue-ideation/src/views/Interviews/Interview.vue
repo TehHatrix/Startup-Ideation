@@ -9,10 +9,16 @@
 <script>
 import InterviewHeader from "./InterviewHeader.vue";
 import CustomerInterview from "./CustomerInterview.vue";
+// import { mapGetters } from 'vuex';
 export default {
   components: {
     InterviewHeader,
     CustomerInterview,
+  },
+  computed: {
+    // ...mapGetters(['currentProjectID'])
+  },
+  mounted () {
   },
 };
 </script>

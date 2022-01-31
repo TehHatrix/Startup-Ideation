@@ -1,8 +1,10 @@
 <template>
   <div>
-    <general-button @click.native="showModal = true"
-      >Validate Now!</general-button
-    >
+    <general-button-non-hover
+      class="updateButton"
+      @click.native="showModal = true"
+      ><font-awesome-icon icon="fa-solid fa-pen-to-square"
+    /></general-button-non-hover>
 
     <div id="modal-comp">
       <transition name="fade" appear>
@@ -16,7 +18,7 @@
         <div class="modal" v-if="showModal">
           <transition name="fade" appear>
             <div class="preInterview">
-             <p class="formTitle">Create your survey</p>
+              <p class="formTitle">Update your Survey</p>
               <slot name="hypothesisTitle"> </slot>
               <p class="formField">Name</p>
               <input
@@ -26,20 +28,22 @@
                 :class="dangerName"
                 name="name"
                 id="name"
-                placeholder="ie. March Survey"
+                placeholder="New survey name"
                 required
               />
-              <p class="formField">Sign Ups Goals</p>
+              <p class="formField">Sign Up Goal</p>
               <div class="goalsCurrency">
                 <span class="currency"
-                  ><font-awesome-icon icon="fa-solid fa-user-plus" /></span>
+                  ><font-awesome-icon icon="fa-solid fa-user-plus"
+                /></span>
                 <input
-                  v-model="surveyGoal"
+                  v-model="signUpGoal"
                   type="number"
                   class="inputField"
                   :class="dangerRevenue"
                   name="name"
                   id="name"
+                  placeholder="New revenue goal"
                   required
                 />
               </div>
@@ -48,8 +52,8 @@
                 <general-button @click.native="showModal = false">
                   Close</general-button
                 >
-                <general-button @click.native="routeChooseLanding">
-                  Create Survey!</general-button
+                <general-button @click.native="handleUpdate">
+                  Update Survey!</general-button
                 >
               </div>
             </div>
@@ -61,34 +65,53 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import GeneralButtonNonHover from "./GeneralButtonNonHover.vue";
 import GeneralButton from "./GeneralButton.vue";
 import surveyApi from "@/api/surveyApi.js";
+import { mapGetters } from "vuex";
 export default {
-  components: { GeneralButton },
   data() {
     return {
       showModal: false,
-      surveyName: "",
-      surveyGoal: 0,
       wrongNameInput: false,
-      wrongRevenueInput: false,
+      wrongSignUpInput: false,
+      surveyName: "",
+      signUpGoal: 0,
     };
   },
-  methods: {
-    async routeChooseLanding() {
-      this.checkInput();
-      if (this.wrongNameInput === false && this.wrongRevenueInput === false) {
-          let payload = {
-              surveyName: this.surveyName,
-              surveyGoal: this.surveyGoal,
-          }
-          let surveycreate = await surveyApi.addSurvey(payload,this.currentProjectID);
-          console.log(surveycreate)
-        this.$router.push({ name: "SurveyDashboard", params: {projectID: this.currentProjectID}});
-        // this.$store.commit("setLandingName", this.surveyName);
-        // this.$store.commit("setLandingRevenueGoal", this.surveyGoal);
+  components: {
+    GeneralButtonNonHover,
+    GeneralButton,
+  },
 
+  methods: {
+    async handleUpdate() {
+      this.checkInput();
+      if (this.wrongNameInput === false && this.wrongSignUpInput === false) {
+        let newSurveyGoalName = {
+          surveyName: this.surveyName,
+          signUpGoal: this.signUpGoal,
+        };
+        let updateLanding = await surveyApi.updateGoalName(
+          this.currentProjectID,
+          newSurveyGoalName
+        );
+        if (updateLanding.data.success === false) {
+          this.$store.commit("setTypeToast", "Error");
+          this.$store.commit(
+            "setMessage",
+            "Survey name and goal fail to update! Please try again"
+          );
+          this.$store.commit("showToast");
+          throw new Error("Could not update Survey");
+        } else {
+          this.$store.commit("setTypeToast", "Success");
+          this.$store.commit("setMessage", "Survey name and goal updated!");
+          this.$store.commit("showToast");
+        }
+        setTimeout(() => {
+          this.$router.go();
+        }, 2000);
       }
     },
     checkInput() {
@@ -97,16 +120,14 @@ export default {
       } else {
         this.wrongNameInput = false;
       }
-      if (this.surveyGoal <= 0) {
-        this.wrongRevenueInput = true;
+      if (this.signUpGoal <= 0) {
+        this.wrongSignUpInput = true;
       } else {
-        this.wrongRevenueInput = false;
+        this.wrongSignUpInput = false;
       }
     },
   },
-  mounted() {},
   computed: {
-...mapGetters(['currentProjectID']),
     dangerName() {
       return {
         danger: this.wrongNameInput,
@@ -114,30 +135,29 @@ export default {
     },
     dangerRevenue() {
       return {
-        danger:this.wrongRevenueInput,
+        danger: this.wrongSignUpInput,
       };
     },
+    ...mapGetters(["currentProjectID"]),
   },
 };
 </script>
 
-<style lang = 'scss' scoped>
-
-.formTitle{
+<style lang="scss" scoped>
+.formTitle {
   font-size: 35px;
   font-weight: bold;
-  margin-bottom: -5px;
+  margin-bottom: -1px;
 }
 
-.formField{
-    color:#828494;
-    font-weight: normal;
+.formField {
+  color: #828494;
+  font-weight: normal;
+  margin-bottom: 7px;
 }
 
-
-
-::v-deep button {
-  margin-top: 35px;
+.updateButton {
+  margin-top: 3px;
 }
 
 .inputField {
@@ -198,6 +218,10 @@ export default {
     margin-top: 25px;
     display: flex;
     gap: 20px;
+    ::v-deep button {
+      width: 140px;
+      height: 45px;
+    }
   }
 }
 

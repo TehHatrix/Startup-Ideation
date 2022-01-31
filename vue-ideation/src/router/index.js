@@ -111,13 +111,13 @@ const routes = [
   },
   {
     path: "/survey/share/:projectID",
-    name: "Survey",
+    name: "SurveyShare",
     component: Survey,
     // meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/survey/summary",
+    path: "/survey/summary/:projectID",
     name: "SurveySummary",
     component: SurveySummary,
     meta: { requiresAuth: true },

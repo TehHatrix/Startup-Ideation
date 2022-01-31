@@ -21,8 +21,7 @@
                 @click.native="deleteHypothesis(item.hypothesisID)"
                 ><font-awesome-icon icon="fa-solid fa-trash-can"
               /></disabled-button>
-              <general-button-non-hover
-                @click.native="updateHypothesis(index)"
+              <general-button-non-hover @click.native="updateHypothesis(index)"
                 ><font-awesome-icon icon="fa-solid fa-pen-to-square"
               /></general-button-non-hover>
             </div>
@@ -126,6 +125,7 @@
           </tr>
         </tbody>
       </table>
+      <div v-if="noData" class="noDataWarning">Please fill in the customer segment and problems inside the Lean Canvas first before validating hypothesis!</div>
     </div>
   </div>
 </template>
@@ -152,6 +152,7 @@ export default {
   },
   data() {
     return {
+      noData: false,
       updateFrequency: [],
       updateSeverity: [],
       updateFeedback: [],
@@ -189,12 +190,19 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["interviewIndex", "hypothesis", "currentIndex"]),
+    ...mapGetters([
+      "interviewIndex",
+      "hypothesis",
+      "currentIndex",
+      "currentProjectID",
+    ]),
   },
   methods: {
     async deleteHypothesis(hypothesisID) {
       await hypothesisApi.deleteHypothesis(hypothesisID);
-      this.$router.go();
+      setTimeout(() => {
+        this.$router.go();
+      }, 2300);
     },
     async updateHypothesis(index) {
       this.$set(this.editable, index, true);
@@ -218,8 +226,9 @@ export default {
     async handleSave(hypothesisID, index) {
       if (
         (this.updateFrequency[index] === undefined &&
-        this.updateSeverity[index] === undefined &&
-        this.updateFeedback[index] === undefined) || this.updateError[index] == true
+          this.updateSeverity[index] === undefined &&
+          this.updateFeedback[index] === undefined) ||
+        this.updateError[index] == true
       ) {
         this.$store.commit("setTypeToast", "Error");
         this.$store.commit(
@@ -232,13 +241,15 @@ export default {
         pain_level_freq: this.updateFrequency[index],
         pain_level_severity: this.updateSeverity[index],
         feedback_cycle: this.updateFeedback[index],
-      }
-      let saveHypothesis = await hypothesisApi.updateHypothesis(hypothesisID,payload)
-      if(saveHypothesis.data.success){
+      };
+      let saveHypothesis = await hypothesisApi.updateHypothesis(
+        hypothesisID,
+        payload
+      );
+      if (saveHypothesis.data.success) {
         this.$router.go();
-      }
-      else{
-        console.log(saveHypothesis)
+      } else {
+        console.log(saveHypothesis);
       }
     },
     async routeInterview() {
@@ -327,7 +338,6 @@ export default {
           this.$set(this.modaldisabled, value.index, false);
         }
       }
-      // console.log(updateFrequency)
     },
     appendFrequencySeverity(value) {
       if (this.checkPainValue(value)) {
@@ -422,13 +432,16 @@ export default {
     async getHypothesisData() {
       try {
         const customersegWithproblems = await this.$http.get(
-          "http://localhost:80/api/getproblemswithcustSeg"
+          `http://localhost:80/api/getproblemswithcustSeg/${this.currentProjectID}`
         );
         const hypothesisData = await this.$http.get(
-          "http://localhost:80/api/getproblemHypothesis"
+          `http://localhost:80/api/getproblemHypothesis/${this.currentProjectID}`
         );
         this.custseg_data = customersegWithproblems.data;
         this.defined_hypothesis = hypothesisData.data;
+        if (this.custseg_data.length === 0 && this.defined_hypothesis.length === 0){
+          this.noData = true;
+        }
         for (let index in this.custseg_data) {
           // //if problem id in cust seg inside hypothesis
           let hypothesisIndex = this.findIndexMatchingID(
@@ -456,9 +469,7 @@ export default {
       }
     },
   },
-  mounted() {
-    this.$store.commit("closeToast");
-  },
+  mounted() {},
 };
 </script>
 
@@ -535,5 +546,12 @@ p {
 #problems {
   margin-left: 30px;
   margin-right: 30px;
+}
+
+.noDataWarning{
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #FF3156;
 }
 </style>

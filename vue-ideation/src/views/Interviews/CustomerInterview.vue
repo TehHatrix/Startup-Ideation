@@ -38,12 +38,15 @@ export default {
   },
   methods: {
     async addCardInterview(customer_info) {
-      let res = await customerApi.createCustomer(this.interviewIndex, customer_info);
-      console.log(res.data)
-      if(res.data.success) {
-        console.log(res.data.file)
+      let test = await customerApi.createCustomer(this.interviewIndex, customer_info);
+      if (test.data.success){
+        this.customerCards.push(customer_info);
       }
-      this.customerCards.push(customer_info);
+      else{
+        throw new Error("Cannot create Customer")
+      }
+      
+      
     },
 
     async getCustomerInterview() {

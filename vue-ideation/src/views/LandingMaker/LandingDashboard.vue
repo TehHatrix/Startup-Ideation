@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="headerDashboard">
-      <h1>Landing Page Dashboard</h1>
+      <h1>{{ landingName }} Dashboard</h1>
       <general-button @click.native="editLanding"> Edit Page</general-button>
       <general-button @click.native="previewLanding">
         Preview Page</general-button
@@ -9,12 +9,13 @@
       <share-landing-modal :shareableLink="encodeShareLink"
         >Share Page</share-landing-modal
       >
-      <disabled-button class="trashButton" @click.native="handleDelete()"
+      <disabled-button class="updatetrashButton" @click.native="handleDelete()"
         ><font-awesome-icon icon="fa-solid fa-trash-can"
       /></disabled-button>
+      <landing-update-modal class="updatetrashButton"></landing-update-modal>
     </div>
     <div class="summary">
-      <h2>Landing Page Statistic</h2>
+      <h2>{{ landingName }} Page Statistic</h2>
       <div class="cardFlexContainer">
         <dashboard-card>
           <template #logo>
@@ -78,6 +79,7 @@ import landingApi from "@/api/landingApi.js";
 import { mapGetters } from "vuex";
 import ShareLandingModal from "../../components/ShareLandingModal.vue";
 import DisabledButton from "@/components/DisabledButton.vue";
+import LandingUpdateModal from "../../components/LandingUpdateModal.vue";
 export default {
   components: {
     DashboardCard,
@@ -89,6 +91,7 @@ export default {
     GeneralButton,
     ShareLandingModal,
     DisabledButton,
+    LandingUpdateModal,
   },
   computed: {
     ...mapGetters(["currentProjectID"]),
@@ -106,6 +109,7 @@ export default {
       currentDate: undefined,
       todayPageView: 0,
       remainderPageView: 0,
+      landingName: "",
       landingHTML: "",
       landingCSS: "",
 
@@ -167,10 +171,13 @@ export default {
     };
   },
   methods: {
-    async handleDelete(){
-      alert("Are you sure you want to delete this Landing Page?")
+    async handleDelete() {
+      alert("Are you sure you want to delete this Survey?");
       await landingApi.deleteLandingPage(this.currentProjectID);
-      this.$router.push({name:"Project", params: { id: this.currentProjectID }})
+      this.$router.push({
+        name: "Project",
+        params: { id: this.currentProjectID },
+      });
     },
     editLanding() {
       //Set Editing Mode
@@ -184,10 +191,24 @@ export default {
     async getLandingData() {
       let landingdata = await landingApi.getLandingData(this.currentProjectID);
       if (landingdata.data.success) {
+        this.landingName = landingdata.data.data[0].landingName;
         this.signups = landingdata.data.data[0].sign_ups;
         this.uniqueviews = landingdata.data.data[0].unique_view;
         this.expectedrevenue = landingdata.data.data[0].expected_revenue;
         this.goalsrevenue = landingdata.data.data[0].target_revenue;
+        //If expected revenue already achieved goal but not validated in db
+        if (
+          this.expectedrevenue >= this.goalsrevenue &&
+          landingdata.data.data[0].validated === false
+        ) {
+          await landingApi.setValidated(this.currentProjectID);
+          this.$store.commit("setTypeToast", "Success");
+          this.$store.commit(
+            "setMessage",
+            "Congrats you have achieved the goal! This product has a potential generating great revenues! You can now go to the Project page and move to the next stage"
+          );
+          this.$store.commit("showToast");
+        }
         this.currentDate = landingdata.data.data[0].currentdate;
         this.todayPageView = landingdata.data.data[0].today_pageview;
         this.remainderPageView = landingdata.data.data[0].remainder_pageview;
@@ -292,16 +313,18 @@ export default {
   margin: 10px;
 }
 
-.trashButton {
+.updatetrashButton {
   ::v-deep button {
     width: 40px;
     height: 40px;
     cursor: pointer;
   }
-    .fa-trash-can{
-      margin: -1px;
-    }
-    
+  .fa-trash-can {
+    margin: -1px;
+  }
+  .fa-pen-to-square {
+    margin: -1px;
+  }
 }
 
 .headerDashboard {

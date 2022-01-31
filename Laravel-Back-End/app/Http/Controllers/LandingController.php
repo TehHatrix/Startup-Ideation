@@ -28,6 +28,12 @@ class LandingController extends Controller
         return $searchProjectID;
     }
 
+    public function checkValidated($projectID){
+        $searchProjectID = DB::table('landing_pages')->where('projectID','=',$projectID)->value('validated');
+        return $searchProjectID;
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -156,6 +162,31 @@ class LandingController extends Controller
         ]);
     }
 
+
+    public function updateGoalName(Request $request, $projectid){
+        $validator = Validator::make($request->all(), [
+            'landingName' => 'string|required',
+            'landingGoalRevenue' => 'numeric|required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $updateDetails = [
+            'landingName' => $data['landingName'],
+            'target_revenue' => $data['landingGoalRevenue'],
+        ];
+        $updateGoalName = DB::table('landing_pages')->where('projectID',$projectid)->update($updateDetails);
+        return  response()->json([
+            'result' => $updateGoalName,
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
     public function updateCurrentDate(Request $request, $projectid){
         $validator = Validator::make($request->all(), [
             'newCurrentDate' => 'date',
@@ -244,6 +275,14 @@ class LandingController extends Controller
         return  response()->json([
             'success' => true,
             'errors' => null
+        ]);
+    }
+
+    public function setValidated($projectID){
+        $validated = DB::table('landing_pages')->where('projectID',$projectID)->update(['validated' => true]);
+        return  response()->json([
+            'success' => true,
+            'setValidated' => $validated,
         ]);
     }
 

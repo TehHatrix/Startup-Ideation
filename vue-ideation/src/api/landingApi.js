@@ -12,6 +12,10 @@ export default {
     return api.put(`api/landing/update/${projectID}`, payload);
   },
 
+  async updateLandingGoalName(payload,projectID){
+    return api.put(`api/landing/updateGoalName/${projectID}`, payload);
+  },
+
   async deleteLandingPage(projectID) {
     return api.delete(`api/landing/delete/${projectID}`);
   },
@@ -37,7 +41,7 @@ export default {
     return api.put(`api/landing/handlerevenuesignup/${projectID}`, payload);
   },
 
-  async incrementTodayPageview(projectID) {
+  async incrementTodayPageView(projectID) {
     return api.put(`api/landing/incrementtodaypageview/${projectID}`);
   },
   async incrementTotalPageView(projectID) {
@@ -49,6 +53,14 @@ export default {
   async checkExist(projectID) {
     return api.get(`api/landing/checkexistproject/${projectID}`);
   },
+
+  async setValidated(projectID){
+    return api.put(`api/landing/validate/${projectID}`);
+  },
+
+  async checkValidated(projectID){
+    return api.get(`api/landing/checkvalidate/${projectID}`);
+  }
 
   //   async addHypothesis(payload) {
   //    return api.post('api/hypothesis/store',payload)

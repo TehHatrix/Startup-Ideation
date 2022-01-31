@@ -1,7 +1,7 @@
 <template>
   <div>
     <general-button @click.native="showModal = true">
-      Share Landing Page
+      Share Survey
     </general-button>
 
     <div id="modal-comp">
@@ -16,7 +16,7 @@
         <div class="modal" v-if="showModal">
           <transition name="fade" appear>
             <div class="preInterview">
-              <h2>Your Landing Page Link!</h2>
+              <h2>Your Survey Link!</h2>
               <textarea
                 id="sharebox"
                 rows="4"

@@ -16,9 +16,23 @@ use Illuminate\Support\Facades\Validator;
 class HypothesisController extends Controller
 {
 
-    public function getproblemswithcustSeg()
+    public function checkHypothesisValidate($projectID){
+        $canvasID = DB::table('lean_canvases')->where('project_id',$projectID)->value('id');
+        $problemID = DB::table('problems')->where('canvas_id',$canvasID)->value('id');
+        $findTrue = DB::table('hypotheses')->where('problem_id',$problemID)->where('status','=',true)->exists();
+        return  response()->json([
+            'validateResult' => $findTrue,
+            'success' => true,
+            'errors' => null
+        ]);
+
+
+    }
+
+    public function getproblemswithcustSeg($projectID)
     {
-        $problemswithcustSeg = DB::table('problems')->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.id', 'problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
+        $canvasID = DB::table('lean_canvases')->where('project_id',$projectID)->value('id');
+        $problemswithcustSeg = DB::table('problems')->where('problems.canvas_id','=',$canvasID)->join('customer_segments', 'problems.customer_segment_id', '=', 'customer_segments.id')->select('problems.id', 'problems.topic as problemsTopic', 'customer_segments.topic as customerSegment')->get();
         return $problemswithcustSeg;
     }
 
@@ -28,9 +42,10 @@ class HypothesisController extends Controller
         return $hypothesis;
     }
 
-    public function getproblemHypothesis()
+    public function getproblemHypothesis($projectID)
     {
-        $hypothesisProblem = DB::table('hypotheses')->join('problems', 'problems.id', '=', 'hypotheses.problem_id')->select('problems.id', 'hypotheses.hypothesis_ID', 'hypotheses.pain_level_severity', 'hypotheses.pain_level_freq', 'hypotheses.feedback_cycle')->get();
+        $canvasID = DB::table('lean_canvases')->where('project_id',$projectID)->value('id');
+        $hypothesisProblem = DB::table('hypotheses')->where('problems.canvas_id','=',$canvasID)->join('problems', 'problems.id', '=', 'hypotheses.problem_id')->select('problems.id', 'hypotheses.hypothesis_ID', 'hypotheses.pain_level_severity', 'hypotheses.pain_level_freq', 'hypotheses.feedback_cycle')->get();
         return $hypothesisProblem;
     }
 
@@ -121,7 +136,7 @@ class HypothesisController extends Controller
             'pain_level_severity' => $data['pain']['severity'],
             'pain_level_freq' => $data['pain']['frequency'],
             'feedback_cycle' => $data['feedbackCycle'],
-            'status' => true
+            'status' => false
         ]);
         $id = DB::getPdo()->lastInsertId();
         return  response()->json([
@@ -151,6 +166,17 @@ class HypothesisController extends Controller
     public function edit($id)
     {
         //
+    }
+
+
+    public function setHypothesisTrue($interviewID){
+        $hypothesisID = DB::table('interview')->where('interview_ID',$interviewID)->value('hypothesis_ID');
+        $validate = DB::table('hypotheses')->where('hypothesis_ID', $hypothesisID)->update(['status' => true]);
+        return  response()->json([
+            'validateResult' => $validate,
+            'success' => true,
+            'errors' => null
+        ]);
     }
 
     /**
