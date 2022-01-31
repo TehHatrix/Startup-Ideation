@@ -30,7 +30,7 @@ export default {
     noSidebarRoute() {
       if (
         this.$route.name === "LandingEditor" ||
-        this.$route.name === "LandingPage" || this.$route.name === "SurveyShare"
+        this.$route.name === "LandingPage" || this.$route.name === "SurveyShare" || this.$route.name === "ProjectsList"
       ) {
         return true;
       }
