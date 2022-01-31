@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TaskUpdated;
 use App\Http\Resources\TodoResource;
 use Illuminate\Http\Request;
 use App\Models\Project;
@@ -70,7 +71,7 @@ class TodoController extends Controller
 
         // $task->project()->attach($projectId);
 
-
+        broadcast(new TaskUpdated($projectId))->toOthers();
 
         return response()->json([
             'success' => true,
@@ -130,6 +131,9 @@ class TodoController extends Controller
             'completed' => $data['completed'] ? $data['completed'] : false
         ]);
 
+        broadcast(new TaskUpdated($project))->toOthers();
+
+
         return response()->json([
             'task' => $task,
             'success' => true,
@@ -147,6 +151,8 @@ class TodoController extends Controller
     {
         // $task = Todo::find($id)->where('project_id', $project)->delete();
         $task = Todo::find($id)->where('id', $id)->delete();
+        broadcast(new TaskUpdated($project))->toOthers();
+
         return response()->json([
             'success' => true
         ], 200);
@@ -170,6 +176,8 @@ class TodoController extends Controller
         $task = Todo::find($id)->update([
             'completed' => $data['completed']
         ]);
+        
+        broadcast(new TaskUpdated($projectId))->toOthers();
 
         return response()->json([
             'success' => true,

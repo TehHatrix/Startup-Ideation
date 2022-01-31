@@ -6,18 +6,24 @@
                 <font-awesome-icon icon="fa-user-edit" id="setting" @click="openAddModal" ></font-awesome-icon>
             </div>
             <div class="card-body">
-                <table>
+                
+                <div class="user-list" v-for="(collab, index) in collaborator" :key="index">
+                    <span>{{ collab.username }}</span>
+                    <button id="collab-btn" class="general-button-danger" @click="openDeleteModal(collab.id)">
+                        <font-awesome-icon icon="trash-alt" ></font-awesome-icon>
+                    </button>
+                </div>
+
+                <!-- <table>
                     <thead>
                         <tr>
                             <th>Username</th>
-                            <th>Name</th>
                             <th>Role</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="user-row" v-for="(collab, index) in collaborator" :key="index">
                             <td>{{ collab.username }}</td>
-                            <td>{{ collab.name }}</td>
                             <td v-if="collab.id === project.creator_id">Owner</td>
                             <td v-else>
                                 Collaborator
@@ -27,7 +33,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
             </div>
         </div>
 
@@ -35,14 +41,14 @@
         <modal
          :showModal="showAddModal"
          @close="closeAddModal">
-            <h2>Add Collaborator</h2>
+            <h2 class="modal-title">Add Collaborator</h2>
             <form @submit.prevent="addCollab">
                 <div class="input-container">
                     <input type="text" id="username" class="material-input" v-model="tempUserSearch" required>
                     <label for="username" class="material-label">Username</label>
                 </div>
-                <div class="input-container">
-                    <button class="c-btn-primary">Add</button>
+                <div class="text-right">
+                    <button class="general-button">Add</button>
 
                 </div>
             </form>
@@ -52,10 +58,10 @@
         <modal 
          :showModal="showDeleteModal"
          @close="closeDeleteModal">
-            <h2>Confirm Delete</h2>
-            <div >
-                <button @click="removeCollab" class="c-btn-danger">Confirm</button>
-                <button @click="closeDeleteModal" class="c-btn-primary-outline">Cancel</button>
+            <h2 class="modal-title">Confirm Remove Collaborator</h2>
+            <div class="grid grid-cols-2 gap-2">
+                <button @click="closeDeleteModal" class="general-button full-width">Cancel</button>
+                <button @click="removeCollab" class="general-button-danger full-width">Confirm</button>
             </div>
         </modal>
     </div>
@@ -144,14 +150,18 @@ export default {
 </script>
 <style lang="scss" scoped>
     .card-black {
-        background-color: #14121f;
+        background-color: #fff;
         border-radius: 1rem;
-        color: white;
+        color: black;
         .card-title {  
             color: white;
-            font-size: 1.25rem;
+            background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            font-size: 1.2rem;
             letter-spacing: 0.1rem;
-            padding: 0.75rem 0.5rem;
+            padding: 0.5rem 0.5rem;
+            font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -159,41 +169,37 @@ export default {
 
         .card-body {
             overflow: scroll;
-            max-height: 20rem;
-            min-height: 20rem;
-        }
-    }
-
-    table {
-        width: 100%;
-        table-layout: fixed;
-        border-collapse: collapse;
-    }
-
-    td, tr, th {
-        padding: 0.75rem 0.75rem;
-        padding-bottom: 0.3rem;
-        border-bottom: 1px solid white;
-    }
-
-    .user-row:hover {
-        transform: scale(0.95);
-        transition: all .3s ease-in;
-
-
-        &:hover .delete-button {
-            opacity: 1;
+            height: 10rem;
             
+            .user-list {
+                padding: .5rem 1rem;
+                border-bottom: 1px solid #000;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                span {
+                    font-weight: 500;
+                    font-size: 1.1rem;
+                }
+
+                #collab-btn {
+                    padding: .3rem .5rem;
+                }
+            }
         }
+
     }
+
 
     #setting {
         cursor: pointer;
+        &:hover {
+            transform: scale(110%);
+        }
     }
     
-    .tip {
-        color: rgb(0, 0, 0, 0.6);
-    }
 
     .delete-button {
         opacity: 0;
@@ -208,12 +214,17 @@ export default {
         line-height: 20px;
         cursor: pointer;
         transition: all .2s;
+        color: white;
     }
 
     .btn-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
+    }
+
+    .text-right > .general-button{
+        width: 8rem;
     }
 
 

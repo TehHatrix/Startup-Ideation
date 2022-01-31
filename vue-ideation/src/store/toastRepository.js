@@ -21,6 +21,12 @@ const mutations = {
   },
   setMessage(state,message){
     state.message = message
+  },
+  showTimeoutToast(state) {
+    state.showToast = true
+    setTimeout( () => {
+      state.showToast = false
+    }, 2000)
   }
 };
 

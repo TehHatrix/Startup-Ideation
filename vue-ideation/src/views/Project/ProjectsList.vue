@@ -1,6 +1,6 @@
 <template lang="">
-    <div>
-      <section class=" container ">
+    <div v-if="!loading">
+      <section class=" c-container ">
         <div class="project-title" >
           <div>
             <h1 class="project-title-h1"  >Project List</h1>
@@ -36,11 +36,16 @@
 
             <div class="button-modal">
               <!-- <button type="submit" >Submit</button> -->
-              <general-button type=submit >Submit</general-button>
+              <!-- <general-button type=submit >Submit</general-button> -->
+              <button class="general-button">Submit</button>
             </div>
           </form>
         </project-modal>
       </section>
+    </div>
+
+    <div v-else>
+      <loading-screen></loading-screen>
     </div>
 </template>
 <script>
@@ -49,6 +54,7 @@ import { mapGetters } from "vuex";
 import ProjectModal from '@/components/ProjectModal.vue'
 import ProjectCard from '@/components/ProjectCard.vue'
 import GeneralButton from '../../components/GeneralButton.vue';
+import LoadingScreenVue from '../../components/general/LoadingScreen.vue';
 
 export default {
   name: "ProjectsList",
@@ -56,6 +62,7 @@ export default {
     'project-modal': ProjectModal,
     'project-card': ProjectCard,
     'general-button': GeneralButton,
+    'loading-screen': LoadingScreenVue
   },
   data() {
     return {
@@ -64,37 +71,75 @@ export default {
         project_description: "",
       },
       showModal: false,
+
+      loading: true,
+      processing: false,
     };
   },
   methods: {
-    async setProject() {
-      try {
-        let res = await api.setProject(this.project);
-        console.log(res + "from project dashboard");
-      } catch (error) {
-        console.log(error);
-      }
-    },
     async addProject() {
       try {
-        let res = await api.setProject(this.project);
-        if (res.data.success) {
-          this.project.project_name = this.project.project_description = "";
-          this.showModal = false;
-          await this.$store.dispatch("getProjects");
-          // this.$router.go()
+        if(!this.processing && this.showModal) {
+          this.processing = true
+          let res = await api.setProject(this.project);
+          if (res.data.success) {
+            this.project.project_name = this.project.project_description = "";
+            let res = await this.$store.dispatch("getProjects");
+            if(res.data.success) {
+              this.showModal = false;
+              this.processing = false
+
+              this.$store.commit("setTypeToast", "Success");
+              this.$store.commit(
+                "setMessage",
+                'Successfully Create Project'
+              );
+              this.$store.commit("showTimeoutToast");  
+            } else {
+              this.showModal = false;
+              this.processing = false
+
+              this.$store.commit("setTypeToast", "Error");
+              this.$store.commit(
+                "setMessage",
+                res.data.errors
+              );
+              this.$store.commit("showTimeoutToast");  
+            }
+          }
         }
       } catch (error) {
         console.log(error);
       }
     },
+
+    connect() {
+      window.Echo.private(`ProjectList.${this.user.id}`)
+                  .listen('CollaboratorAdded', async (e) => {
+                    console.log(e + 'from pusher ')
+                    this.loading = true
+                    let res = await this.$store.dispatch('getProjects')
+                    if(res.data.success) {
+                      this.loading = false 
+                    }
+                  })
+    },
+
+    disconnect() {
+      window.Echo.leaveChannel(`ProjectList.${this.user.id}`)
+    }
+
+  
   },
   computed: {
     ...mapGetters(["user", "projects"]),
   },
   async mounted() {
     try {
-      await this.$store.dispatch("getProjects");
+      let res = await this.$store.dispatch("getProjects");
+      if(res.data.success) {
+        this.loading = false
+      }
     } catch (error) {
       console.log(error);
     }
@@ -102,7 +147,19 @@ export default {
 
   created() {
     this.$store.commit("DESTROY_PROJECT_LOCALLY");
+    this.$store.commit('SET_TASKS_NULL')
+    this.$store.commit('SET_FREE_CANVAS_NULL')
+    this.$store.commit('SET_FREE_CANVAS_CONTENT_NULL')
+    this.$store.commit('SET_ANNOUNCEMENT_NULL')
+    // this.$store.commit('RESET_CURRENT_PROJECT')
+
+    this.connect()
+
   },
+
+  beforeDestroy() {
+    this.disconnect()
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -165,5 +222,8 @@ export default {
 
   .button-modal {
     text-align: right;
+    button {
+      width: 8rem;
+    }
   }
 </style>

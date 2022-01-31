@@ -16,6 +16,11 @@ const mutations = {
         state.canvasFull = payload
     },
 
+    SET_FREE_CANVAS_CONTENT_NULL(state) {
+        state.FreeCanvasContent = ''
+        state.canvasFull = ''
+    }
+
 }
 
 const actions = {

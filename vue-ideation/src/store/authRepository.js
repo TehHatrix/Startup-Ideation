@@ -17,24 +17,30 @@ const mutations = {
     SET_AUTHENTICATED(state,boolean){
         state.authenticated = boolean
     },
+
+    SET_USER_NULL(state) {
+        state.user = null
+        state.authenticated = false 
+    }
 }
 
 const actions = {
     async login ({ commit }, payload) {
         await auth.createSession()
-        const { data } = await auth.login(payload)
-        console.log(data.user);
-        commit('SET_USER', data.user)
-        commit('SET_AUTHENTICATED',true)
+        let res = await auth.login(payload)
+        if(res.data.success) {
+            commit('SET_USER', res.data.user)
+            commit('SET_AUTHENTICATED',true)
+        }
         // state.user = JSON.stringify(data.user)
-        return data
+        return res
     },
 
     async logout({commit}) {
         let { data } = await auth.logout() 
         if(data.success) {
             commit('SET_USER', null)
-            commit('SET_AUTHENTICATED',false)
+            commit('SET_AUTHENTICATED', false)
             // localStorage.removeItem('user')
         } else {
             console.log('fail to logout')

@@ -11,10 +11,10 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueApexCharts from "vue-apexcharts";
 import 'remixicon/fonts/remixicon.css'
 import Echo from 'laravel-echo'
-
+import './assets/style.scss'
 import api from '@/api/config'
 /* add icons to the library */
-library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faCircleCheck,faArrowUpFromBracket,faTrashCan,faPenToSquare,faMoneyCheckDollar )
+library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faCircleCheck,faArrowUpFromBracket,faTrashCan,faPenToSquare,faMoneyCheckDollar,  )
 Vue.use(VueApexCharts);
 
 // setup laravel echo for pusher 

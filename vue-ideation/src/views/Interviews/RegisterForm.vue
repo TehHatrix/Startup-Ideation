@@ -132,10 +132,10 @@ export default {
       }
     },
     passAddCardParent() {
-      this.selectedFile.append("name", this.registerSteps[0].value);
-      this.selectedFile.append("occupation", this.registerSteps[1].value);
-      this.selectedFile.append("email", this.registerSteps[2].value);
-      this.selectedFile.append("phone", this.registerSteps[3].value);
+      // this.selectedFile.append("name", this.registerSteps[0].value);
+      // this.selectedFile.append("occupation", this.registerSteps[1].value);
+      // this.selectedFile.append("email", this.registerSteps[2].value);
+      // this.selectedFile.append("phone", this.registerSteps[3].value);
       this.$emit("addCard", this.selectedFile);
     },
     setStep() {
@@ -189,7 +189,7 @@ export default {
           }, 1000);
           this.passAddCardParent();
           setTimeout(() => {
-            this.$router.go();
+            // this.$router.go();
           }, 2000);
         });
       }

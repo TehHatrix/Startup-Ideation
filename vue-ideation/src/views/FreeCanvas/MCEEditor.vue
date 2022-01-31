@@ -20,7 +20,7 @@
         />
 
         <div class="btn-container">
-            <button class="c-btn-primary" @click="saveContent">Save</button>
+            <button  class="general-button" @click="saveContent">Save</button>
         </div>
     </div>
 </template>
@@ -40,6 +40,14 @@ export default {
             'FreeCanvasContent'
         ])
     },
+    data() {
+        return {
+            editorId: String(this.$route.params.canvasId),
+            editorContent: {
+                content: ''
+            }
+        }
+    },
 
     async mounted() {
         try {
@@ -52,18 +60,10 @@ export default {
         }
     },
 
-    data() {
-        return {
-            editorId: String(this.$route.params.canvasId),
-            editorContent: {
-                content: ''
-            }
-        }
-    },
+
 
     methods: {
         async saveContent() {
-            // console.log(this.editorContent.content + this.editorId)
             try {
                 let {data} = await api.updateFreeContent(this.editorId, this.editorContent)
                 if(data.success) {

@@ -1,18 +1,18 @@
 `<template lang="">
     <div>
-        <section class="container">
+        <section class="c-container">
             <div class="page-title">
                 <span>Free Canvas</span>
-                <button @click="openAddModal" >New</button>
+                <button class="general-button-colored" @click="openAddModal" >New</button>
             </div>
 
             <div class="page-body ">
-                <div class="grid grid-cols-2">
+                <div class="grid grid-cols-3">
 
                     <div v-for="(canvas, index) in freeCanvas" :key="index" class="" >
                         <!-- <p class="content-card" @click="goContent(canvas.id)" >{{ canvas.name }}</p> -->
 
-                        <div class="notifications__item" >
+                        <!-- <div class="notifications__item" >
                             <div class="notifications__item__content" @click="goContent(canvas.id)">
                                 <span class="notifications__item__title">
                                     {{ canvas.name }}
@@ -26,7 +26,27 @@
                                     <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
                                 </div>
                             </div>
-                        </div> 
+                        </div>  -->
+
+                        <div class="book-wrapper">
+                            <div class="book-notebook">
+                                <div class="book-cover" :class="coverColor(canvas.name)" @click="goContent(canvas.id)">
+                                    <div class="book-skin">
+                                        <span> {{ canvas.name }} </span>
+                                    </div>    
+                                </div>
+                                <div class="book-page ruled">
+                                    <div class="book-btn-container">
+                                        <div class="btn-update"  @click="openUpdateModal(canvas)">
+                                            <font-awesome-icon icon="fa-edit" size="lg"></font-awesome-icon>
+                                        </div>
+                                        <div class="btn-delete" @click="openDeleteModal(canvas)">
+                                            <font-awesome-icon icon="trash-alt" size="lg"></font-awesome-icon>
+                                        </div>
+                                    </div>
+                                </div>                               
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -43,8 +63,8 @@
                     <input type="text" id="name" class="material-input" v-model="freeCanvasForm.name" required>
                     <label for="name" class="material-label">Canvas Name</label>
                 </div>
-                <div>
-                <button class="general-button">Submit</button>
+                <div class="text-right">
+                    <button id="submit-button-modal" class=" general-button">Submit</button>
                 </div>
             </form>
         </modal>
@@ -59,8 +79,8 @@
                     <input type="text" class="material-input" id="name" v-model="updatedForm.name" required>
                     <label for="name" class="material-label">Canvas Name</label>
                 </div>
-                <div>
-                    <button class="general-button">Update</button>
+                <div class="text-right">
+                    <button id="submit-button-modal" class="general-button">Update</button>
                 </div>
             </form>
         </modal>
@@ -69,9 +89,9 @@
          :showModal="showDeleteModal"
          @close="closeDeleteModal">
             <h2>Delete Canvas</h2>
-            <div class="btn-container">
-                <button class="c-btn-danger" @click="deleteCanvas">Delete</button>
-                <button class="c-btn-primary-outline" @click="closeDeleteModal">cancel</button>
+            <div class="grid grid-cols-2 gap-2">
+                <button class="general-button full-width" @click="closeDeleteModal">cancel</button>
+                <button class="general-button-danger full-width" @click="deleteCanvas">Delete</button>
             </div>
         </modal>
 
@@ -110,13 +130,13 @@ export default {
             },
             showUpdateModal: false,
             showDeleteModal: false,
-            showConfirmModal: false,
             
             updatedForm: {
                 name: ''
             },
 
             tempId: null,
+            processing: false,
         }
     },
 
@@ -129,13 +149,15 @@ export default {
                 console.log(error)
             }
         },
-
         connect() {
-
-        },
+            window.Echo.private(`Project.${this.$route.params.id}`)
+                        .listen('FreeCanvasUpdated', async () => {
+                            await this.$store.dispatch('getCanvas', this.$route.params.id)
+                        })
+        }, 
 
         disconnect() {
-
+            window.Echo.leaveChannel(`Project.${this.$route.params.id}`)
         },
 
         openAddModal() {
@@ -149,11 +171,23 @@ export default {
 
         async addCanvas() {
             try {
-                let res = await api.addFreeCanvas(this.$route.params.id, this.freeCanvasForm)
-                if(res.data.success) {
-                    this.$store.dispatch('getCanvas', this.$route.params.id)
-                    this.closeAddModal()
-                } 
+                if(!this.processing && this.showAddModal) {
+                    this.processing = true                    
+                    let res = await api.addFreeCanvas(this.$route.params.id, this.freeCanvasForm)
+                    if(res.data.success) {
+                        this.$store.dispatch('getCanvas', this.$route.params.id)
+                        this.closeAddModal()
+                        this.processing = false
+                    } else {
+                        this.$store.commit('setTypeToast', 'Error')
+                        this.$store.commit('setMessage', 'Attempt unsuccessful')
+                        this.$store.commit('showTimeoutToast')
+                        this.closeAddModal()
+                        this.processing = false
+                        
+                    }
+                }
+                
             } catch (error) {
                 console.log(error)
             }
@@ -165,12 +199,21 @@ export default {
 
         async updateCanvas() {
             try {
-                let {data} = await api.updateFreeCanvas(this.$route.params.id, this.tempId, this.updatedForm)
-                if(data.success) {
-                    await this.$store.dispatch('getCanvas', this.$route.params.id)
-                    this.closeUpdateModal()
-                } else {
-                    alert('fails')
+                if(!this.processing && this.showUpdateModal) {
+                    this.processing = true
+                    let {data} = await api.updateFreeCanvas(this.$route.params.id, this.tempId, this.updatedForm)
+                    if(data.success) {
+                        await this.$store.dispatch('getCanvas', this.$route.params.id)
+                        this.closeUpdateModal()
+                        this.processing = false
+                    } else {
+                        this.$store.commit('setTypeToast', 'Error')
+                        this.$store.commit('setMessage', 'Attempt unsuccessful')
+                        this.$store.commit('showTimeoutToast')
+                        this.closeUpdateModal()
+                        this.processing = false
+                        
+                    }
                 }
             } catch (error) {
                 console.log(error)
@@ -179,12 +222,19 @@ export default {
 
         async deleteCanvas() {
             try {
-                let {data} = await api.deleteFreeCanvas(this.$route.params.id, this.tempId)
-                if(data.success) {
-                    this.initialize()
-                    this.closeDeleteModal()
-                } else {
-                    alert('delete fails')
+                if(!this.processing && this.showDeleteModal) {
+                    this.processing = true
+                    let {data} = await api.deleteFreeCanvas(this.$route.params.id, this.tempId)
+                    if(data.success) {
+                        await this.$store.dispatch('getCanvas', this.$route.params.id) 
+                        this.closeDeleteModal()
+                        this.processing = false
+                    } else {
+                        this.$store.commit('setTypeToast', 'Error')
+                        this.$store.commit('setMessage', 'Attempt unsuccessful')
+                        this.$store.commit('showTimeoutToast')
+                        this.processing = false
+                    }
                 }
             } catch (error) {
                 console.log(error)
@@ -211,12 +261,26 @@ export default {
         closeDeleteModal() {
             this.tempId = null
             this.showDeleteModal = false
+        },
+
+        coverColor(name) {
+            let code = name.charCodeAt(0)
+            code = String(code).charAt(0)
+            if(code >= 0 && code < 3) return ''
+            else if(code >= 3 && code < 5) return 'blue'
+            else if(code >= 5 && code < 8) return 'green'
+            else return 'yellow'
         }
     }
     
 }
 </script>
 <style lang="scss" scoped>
+
+    .book-wrapper {
+        text-align: center;
+    }
+
     .page-title {
         background: #fff;
         border-radius: 1rem;
@@ -231,23 +295,16 @@ export default {
 
         span {
             letter-spacing: 0.2rem;
-            font-weight: 600;
-            font-size: 1.2rem;
+            font-weight: bold;
+            font-size: 2rem;
         }
 
-        button {
-            border: none;
-            border-radius: .4rem;
-            background: #14213d;
-            color: white;
-            border: 1px solid #14213d;
-            padding: .5rem .5rem;
-            cursor: pointer;
-            transition: all 0.5s ease-in 0.3s;
-            width: 7rem;
-            letter-spacing: .1rem;
-            font-weight: 800;
+        .general-button-colored, #submit-button-modal {
+            width: 8rem;
         }
+    }
+    #submit-button-modal {
+        width: 8rem;
     }
 
     .page-body {
@@ -266,74 +323,74 @@ export default {
 
     }
 
+    // !notification part 
+    // .notifications__item {
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: space-between;
+    //     width: 95%;
+    //     margin-bottom: 1rem;
+    //     padding: 0 20px;
+    //     margin-left:auto;
+    //     margin-right: auto;
 
-    .notifications__item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 95%;
-        margin-bottom: 1rem;
-        padding: 0 20px;
-        margin-left:auto;
-        margin-right: auto;
+    //     background-color: white;
+    //     border-radius: 5px;
+    //     transition: all .3s ease-in;
+    //     border: 3px solid black;
 
-        background-color: white;
-        border-radius: 5px;
-        transition: all .3s ease-in;
-        border: 3px solid black;
+    //     .notifications__item__content {
+    //         cursor: pointer;
+    //     }
+    // }
 
-        .notifications__item__content {
-            cursor: pointer;
-        }
-    }
+    // .notifications__item__title,
+    // .notifications__item__message { display: block; }
 
-    .notifications__item__title,
-    .notifications__item__message { display: block; }
+    // .notifications__item__title {
+    //     letter-spacing: 2px;
+    //     font-family: 'atvice', sans-serif;
+    //     font-size: 17px;
+    // }
 
-    .notifications__item__title {
-        letter-spacing: 2px;
-        font-family: 'atvice', sans-serif;
-        font-size: 17px;
-    }
+    // .notifications__item__message {
+    //     font-family: Roboto, sans-serif;
+    //     font-size: 14px;
+    //     color: #929292;
+    // }
 
-    .notifications__item__message {
-        font-family: Roboto, sans-serif;
-        font-size: 14px;
-        color: #929292;
-    }
+    // .notifications__item__option {
+    //     width: 20px;
+    //     height: 20px;
+    //     margin: 8px 0;
 
-    .notifications__item__option {
-        width: 20px;
-        height: 20px;
-        margin: 8px 0;
+    //     border-radius: 50%;
+    //     color: white;
+    //     opacity: 0;
 
-        border-radius: 50%;
-        color: white;
-        opacity: 0;
+    //     font-size: 1rem;
+    //     text-align: center;
+    //     line-height: 20px;
 
-        font-size: 1rem;
-        text-align: center;
-        line-height: 20px;
+    //     cursor: pointer;
+    //     transition: all .2s;
+    // }
 
-        cursor: pointer;
-        transition: all .2s;
-    }
+    // .notifications__item__option.edit { background-color: #3dc98c; }
 
-    .notifications__item__option.edit { background-color: #3dc98c; }
-
-    .notifications__item__option.delete { background-color: #c93d4d; }
+    // .notifications__item__option.delete { background-color: #c93d4d; }
 
 
-    /*
-    * Animation part
-    */
-    .notifications__item:hover {
-    background-color: #f7f7f7;
-    transform: scale( 0.95 );
-    box-shadow: 0px 5px 10px 0px rgb( 0, 0, 0, .2 );
-    }
+    // /*
+    // * Animation part
+    // */
+    // .notifications__item:hover {
+    // background-color: #f7f7f7;
+    // transform: scale( 0.95 );
+    // box-shadow: 0px 5px 10px 0px rgb( 0, 0, 0, .2 );
+    // }
 
-    .notifications__item:hover .notifications__item__option { opacity: 1; }
+    // .notifications__item:hover .notifications__item__option { opacity: 1; }
 
 
     /* select starting stylings ------------------------------*/

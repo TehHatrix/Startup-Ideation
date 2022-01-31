@@ -18,6 +18,11 @@ const mutations = {
     GET_ONE_CANVAS(state, payload) {
         state.canvas = payload
     },
+
+    SET_FREE_CANVAS_NULL(state) {
+        state.freeCanvas = null
+        state.canvas = null
+    }
 }
 
 const actions = {
@@ -27,6 +32,8 @@ const actions = {
             if(res.data.success) {
                 commit('GET_CANVAS', res.data.FreeCanvas)
             }
+
+            return res
         } catch (error) {
             console.log(error)
         }

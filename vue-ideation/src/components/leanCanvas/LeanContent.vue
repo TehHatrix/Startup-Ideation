@@ -245,8 +245,7 @@ export default {
             padding: 1px 5px 1px 5px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            
+            align-items: center; 
         }
 
         .content-body {

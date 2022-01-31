@@ -13,8 +13,13 @@
                 </thead>
                 <tbody>
                     <tr v-for="(task, index) in tasks" :key="index"  >
-                        {{task.completed}} {{index}}
-                        <td class="t-center"><input type="checkbox" @change="setComplete(task)" :value="task.completed" v-model="task.completed"></td>
+                        <!-- <td class="t-center"><input type="checkbox" @change="setComplete(task)" v-model="task.completed" ></td> -->
+                        <td>
+                            <label class="c-toggle-switch" >
+                                <input type="checkbox" class="c-toggle-checkbox" @change="setComplete(task)" v-model="task.completed" >
+                                <span class="c-switch-btn"></span>
+                            </label>    
+                        </td>
                         <td colspan="3" >{{ task.task }}</td>
                         <td >
                             <span v-if="task.assigned_to === null">Everyone</span>
@@ -40,10 +45,10 @@
         <modal 
          :showModal="showConfirmModal"
          @close="closeDeleteModal">
-            <h2>Confirm Delete</h2>
-            <div class="btn-container">
-                <button class="c-btn-primary-outline" @click="closeDeleteModal" >Cancel</button>
-                <button class="c-btn-danger" @click="deleteTask" >Delete</button>
+            <h2 class="modal-title">Confirm Delete</h2>
+            <div class="grid grid-cols-2 gap-2">
+                <button class="general-button full-width" @click="closeDeleteModal" >Cancel</button>
+                <button class="general-button-danger full-width" @click="deleteTask" >Delete</button>
             </div>
         </modal>
 
@@ -51,7 +56,7 @@
         <modal
          :showModal="showUpdateModal"
          @close="showUpdateModal = false">
-            <h2>Update Task</h2>
+            <h2 class="modal-title">Update Task</h2>
             <form @submit.prevent="updateTask">
                 <div class="input-container">
                     <input type="text" id="task" class="material-input" v-model="taskForm.task" required>                    
@@ -77,11 +82,17 @@
                 </div>
             </form>
         </modal>
+
+        <!-- loading modal -->
+        <loading-modal :showModal="loadingApi">
+
+        </loading-modal>
     </div>
 </template>
 <script>
 import ProjectModalVue from '../ProjectModal.vue'
 import api from '@/api/todoApi'
+import LoadingModalVue from '../LoadingModal.vue'
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -95,7 +106,8 @@ export default {
     },
 
     components: {
-        'modal': ProjectModalVue
+        'modal': ProjectModalVue,
+        'loading-modal': LoadingModalVue
     },
 
     data() {
@@ -112,32 +124,43 @@ export default {
                 completed: false
             },
 
-            projectId: this.$route.params.id
+            projectId: this.$route.params.id,
+
+            loadingApi: false,
+            processing: false
         }
     },
 
     methods: {
         async setComplete(task) {
             try {
-                let res = await api.updateTask(this.projectId, task.id, task )                
+                this.loadingApi = true
+                let res = await api.updateTask(this.projectId, task.id, task )        
                 if(res.data.success) {
-                    await this.$store.dispatch('getTodos', this.projectId)
-                } else {
-                    console.table(res.data.errors)
-                }
+                    // await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
+                    this.loadingApi = false
+                } 
             } catch (error) {
                 console.log(error)
-            }
+            } 
         },
 
         async deleteTask() {
             try {
-                let { data } = await api.deleteTask(this.projectId, this.tempTask.id)
-                if(data.success) {
-                    await this.$store.dispatch('getTodos', this.projectId)
-                    this.closeDeleteModal()
-                } else {
-                    console.log(data)
+                if(!this.processing && this.showConfirmModal) {
+                    this.processing = true
+                    let { data } = await api.deleteTask(this.projectId, this.tempTask.id)
+                    if(data.success) {
+                        await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
+                        this.closeDeleteModal()
+                        this.processing = false
+                    } else {
+                        console.log(data)
+                        this.$store.commit('setTypeToast', 'Error')
+                        this.$store.commit('setMessage', 'Error Deleting Task')
+                        this.$store.commit('showTimeoutToast')
+                        this.processing = false
+                    }
                 }
             } catch (error) {   
                 console.log(error)
@@ -148,7 +171,7 @@ export default {
             try {
                 let { data } = await api.updateTask(this.projectId, this.taskForm.id, this.taskForm)
                 if(data.success) {
-                    await this.$store.dispatch('getTodos', this.projectId)
+                    await this.$store.dispatch('getTodos', {projectId: this.projectId, userId: this.user.id})
                     this.closeUpdateModal()
                 }
             } catch (error) {
@@ -184,6 +207,7 @@ export default {
         },
 
 
+
         
     },
     
@@ -194,8 +218,8 @@ export default {
         background: #fff;
         border-radius: 1rem;
         box-shadow: 0 0 40px rgb(0 0 0 / 5%);
-        height: 30rem;
-        max-height: 30rem;
+        height: 80vh;
+        max-height: 80vh;
         padding: 2rem 1rem;
         overflow: scroll;
     }
@@ -210,7 +234,9 @@ export default {
         table-layout: fixed;
         border: 1px solid white;
         th {
-            background-color: #14213d;   
+            // background-color: #14213d;   
+            background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
+
             color: #fff;
             padding: .5rem .5rem;
             font-weight: 500;
@@ -246,9 +272,11 @@ export default {
     }
 
     .btn-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        text-align: right;
+
+        button {
+            width: 8rem;
+        }
     }
 
     /* select starting stylings ------------------------------*/

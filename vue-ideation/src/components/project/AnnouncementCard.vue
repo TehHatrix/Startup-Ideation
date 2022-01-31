@@ -1,29 +1,37 @@
 <template lang="">
-    <div>
-        <div v-for="(ann, index) in announcement" :key="index">
-            <shrink-card>
-                <div class="notifications__item">
-                    <div class="notifications__item__content">
-                        <span class="notifications__item__title">{{ ann.title }}</span>
-                        <span class=" notifications__item__message">{{ ann.description }}</span>
+    <div class="announcement-card">
+        <div class="announcement-title">
+            <h2>Announcement</h2>
+            <div v-if="project.creator_id === user.id">
+                <button @click="showAnnounModal = true" class="general-button">Create Announcement</button>
+            </div>
+        </div>  
+        <div class="announcement-body">
+            <div v-for="(ann, index) in announcement" :key="index">
+                <shrink-card>
+                    <div class="notifications__item">
+                        <div class="notifications__item__content">
+                            <span class="notifications__item__title">{{ ann.title }}</span>
+                            <span class=" notifications__item__message">{{ ann.description }}</span>
+                        </div>
+                        <div v-if="project.creator_id === user.id">
+                            <div class="notifications__item__option edit"  @click="openEditModal(ann.id, ann.title, ann.description)">
+                                <font-awesome-icon icon="fa-edit" size="xs"></font-awesome-icon>
+                            </div>
+                            <div class="notifications__item__option delete" @click="openDeleteModal(ann.id)" >
+                                <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="notifications__item__option " style="cursor: auto;" >
+                            </div>
+                            <div class="notifications__item__option " style="cursor: auto;" >
+            
+                            </div>
+                        </div>
                     </div>
-                    <div v-if="project.creator_id === user.id">
-                        <div class="notifications__item__option edit"  @click="openEditModal(ann.id, ann.title, ann.description)">
-                            <font-awesome-icon icon="fa-edit" size="xs"></font-awesome-icon>
-                        </div>
-                        <div class="notifications__item__option delete" @click="openDeleteModal(ann.id)" >
-                            <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
-                        </div>
-                    </div>
-                    <div v-else>
-                        <div class="notifications__item__option " style="cursor: auto;" >
-                        </div>
-                        <div class="notifications__item__option " style="cursor: auto;" >
-                            
-                        </div>
-                    </div>
-                </div>      
-            </shrink-card>        
+                </shrink-card>
+            </div>
         </div>
 
         <modal
@@ -54,6 +62,29 @@
                 <button class="c-btn-primary-outline" @click="closeDeleteModal">Cancel</button>
             </div>
         </modal>
+
+
+        
+        <!-- add announcement modal -->
+        <modal 
+        :showModal="showAnnounModal"
+        @close="closeAnnounModal">
+            <h2 class="modal-title" >Create Announcement</h2>
+            <form @submit.prevent="addAnnouncement">
+                <div class="input-container">
+                    <input type="text" id="title" class="material-input" v-model="announForm.title" required>
+                    <label for="title" class="material-label">Title</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="description" class="material-input" v-model="announForm.description" required>
+                    <label for="description" class="material-label" >Description</label>
+                </div>
+                <div class="input-container">
+                    <button class="general-button">Submit</button>
+                </div>
+            </form>
+        </modal>
+
     </div>
 </template>
 <script>
@@ -79,6 +110,7 @@ export default {
 
     data() {
         return{
+            projectId: this.$route.params.id,
             showEditModal: false,
 
             showDeleteModal: false,
@@ -88,6 +120,14 @@ export default {
                 title: '',
                 description: ''
             },
+
+            showAnnounModal: false,
+            announForm: {
+            title: "",
+            description: "",
+            },
+
+            processing: false,
         }
     },
 
@@ -108,10 +148,10 @@ export default {
 
         async updateAnnouncement() {
             try {
-                let { data } = await api.updateAnnouncement(this.project.id, this.tempId, this.editForm)
+                let { data } = await api.updateAnnouncement(this.projectId, this.tempId, this.editForm)
                 if(data.success) {
                     this.showEditModal = false
-                    await this.$store.dispatch('getAnnouncement', this.project.id)
+                    await this.$store.dispatch('getAnnouncement', this.projectId)
                 }
             } catch (error) {
                 console.log(error)
@@ -130,20 +170,53 @@ export default {
 
         async deleteAnnouncement() {
             try {
-                let { data } = await api.deleteAnnouncement(this.project.id, this.tempId)
-                if(data.success) {
-                    await this.$store.dispatch('getAnnouncement', this.project.id)
-                    this.showDeleteModal = false 
-                    
+                if(!this.processing && this.showDeleteModal) {
+                    this.processing = true
+                    let { data } = await api.deleteAnnouncement(this.projectId, this.tempId)
+                    if(data.success) {
+                        await this.$store.dispatch('getAnnouncement', this.projectId)
+                        this.showDeleteModal = false    
+                        this.processing = false 
+                    } else {
+                        this.processing = true
+                    }
                 }
+                } catch (error) {
+                    console.log(error)
+                }
+        },
+
+        closeAnnounModal() {
+            this.showAnnounModal = false;
+            this.announForm.title = "";
+            this.announForm.description = "";
+        },
+
+        async addAnnouncement() {
+            try {
+                if(!this.processing && this.showAnnounModal) {
+                    this.processing = true
+                    let { data } = await api.postAnnouncement(this.projectId, this.announForm);
+                    if (data.success) {
+                        await this.$store.dispatch("getAnnouncement", this.projectId);
+                        this.closeAnnounModal();
+                        this.processing = false
+                    } else {
+                        this.closeAnnounModal()
+                        alert('error')
+                        this.processing = false
+                    }
+                } 
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
-        }
+        },
+
+        
     },
 }
 </script>
-<style lang="css" scoped>
+<style lang="scss" scoped>
     .notifications__item {
         display: flex;
         align-items: center;
@@ -320,4 +393,33 @@ export default {
         justify-content: space-between;
         align-items: center;
     }
+
+    .announcement-card {
+        box-shadow: 0 0 2rem -1rem rgba(0, 0, 0, 0.05);
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+
+        .announcement-title {
+            background-color: #14213d;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            letter-spacing: 0.1rem;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+
+        .announcement-body {
+            max-height: 25rem;
+            padding-top: 2rem;
+            min-height: 20rem;
+            overflow: scroll;
+            background-color: #e5e5e5;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+        }
 </style>

@@ -2,6 +2,9 @@
 
 use App\Events\Hello;
 use App\Events\TestTry;
+use App\Models\FreeCanvas;
+use App\Models\FreeCanvasContent;
+use App\Models\Project;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,5 +35,18 @@ Route::get('/test', function() {
 });
 
 Route::get('/channel/hello', function() {
-    broadcast(new TestTry());
+    // $content = FreeCanvasContent::where('free_canvas_id', 1)->first();
+    // $canvas = $content->canvas()->get();
+    // $project = $canvas->project()->get();
+    // $userArr = $project->users()->wherePivot('user_id', '=', $user->id)->get();
+    // $canvas = FreeCanvas::find(1)->project()->get();
+    // $user = 
+    // return $user;
+
+    $canvasId = 1;
+    $canvas = FreeCanvas::find($canvasId);
+    $project = Project::find($canvas->project_id);
+    $userArr = $project->users()->wherePivot('user_id', '=', 1)->get();
+    return $userArr;
+
 });

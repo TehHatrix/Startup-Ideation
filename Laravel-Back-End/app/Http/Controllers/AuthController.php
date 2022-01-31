@@ -12,11 +12,6 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        // $data = $request->validate([
-        //     'name' => 'required',
-        //     'email' => 'required|email|unique:users',
-        //     'password' => 'required|confirmed'
-        // ]);
 
         $validated = Validator::make($request->all(), [
             'name' => 'required',
@@ -57,24 +52,58 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        // $credentials = $request->validate([
+        //     'email' => 'required|email',
+        //     'password' => 'required'
+        // ]);
+
+    
+        // if (Auth::attempt($credentials)) {
+        //     return response()->json([
+        //         'success' => true,
+        //         'message' => 'you have been successfully login',
+        //         'user' => Auth::user()
+        //     ]);
+        // }
+
+
+
+        // return response()->json([
+        //     'success' => false,
+        //     'message' => 'No User Found',
+        //     'user' => null
+        // ]);
+
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+                'success' => false,
+            ]);
+        }
+
+        $data = $validator->validated();
+
+        if(Auth::attempt($data)) {
+
             return response()->json([
                 'success' => true,
-                'message' => 'you have been successfully login',
+                'errors' => null,
                 'user' => Auth::user()
-            ], 200);
+
+            ]);
         }
 
         return response()->json([
-            'success' => false,
-            'message' => 'error in login',
-            'user' => null
+            'errors' => 'Password or Email is incorrect',
+            'success' => false
         ]);
+
+        
     }
 
     public function logout()

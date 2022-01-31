@@ -50,6 +50,12 @@ class CustomerController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
+        $file = $request->file('image');
+
+        return response()->json([
+            'file' => $file,
+            'success' => true
+        ]);
         $data = $validator->validated();
         /** @var \Illuminate\Filesystem\FilesystemManager $disk */
         $disk = Storage::disk('gcs');

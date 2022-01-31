@@ -1,125 +1,92 @@
 <template lang="">
-    <div class="container" v-if="project">
+  <div class="c-container" v-if="!loading">
+
+    <!-- project card -->
+    <div class="">
+      <div class="project-desc-card">
+        <div class="title">
+          <span class="desc-name">{{ project.project_name }}</span>
+          <span class="desc-description">{{ project.project_description }}</span>
+        </div>
         
-        <div class="dashboard-title">
-            <div class="dashboard-title-name">
-                <h1>{{ project.project_name }}
-                    <span>{{ project.project_description }}</span>
-                </h1>
+        <button class="general-button-colored" @click="openSettingModal">SETTING</button>
+      </div>
+    </div>
+<!-- ??? quick accessbutton -->
+    <div class="quick-access-container grid grid-cols-4 gap-2">
+      <router-link :to="{name: 'TodoPage', params: projectId}" class="quick-link toolbar-container">
+        To do list
+        <font-awesome-icon icon="fa-list" ></font-awesome-icon>
+      </router-link>
+
+      <router-link :to="{name: 'ChatPage', params: projectId}" class="quick-link toolbar-container">
+        Project Chat
+        <font-awesome-icon icon="fa-comment-dots" ></font-awesome-icon>
+      </router-link>
+
+      <router-link :to="{name: 'LeanCanvas', params: projectId}" class="quick-link toolbar-container">
+        Lean Canvas
+        <font-awesome-icon icon="fa-brain" ></font-awesome-icon>
+      </router-link>
+
+      <router-link :to="{name: 'FreeCanvas', params: projectId}" class="quick-link toolbar-container">
+        Free Canvas
+        <font-awesome-icon icon="fa-chalkboard" ></font-awesome-icon>
+      </router-link>
+      
+    </div>
+
+    <!-- announcement card  -->
+    <section class="grid grid-cols-3 gap-2">
+        <div class="col-span-2">
+          <announcement-card></announcement-card>
+        </div>
+       <div class="col-span-1 ">
+            <collaborator-card></collaborator-card>
+        </div>
+
+    </section>
+
+
+
+
+
+
+    <!-- setting modal  -->
+    <modal
+      :showModal="showSettingModal"
+      @close="resetSettingModal">
+        <form @submit.prevent="updateProject" >
+            <h2 class="modal-title" >Update Project</h2>
+            <div class="input-container" >
+                <input type="text" class="material-input" id="name" v-model="updatedProjectForm.project_name" required>
+                <label class="material-label" for="name">Project Name</label>
             </div>
 
-            <div class="setting-container">
-                <button class="general-button" @click="openSettingModal" >Setting</button>
+            <div class="input-container" >
+                <input type="text" class="material-input" id="description" v-model="updatedProjectForm.project_description" required>
+                <label class="material-label" for="description">Project Description</label>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2" >
+                <button @click="confirmDelete" type="button" class="general-button-danger full-width" >Delete</button>
+                <button class="general-button-colored full-width" type="submit" >Update</button>
+            </div>
+        </form>
+    </modal>
+
+    <!-- confirm delete modal --> 
+    <modal
+      :showModal="showDeleteModal"
+      @close="showDeleteModal = false" >
+        <div class="delete-modal">
+            <h2 class="modal-title">Confirm Delete ?</h2>
+            <div class="grid grid-cols-2 gap-2">
+                <button class="general-button full-width" @click="showDeleteModal = false">Cancel</button>
+                <button class="general-button-danger full-width" @click="deleteProject" >Confirm</button>
             </div>
         </div>
-        <section id="quick-access">
-            <h2>Quick Access</h2>
-            <div class="grid-cols-4 grid gap-4">
-
-                <router-link :to="{name: 'TodoPage', params: projectId}" class="card-white"  >
-                        <font-awesome-icon icon="fa-list" size="3x"></font-awesome-icon>
-                        <p>To Do List</p>
-                </router-link>
-
-                <!-- <router-link :to="{name: 'ChatPage', params: projectId}" class="card-white"  >
-                        <font-awesome-icon icon="fa-comment-dots" size="3x"></font-awesome-icon>
-                        <p>Project Chat</p>
-                </router-link> -->
-
-                <router-link :to="{name: 'LeanCanvas', params: projectId}" class="card-white">
-                    <font-awesome-icon icon="fa-brain" size="3x"></font-awesome-icon>
-                    <p>Lean Canvas</p>
-                </router-link>
-
-                <router-link :to="{name: 'FreeCanvas', params: projectId}" class="card-white">
-                    <font-awesome-icon icon="fa-chalkboard" size="3x"></font-awesome-icon>
-                    <p>Free Canvas</p>
-                </router-link>
-
-            </div>
-
-        </section>
-        <!-- announcement card  -->
-        <section class="grid grid-cols-3 gap-4">
-            <div class="col-span-2">
-                <div class="announcement-card">
-                    <div class="announcement-title">
-                        <h2>Announcement</h2>
-                        <div v-if="project.creator_id === user.id">
-                            <button @click="showAnnounModal = true" class="general-button">Create Announcement</button>
-                        </div>
-                    </div>
-                    <div class="announcement-body">
-                        <announcement-card></announcement-card>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-span-1 ">
-                <collaborator-card></collaborator-card>
-            </div>
-
-        </section>
-
-
-
-
-        <!-- setting modal  -->
-        <modal
-         :showModal="showSettingModal"
-         @close="resetSettingModal">
-            <form @submit.prevent="updateProject" >
-                <h2 class="modal-title" >Update Project</h2>
-                <div class="input-container" >
-                    <input type="text" class="material-input" id="name" v-model="updatedProjectForm.project_name" required>
-                    <label class="material-label" for="name">Project Name</label>
-                </div>
-
-                <div class="input-container" >
-                    <input type="text" class="material-input" id="description" v-model="updatedProjectForm.project_description" required>
-                    <label class="material-label" for="description">Project Description</label>
-                </div>
-
-                <div class="btn-container" >
-                    <button @click="confirmDelete" type="button" class="c-btn-danger-outline" >Delete</button>
-                    <button class="c-btn-primary" type="submit" >Update</button>
-                </div>
-            </form>
-        </modal>
-
-        <!-- confirm delete modal --> 
-        <modal
-         :showModal="showDeleteModal"
-         @close="showDeleteModal = false" >
-            <div class="delete-modal">
-                <h2>Confirm Delete</h2>
-                <div class="btn-container">
-                    <button id="cancel-btn" class="c-btn-primary-outline" @click="showDeleteModal = false">Cancel</button>
-                    <button class="c-btn-danger" @click="deleteProject" >Confirm</button>
-                </div>
-            </div>
-        </modal>
-
-        <!-- add announcement modal -->
-        <modal 
-         :showModal="showAnnounModal"
-         @close="closeAnnounModal">
-            <h2 class="modal-title" >Create Announcement</h2>
-            <form @submit.prevent="addAnnouncement">
-                <div class="input-container">
-                    <input type="text" id="title" class="material-input" v-model="announForm.title" required>
-                    <label for="title" class="material-label">Title</label>
-                </div>
-                <div class="input-container">
-                    <input type="text" id="description" class="material-input" v-model="announForm.description" required>
-                    <label for="description" class="material-label" >Description</label>
-                </div>
-                <div class="input-container">
-                    <button class="general-button">Submit</button>
-                </div>
-            </form>
-        </modal>
+    </modal>
 
 
 <!-- Validation modal -->
@@ -165,7 +132,11 @@
       </div>
     </div>
 
-    </div>
+  </div>
+
+  <div v-else>
+    <loading-screen></loading-screen>
+  </div>
 </template>
 <script>
 import ProjectModal from "@/components/ProjectModal.vue";
@@ -173,7 +144,6 @@ import { mapGetters } from "vuex";
 import api from "@/api/projectApi";
 import AnnouncementCardVue from "../../components/project/AnnouncementCard.vue";
 import CollabCardVue from "../../components/project/CollabCard.vue";
-import annApi from "@/api/communicationApi";
 // import GeneralButton from "../../components/GeneralButton.vue";
 import CircleCheck from "../../components/icons/circleCheck.vue";
 import landingApi from "@/api/landingApi";
@@ -185,11 +155,13 @@ import hypothesisApi from "@/api/hypothesisApi.js";
 import arrowLeft from "@/components/icons/arrow-left.vue";
 import arrowRight from "@/components/icons/arrow-right.vue";
 import leanCanvasApi from "@/api/leanCanvasApi.js";
+import LoadingScreenVue from "../../components/general/LoadingScreen.vue";
 
 export default {
   name: "Project",
   data() {
     return {
+      loading: true,
       projectId: this.$route.params.id,
 
       showSettingModal: false,
@@ -199,12 +171,6 @@ export default {
       },
 
       showDeleteModal: false,
-
-      showAnnounModal: false,
-      announForm: {
-        title: "",
-        description: "",
-      },
       //validationPhase
       validationPhase: "",
       //definedboolean
@@ -227,6 +193,7 @@ export default {
     PreSurveyModal,
     arrowLeft,
     arrowRight,
+    "loading-screen": LoadingScreenVue,
   },
 
   async created() {
@@ -435,8 +402,18 @@ export default {
 
     async initialise() {
       try {
-        await this.$store.dispatch("getProject", this.projectId);
-        await this.$store.dispatch("getAnnouncement", this.projectId);
+        let res = await this.$store.dispatch("getProject", this.projectId);
+        if (!res.data.success) {
+          alert(res.data.errors);
+          this.$router.push({ name: "ProjectsList" });
+        }
+        let annRes = await this.$store.dispatch(
+          "getAnnouncement",
+          this.projectId
+        );
+        if (res.data.success && annRes.data.success) {
+          this.loading = false;
+        }
       } catch (error) {
         console.log(error);
       }
@@ -476,29 +453,6 @@ export default {
         console.log(error);
       }
     },
-
-    closeAnnounModal() {
-      this.showAnnounModal = false;
-      this.announForm.title = "";
-      this.announForm.description = "";
-    },
-
-    async addAnnouncement() {
-      try {
-        let { data } = await annApi.postAnnouncement(
-          this.projectId,
-          this.announForm
-        );
-        if (data.success) {
-          await this.$store.dispatch("getAnnouncement", this.projectId);
-          this.closeAnnounModal();
-        } else {
-          alert("error");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
   },
 
   beforeDestroy() {
@@ -507,50 +461,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.dashboard-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  .dashboard-title-name h1 {
-    text-transform: uppercase;
-    position: relative;
-    letter-spacing: 0.2rem;
-    padding: 0;
-    margin: 0;
-    font-weight: bold;
-    font-size: 3rem;
-    color: #080808;
-    -webkit-transition: all 0.4s ease 0s;
-    -o-transition: all 0.4s ease 0s;
-    transition: all 0.4s ease 0s;
-
-    span {
-      font-size: 1.15rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.1rem;
-      line-height: 3em;
-      padding-left: 0.25em;
-      color: rgba(0, 0, 0, 0.4);
-      padding-bottom: 10px;
-      display: block;
-    }
-  }
-}
-
 .modal-title {
   letter-spacing: 0.25rem;
-}
-
-.delete-modal {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.c-btn-danger {
-  margin-right: 0.5rem;
 }
 
 .side {
@@ -562,75 +474,6 @@ export default {
     letter-spacing: 2px;
     color: #0b090a;
   }
-}
-
-#quick-access {
-  margin-bottom: 2rem;
-  h2 {
-    letter-spacing: 0.2rem;
-    font-size: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #000;
-  }
-
-  .grid {
-    justify-items: center;
-  }
-
-  .grid > .card-white {
-    padding: 0.5rem 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 8rem;
-    width: 10rem;
-    cursor: pointer;
-    font-weight: bold;
-    letter-spacing: 0.2rem;
-    background: white;
-    color: #343a40;
-    text-decoration: none;
-  }
-}
-
-.announcement-card {
-  box-shadow: 0 0 2rem -1rem rgba(0, 0, 0, 0.05);
-  border-radius: 1rem;
-  margin-bottom: 2rem;
-
-  .announcement-title {
-    background-color: #14213d;
-    color: white;
-    padding: 0.2rem 0.5rem;
-    letter-spacing: 0.1rem;
-    font-size: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-  }
-
-  .announcement-body {
-    max-height: 25rem;
-    padding-top: 2rem;
-    min-height: 20rem;
-    overflow: scroll;
-    background-color: #e5e5e5;
-    border-bottom-left-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-  }
-}
-
-.btn-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#cancel-btn {
-  margin-right: 1rem;
 }
 
 .validationCard {
@@ -752,6 +595,77 @@ export default {
       text-align: center;
       margin-left: 7px;
       margin-top: 5px;
+    }
+  }
+}
+
+.project-desc-card {
+  background: #fff;
+
+  border-radius: 1rem;
+  box-shadow: 0 0 40px rgb(0 0 0 / 5%);
+  margin-bottom: 2rem;
+  width: 100%;
+  padding: 1rem 1rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .title {
+    .desc-name {
+      letter-spacing: 0.2rem;
+      font-weight: bold;
+      font-size: 2rem;
+      display: block;
+    }
+
+    .desc-description {
+      font-size: 1rem;
+      letter-spacing: 0.2rem;
+      display: block;
+      color: #60696b;
+    }
+  }
+
+  button {
+    width: 8rem;
+  }
+}
+
+.quick-access-container {
+  margin-bottom: 2rem;
+  a {
+    text-decoration: none;
+  }
+
+  .toolbar-container {
+    background: gray;
+    background: #fff;
+    border-radius: 2rem;
+    box-shadow: 0 0 40px rgb(0 0 0 / 5%);
+    text-align: center;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 0 40px rgb(0 0 0 / 5%);
+    background: linear-gradient(135deg, #557c93 0%, #08203e 100%);
+
+    font-size: 1rem;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.1rem;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+
+    text-decoration: none;
+    color: #fff;
+
+    &:hover {
+      transform: translateY(-7px) scale(105%);
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.212);
+    }
+
+    &:nth-child(even) {
+      background: linear-gradient(135deg, #08203e 0%, #557c93 100%);
     }
   }
 }

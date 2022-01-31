@@ -1,5 +1,5 @@
 <template lang="">
-    <div class="container">
+    <div class="c-container">
         <main>
             <!-- main header -->
             <section class="page-title">
@@ -46,8 +46,8 @@ export default {
 
         span {
             letter-spacing: 0.2rem;
-            font-weight: 600;
-            font-size: 1.2rem;
+            font-weight: bold;
+            font-size: 2rem;
         }
 
         button {
@@ -71,7 +71,7 @@ export default {
         box-shadow: 0 0 40px rgb(0 0 0 / 5%);
         height: 80vh;
         max-height: 45rem;
-        padding: 2rem 1rem;
+        padding: 2rem 2rem;
     }
 
 </style>

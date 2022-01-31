@@ -1,6 +1,5 @@
 import axios from 'axios'
-
-
+import store from '../store'
 let instance = axios.create({
     baseURL: 'http://localhost',
     withCredentials: true
@@ -19,8 +18,9 @@ instance.interceptors.response.use(
     response => response,
     error => {
         if(error.response.status === 401) {
-            localStorage.removeItem('user')
+            store.commit('SET_USER_NULL')
             window.location.reload()
+            console.log('cookies expired')
         }
         return Promise.reject(error)
     }

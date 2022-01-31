@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CollaboratorAdded;
 use App\Models\LeanCanvas;
 use Illuminate\Http\Request;
 use App\Models\Project;
@@ -123,7 +124,11 @@ class ProjectController extends Controller
         }
         if(!in_array(Auth::id(), $tempId)) {
             // return response(['message' => 'you are not the collaborator for this project'], 401);
-            return response()->json(['message' => 'you are not the collaborator for this project', 'success' => false, 'errors' => ['you are not authorized']], 401);
+            // return response()->json(['message' => 'you are not the collaborator for this project', 'success' => false, 'errors' => ['you are not authorized']], 401);
+            return response()->json([
+                'success' => false,
+                'errors' => 'No Project found in your project list'
+            ]);
         }    
         
         // return response([
@@ -217,7 +222,6 @@ class ProjectController extends Controller
         //     'collaborator' => $collaborator
         // ], 200);
         
-        broadcast()->toOthers();
         return response()->json([
             'project' => $project,
             'collaborator' => $collaborator,
@@ -310,6 +314,8 @@ class ProjectController extends Controller
         $project = Project::find($projectId);
         $project->users()->attach($user->id);
 
+        broadcast(new CollaboratorAdded($user->id));
+
         return response()->json([
             'success' => true,
             'errors' => null
@@ -331,6 +337,8 @@ class ProjectController extends Controller
         $data = $validator->validated();
         $project = Project::find($projectId);
         $project->users()->detach($data['id']);
+
+        broadcast(new CollaboratorAdded($data['id']));
 
         return response()->json([
             'success' => true,
