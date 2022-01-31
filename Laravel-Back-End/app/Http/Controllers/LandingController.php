@@ -28,6 +28,12 @@ class LandingController extends Controller
         return $searchProjectID;
     }
 
+    public function checkValidated($projectID){
+        $searchProjectID = DB::table('landing_pages')->where('projectID','=',$projectID)->value('validated');
+        return $searchProjectID;
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -269,6 +275,14 @@ class LandingController extends Controller
         return  response()->json([
             'success' => true,
             'errors' => null
+        ]);
+    }
+
+    public function setValidated($projectID){
+        $validated = DB::table('landing_pages')->where('projectID',$projectID)->update(['validated' => true]);
+        return  response()->json([
+            'success' => true,
+            'setValidated' => $validated,
         ]);
     }
 

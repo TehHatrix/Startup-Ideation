@@ -75,7 +75,7 @@
 
         <div class="bottom-content">
           <li class="">
-            <a @click="logout" href="#">
+            <a @click="logout">
               <i class="bx bx-log-out icon"></i>
               <span class="text nav-text">Logout</span>
             </a>
@@ -93,23 +93,23 @@
 
 <script>
 export default {
-  data() {
+data() {
     return {
-      togglesidebar: false,
-    };
-  },
-  computed: {
+        togglesidebar: false,
+    }
+},
+computed: {
     toggleClose() {
-      return {
-        close: this.togglesidebar === false,
-      };
-    },
-  },
-  methods: {
+        return{
+            close: this.togglesidebar === false
+        }
+    }
+},
+methods: {
     toggleSidebar() {
-      this.togglesidebar = !this.togglesidebar;
+        this.togglesidebar = !this.togglesidebar
     },
-    async logout() {
+        async logout() {
       try {
         await this.$store.dispatch("logout");
         await this.$router.push({ name: "HomeGuest" });
@@ -117,7 +117,8 @@ export default {
         console.log(err);
       }
     },
-  },
+},
+
 };
 </script>
 

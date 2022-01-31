@@ -365,12 +365,15 @@ body #templateContainer {
 <style lang="scss" scoped>
 .sticky {
   position: fixed;
-  top: 10;
+  top: 110px;
   z-index: 100;
-  height: 50px;
-  width: 50px;
-  margin-left: 15px;
+  margin-top:15px;
+  margin-left: 30px;
   cursor: pointer;
+  ::v-deep svg{
+    height:30px;
+    width:30px;
+  }
 }
 
 * {

@@ -27,6 +27,13 @@ export default {
 
     async deleteCollab(projectId, payload) {
         return api.put(`api/deleteUser/${projectId}`, payload)
+    },
 
+    async getValidationPhase(projectId){
+        return api.get(`api/projects/validationphase/${projectId}`);
+    },
+
+    async setValidationPhase(projectId,payload){
+        return api.put(`api/projects/setvalidation/${projectId}`,payload);
     }
 }

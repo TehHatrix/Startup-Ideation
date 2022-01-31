@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isNull;
 
@@ -30,6 +31,30 @@ class ProjectController extends Controller
             'success' => true,
             'projects' => $projects
         ], 200);
+    }
+
+    public function getValidationPhase($projectID){
+        $validationPhase = DB::table('projects')->where('id',$projectID)->value('validationPhase');
+        return response()->json([
+            'validationPhase' => $validationPhase,
+            'success' => true
+        ]);
+    }
+
+    public function setValidationPhase(Request $request,$projectID){
+        $validator = Validator::make($request->all(), [
+            'newValidation' => 'string|required',
+        ]);
+
+        if($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'success' => false]);
+        }
+        $data = $validator->validated();
+        $validationPhase = DB::table('projects')->where('id',$projectID)->update(['validationPhase' => $data['newValidation']]);
+        return response()->json([
+            'validationPhase' => $validationPhase,
+            'success' => true
+        ]);
     }
 
  

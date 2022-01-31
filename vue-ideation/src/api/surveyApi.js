@@ -50,7 +50,15 @@ export default {
 
   async deleteSurvey(projectID) {
     return api.delete(`api/survey/delete/${projectID}`);
-  }
+  },
+
+  async setValidated(projectID){
+    return api.put(`api/survey/validate/${projectID}`);
+  },
+
+  async checkValidated(projectID){
+    return api.get(`api/survey/checkvalidate/${projectID}`);
+  },
 
 
 

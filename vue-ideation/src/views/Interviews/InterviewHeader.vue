@@ -83,15 +83,21 @@
             style="margin: auto"
           />
           <div v-if="interviewDone" class="interviewDone">
-            <div v-if="rating >= 3.5" >
-              Completed. The problem is validated with <span style="color: #00A006;">great</span> score!
-              <br/> This customer segment is a potential early adopter.
-              <success-button @click.native="routeHypothesis">Validate more customer!</success-button>
+            <div v-if="rating >= 3.5">
+              Completed. The problem is validated with
+              <span style="color: #00a006">great</span> score! <br />
+              This customer segment is a potential early adopter.
+              <success-button @click.native="routeHypothesis"
+                >Validate more customer!</success-button
+              >
             </div>
-            <div v-else class="bad" >
-              Completed. However, the score is <span style="color: #FF0000;">bad</span>!
-              <br/> You may want to validate another customer.
-              <disabled-button @click.native="routeHypothesis">Re-define Hypothesis!</disabled-button>
+            <div v-else class="bad">
+              Completed. However, the score is
+              <span style="color: #ff0000">bad</span>! <br />
+              You may want to validate another customer.
+              <disabled-button @click.native="routeHypothesis"
+                >Re-define Hypothesis!</disabled-button
+              >
             </div>
           </div>
           <p v-else>{{ progressInterview }} more interviews to go!</p>
@@ -128,6 +134,7 @@ import Stars from "@/views/Interviews/Stars.vue";
 import StarBar from "@/views/Interviews/StarBar.vue";
 import ProgressBar from "@/views/Interviews/ProgressBar.vue";
 import interviewApi from "@/api/interviewApi.js";
+import hypothesisApi from "@/api/hypothesisApi.js";
 import interviewLogsContent from "./InterviewLogsContent.vue";
 import GeneralButton from "../../components/GeneralButtonNonHover.vue";
 import SuccessButton from "../../components/SuccessButton.vue";
@@ -158,8 +165,8 @@ export default {
     };
   },
   methods: {
-    routeHypothesis(){
-      this.$router.push({name:"Hypothesis"})
+    routeHypothesis() {
+      this.$router.push({ name: "Hypothesis" });
     },
 
     handleScriptLink() {
@@ -199,8 +206,10 @@ export default {
   computed: {
     ...mapGetters(["interviewIndex"]),
     interviewDone() {
-      if (this.interviewGoals - this.customerScores.length == 0) {
-        return true;
+      if (this.customerScores !== undefined) {
+        if (this.interviewGoals - this.customerScores.length == 0) {
+          return true;
+        }
       }
       return false;
     },
@@ -214,9 +223,13 @@ export default {
         : 0;
     },
   },
-  mounted() {},
-  created() {
-    this.getInterviewData(this.interviewIndex);
+  async created() {
+    await this.getInterviewData(this.interviewIndex);
+    //If Good score and reached goal
+    if((this.interviewGoals - this.customerScores.length == 0) && this.rating >= 3.5){
+      await hypothesisApi.setHypothesisValidated(this.interviewIndex);
+    }
+
   },
 };
 </script>
@@ -348,13 +361,13 @@ export default {
     }
   }
 
-  .bad{
-    ::v-deep button{
+  .bad {
+    ::v-deep button {
       cursor: pointer;
     }
   }
 
-  .interviewDone{
+  .interviewDone {
     text-align: center;
   }
 }

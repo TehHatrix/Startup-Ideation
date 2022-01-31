@@ -49,10 +49,13 @@ Route::get('/getstatus/{customerproblem_id}', [HypothesisController::class, 'get
 Route::get('/getHypothesisID/{customerproblem_id}', [HypothesisController::class, 'getHypothesisID']);
 Route::prefix('/hypothesis')->group(function () {
     Route::post('/store', [HypothesisController::class, 'store']);
+    Route::get('/checkvalidate/{projectID}', [HypothesisController::class, 'checkHypothesisValidate']);
+    Route::put('/validate/{interviewID}', [HypothesisController::class, 'setHypothesisTrue']);
     Route::put('/update/{hypothesisID}', [HypothesisController::class, 'updateHypothesis']);
     Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class, 'updateCustomerProblem']);
     Route::delete('/custprob/{customerproblem_id}', [HypothesisController::class, 'destroy']);
     Route::delete('/delete/{hypothesisID}', [HypothesisController::class, 'deleteHypothesis']);
+
 });
 
 
@@ -83,7 +86,6 @@ Route::prefix('/landing')->group(function () {
     Route::post('/store/{projectID}', [LandingController::class, 'store']);
     Route::put('/update/{projectID}',[LandingController::class, 'update']);
     Route::put('/updateGoalName/{projectID}',[LandingController::class, 'updateGoalName']);
-
     Route::put('/updateseries/{projectID}',[LandingController::class, 'updateSeries']);
     Route::put('/updatecurrentdate/{projectID}',[LandingController::class, 'updatecurrentdate']);
     Route::put('/updatetodaypageview/{projectID}',[LandingController::class, 'updateTodayPageView']);
@@ -92,7 +94,9 @@ Route::prefix('/landing')->group(function () {
     Route::put('/incrementtodaypageview/{projectID}',[LandingController::class, 'incrementTodayPageView']);
     Route::put('/incrementtotalpageview/{projectID}',[LandingController::class, 'incrementTotalPageView']);
     Route::put('/incrementremainderpageview/{projectID}',[LandingController::class, 'incrementRemainderPageView']);
+    Route::put('/validate/{projectID}',[LandingController::class, 'setValidated']);
     Route::get('/checkexistproject/{projectID}',[LandingController::class,'checkExistLandingProject']);
+    Route::get('/checkvalidate/{projectID}',[LandingController::class,'checkValidated']);
 
     Route::delete('/delete/{projectID}', [LandingController::class, 'delete']);
     //Adopter Table
@@ -112,6 +116,8 @@ Route::prefix('/survey')->group(function (){
     Route::put('/incrementremainderpageview/{projectID}',[SurveyController::class, 'incrementRemainderPageView']);
     Route::put('/incrementtodaypageview/{projectID}',[SurveyController::class, 'incrementTodayPageView']);
     Route::delete('/delete/{projectID}', [SurveyController::class, 'delete']);
+    Route::put('/validate/{projectID}',[SurveyController::class, 'setValidated']);
+    Route::get('/checkvalidate/{projectID}',[SurveyController::class,'checkValidated']);
 });
 
 
@@ -130,6 +136,8 @@ Route::group([
         'create',
         'edit'
     ]);
+    Route::get('/projects/validationphase/{projectId}',[ProjectController::class, 'getValidationPhase']);
+    Route::put('/projects/setvalidation/{projectId}',[ProjectController::class, 'setValidationPhase']);
     // To do List Route
     Route::resource('projects.todos', TodoController::class)->except([
         'create',

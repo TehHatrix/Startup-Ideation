@@ -25,18 +25,18 @@
     <transition name="fade" appear>
       <div class="modal-overlay" v-if="modalCustomer" @click="closeModal"></div>
     </transition>
-    
-      <customer-content-modal
-        v-if="modalCustomer"
-        :imagePath="passedImagePath"
-        :customerName="passedName"
-        :customerOcc="passedOcc"
-        :customerEmail="passedEmail"
-        :customerPhone="passedPhone"
-        :customerScore="passedScore"
-        :customerLogs="passedLogs"
-        @close="closeModal"
-      ></customer-content-modal>
+
+    <customer-content-modal
+      v-if="modalCustomer"
+      :imagePath="passedImagePath"
+      :customerName="passedName"
+      :customerOcc="passedOcc"
+      :customerEmail="passedEmail"
+      :customerPhone="passedPhone"
+      :customerScore="passedScore"
+      :customerLogs="passedLogs"
+      @close="closeModal"
+    ></customer-content-modal>
   </div>
 </template>
 
@@ -73,9 +73,9 @@ export default {
     passedImagePath: {
       type: String,
     },
-    passedLogs:{
+    passedLogs: {
       type: String,
-    }
+    },
   },
   data() {
     return {
@@ -95,7 +95,9 @@ export default {
   methods: {
     async deleteCustomer(customerID) {
       await customerApi.deleteCustomer(customerID);
-      this.$router.go();
+      setTimeout(() => {
+        this.$router.go();
+      }, 2300);
     },
     showModalCustomer() {
       this.modalCustomer = true;

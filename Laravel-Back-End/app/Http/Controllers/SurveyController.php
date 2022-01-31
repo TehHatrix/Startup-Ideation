@@ -13,6 +13,11 @@ class SurveyController extends Controller
         $searchProjectID = DB::table('survey')->where('projectID','=',$projectID)->exists();
         return $searchProjectID;
     }
+
+    public function checkValidated($projectID){
+        $searchProjectID = DB::table('survey')->where('projectID','=',$projectID)->value('validated');
+        return $searchProjectID;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -285,6 +290,14 @@ class SurveyController extends Controller
         DB::table('user_answer')->where('surveyID',$surveyID)->delete();
         DB::table('survey')->where('surveyID',$surveyID)->delete();
         return response()->json(['success' => true, 'message' => 'successfully deleted']);
+    }
+
+    public function setValidated($projectID){
+        $validated = DB::table('survey')->where('projectID',$projectID)->update(['validated' => true]);
+        return  response()->json([
+            'success' => true,
+            'setValidated' => $validated,
+        ]);
     }
 
 

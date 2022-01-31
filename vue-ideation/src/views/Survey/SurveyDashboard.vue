@@ -1,12 +1,10 @@
 <template>
   <div>
     <div class="headerDashboard">
-      <p class ="surveyName">{{ surveyName }} Dashboard</p>
+      <p class="surveyName">{{ surveyName }} Dashboard</p>
       <general-button @click.native="showSurvey">Preview Survey</general-button>
       <share-survey-modal :shareableLink="encodeShareLink"></share-survey-modal>
-      <general-button @click.native="showSummary">
-        Summary</general-button
-      >
+      <general-button @click.native="showSummary"> Summary</general-button>
       <disabled-button class="updatetrashButton" @click.native="handleDelete()"
         ><font-awesome-icon icon="fa-solid fa-trash-can"
       /></disabled-button>
@@ -67,7 +65,7 @@ import surveyApi from "@/api/surveyApi.js";
 import { mapGetters } from "vuex";
 import ShareSurveyModal from "../../components/ShareSurveyModal.vue";
 import DisabledButton from "@/components/DisabledButton.vue";
-import SurveyUpdateModal from '../../components/SurveyUpdateModal.vue';
+import SurveyUpdateModal from "../../components/SurveyUpdateModal.vue";
 export default {
   components: {
     DashboardCard,
@@ -149,7 +147,10 @@ export default {
   },
   methods: {
     showSummary() {
-      this.$router.push({name: "SurveySummary",params:{projectID: this.currentProjectID}});
+      this.$router.push({
+        name: "SurveySummary",
+        params: { projectID: this.currentProjectID },
+      });
     },
     showSurvey() {
       this.$router.push({ name: "Survey" });
@@ -162,7 +163,6 @@ export default {
         params: { id: this.currentProjectID },
       });
     },
-
   },
 
   computed: {
@@ -180,6 +180,18 @@ export default {
     this.totalResponse = surveyData.data.surveyData[0].responses;
     this.totalView = surveyData.data.surveyData[0].total_view;
     this.goalResponse = surveyData.data.surveyData[0].responses_goal;
+    if (
+      this.totalResponse >= this.goalResponse &&
+      surveyData.data.surveyData[0].validated === false
+    ) {
+      await surveyApi.setValidated(this.currentProjectID);
+      this.$store.commit("setTypeToast", "Success");
+      this.$store.commit(
+        "setMessage",
+        "Congrats you have achieved the goal! This product has a Product/Market Fit Potential!"
+      );
+      this.$store.commit("showToast");
+    }
     this.currentDate = surveyData.data.surveyData[0].current_date;
     this.todayPageView = surveyData.data.surveyData[0].today_view;
     this.remainderPageView = surveyData.data.surveyData[0].remainder_view;
@@ -256,7 +268,7 @@ export default {
   .fa-trash-can {
     margin: -1px;
   }
-  .fa-pen-to-square{
+  .fa-pen-to-square {
     margin: -1px;
   }
 }
@@ -267,7 +279,7 @@ export default {
 
 .headerDashboard {
   display: flex;
-  .surveyName{
+  .surveyName {
     font-size: 30px;
     font-weight: bold;
   }

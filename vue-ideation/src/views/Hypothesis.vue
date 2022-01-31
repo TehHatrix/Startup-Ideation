@@ -21,8 +21,7 @@
                 @click.native="deleteHypothesis(item.hypothesisID)"
                 ><font-awesome-icon icon="fa-solid fa-trash-can"
               /></disabled-button>
-              <general-button-non-hover
-                @click.native="updateHypothesis(index)"
+              <general-button-non-hover @click.native="updateHypothesis(index)"
                 ><font-awesome-icon icon="fa-solid fa-pen-to-square"
               /></general-button-non-hover>
             </div>
@@ -189,12 +188,19 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["interviewIndex", "hypothesis", "currentIndex","currentProjectID"]),
+    ...mapGetters([
+      "interviewIndex",
+      "hypothesis",
+      "currentIndex",
+      "currentProjectID",
+    ]),
   },
   methods: {
     async deleteHypothesis(hypothesisID) {
       await hypothesisApi.deleteHypothesis(hypothesisID);
-      this.$router.go();
+      setTimeout(() => {
+        this.$router.go();
+      }, 2300);
     },
     async updateHypothesis(index) {
       this.$set(this.editable, index, true);
@@ -218,8 +224,9 @@ export default {
     async handleSave(hypothesisID, index) {
       if (
         (this.updateFrequency[index] === undefined &&
-        this.updateSeverity[index] === undefined &&
-        this.updateFeedback[index] === undefined) || this.updateError[index] == true
+          this.updateSeverity[index] === undefined &&
+          this.updateFeedback[index] === undefined) ||
+        this.updateError[index] == true
       ) {
         this.$store.commit("setTypeToast", "Error");
         this.$store.commit(
@@ -232,13 +239,15 @@ export default {
         pain_level_freq: this.updateFrequency[index],
         pain_level_severity: this.updateSeverity[index],
         feedback_cycle: this.updateFeedback[index],
-      }
-      let saveHypothesis = await hypothesisApi.updateHypothesis(hypothesisID,payload)
-      if(saveHypothesis.data.success){
+      };
+      let saveHypothesis = await hypothesisApi.updateHypothesis(
+        hypothesisID,
+        payload
+      );
+      if (saveHypothesis.data.success) {
         this.$router.go();
-      }
-      else{
-        console.log(saveHypothesis)
+      } else {
+        console.log(saveHypothesis);
       }
     },
     async routeInterview() {
@@ -455,8 +464,7 @@ export default {
       }
     },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 

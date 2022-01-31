@@ -61,7 +61,7 @@ import GeneralButton from "../../components/GeneralButton.vue";
 import circleArrowLeft from "@/components/icons/circlearrowleft.vue";
 import { mapGetters } from "vuex";
 import landingApi from "@/api/landingApi.js";
-import DisabledButton from '../../components/DisabledButton.vue';
+import DisabledButton from "../../components/DisabledButton.vue";
 export default {
   components: { GeneralButton, circleArrowLeft, DisabledButton },
   data() {
@@ -188,22 +188,26 @@ export default {
 </script>
 
 <style>
-.sticky {
-  position: fixed;
-  top: 5;
-  z-index: 999;
-  height: 50px;
-  width: 50px;
-  margin-left: 15px;
-  cursor: pointer;
-}
-
 body #templateContainer {
   background-image: linear-gradient(#ffffff, #ffffff);
 }
 </style>
 
 <style lang="scss" scoped>
+.sticky {
+  position: fixed;
+  top: 85px;
+  z-index: 999;
+  height: 50px;
+  width: 50px;
+  margin-left: 30px;
+  cursor: pointer;
+  ::v-deep svg {
+    height: 30px;
+    width: 30px;
+  }
+}
+
 ::v-deep button {
   margin-top: 35px;
 }

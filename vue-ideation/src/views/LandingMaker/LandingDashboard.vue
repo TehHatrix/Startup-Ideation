@@ -196,6 +196,19 @@ export default {
         this.uniqueviews = landingdata.data.data[0].unique_view;
         this.expectedrevenue = landingdata.data.data[0].expected_revenue;
         this.goalsrevenue = landingdata.data.data[0].target_revenue;
+        //If expected revenue already achieved goal but not validated in db
+        if (
+          this.expectedrevenue >= this.goalsrevenue &&
+          landingdata.data.data[0].validated === false
+        ) {
+          await landingApi.setValidated(this.currentProjectID);
+          this.$store.commit("setTypeToast", "Success");
+          this.$store.commit(
+            "setMessage",
+            "Congrats you have achieved the goal! This product has a potential generating great revenues! You can now go to the Project page and move to the next stage"
+          );
+          this.$store.commit("showToast");
+        }
         this.currentDate = landingdata.data.data[0].currentdate;
         this.todayPageView = landingdata.data.data[0].today_pageview;
         this.remainderPageView = landingdata.data.data[0].remainder_pageview;

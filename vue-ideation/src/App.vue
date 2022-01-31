@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <sidebar v-if="authenticated">
+    <sidebar v-if="authenticated && noSidebarRoute === false">
       <transition name="toast">
         <div v-if="toastBoolean">
           <general-toast></general-toast>
@@ -21,11 +21,16 @@ export default {
     GeneralToast,
     Sidebar,
   },
-  methods: {
-  },
-
   computed: {
     ...mapGetters(["authenticated", "project"]),
+    noSidebarRoute(){
+      if(this.$route.name === 'LandingEditor' || this.$route.name === 'LandingPage'){
+        return true;
+      }
+      return false;
+    },
+
+
     toastBoolean() {
       return this.$store.state.toastRepository.showToast;
     },

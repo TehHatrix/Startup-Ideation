@@ -54,6 +54,14 @@ export default {
     return api.get(`api/landing/checkexistproject/${projectID}`);
   },
 
+  async setValidated(projectID){
+    return api.put(`api/landing/validate/${projectID}`);
+  },
+
+  async checkValidated(projectID){
+    return api.get(`api/landing/checkvalidate/${projectID}`);
+  }
+
   //   async addHypothesis(payload) {
   //    return api.post('api/hypothesis/store',payload)
   //   },

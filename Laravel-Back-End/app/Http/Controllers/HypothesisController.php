@@ -16,6 +16,19 @@ use Illuminate\Support\Facades\Validator;
 class HypothesisController extends Controller
 {
 
+    public function checkHypothesisValidate($projectID){
+        $canvasID = DB::table('lean_canvases')->where('project_id',$projectID)->value('id');
+        $problemID = DB::table('problems')->where('canvas_id',$canvasID)->value('id');
+        $findTrue = DB::table('hypotheses')->where('problem_id',$problemID)->where('status','=',true)->exists();
+        return  response()->json([
+            'validateResult' => $findTrue,
+            'success' => true,
+            'errors' => null
+        ]);
+
+
+    }
+
     public function getproblemswithcustSeg($projectID)
     {
         $canvasID = DB::table('lean_canvases')->where('project_id',$projectID)->value('id');
@@ -123,7 +136,7 @@ class HypothesisController extends Controller
             'pain_level_severity' => $data['pain']['severity'],
             'pain_level_freq' => $data['pain']['frequency'],
             'feedback_cycle' => $data['feedbackCycle'],
-            'status' => true
+            'status' => false
         ]);
         $id = DB::getPdo()->lastInsertId();
         return  response()->json([
@@ -153,6 +166,17 @@ class HypothesisController extends Controller
     public function edit($id)
     {
         //
+    }
+
+
+    public function setHypothesisTrue($interviewID){
+        $hypothesisID = DB::table('interview')->where('interview_ID',$interviewID)->value('hypothesis_ID');
+        $validate = DB::table('hypotheses')->where('hypothesis_ID', $hypothesisID)->update(['status' => true]);
+        return  response()->json([
+            'validateResult' => $validate,
+            'success' => true,
+            'errors' => null
+        ]);
     }
 
     /**
