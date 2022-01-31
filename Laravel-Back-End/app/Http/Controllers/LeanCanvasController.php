@@ -63,6 +63,7 @@ class LeanCanvasController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
+
         $data = $validator->validated();
         $project = Project::find($projectId);
         $canvas = $project->leanCanvases()->get();
@@ -205,6 +206,8 @@ class LeanCanvasController extends Controller
             'success' => true
         ]);
     }
+
+
 
 
 
