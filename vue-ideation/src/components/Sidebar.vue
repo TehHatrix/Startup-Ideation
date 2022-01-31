@@ -34,7 +34,6 @@
                 <router-link :to="{name: 'Project', params: projectId}">
                   <i class="bx bx-home-alt icon"></i>
                   <span class="text nav-text">Dashboard</span>
-
                 </router-link>
               </a>
             </li>
@@ -42,7 +41,6 @@
             <li class="nav-link">
                 <router-link :to="{name: 'TodoPage', params: projectId}">
                   <i class='bx bx-list-ul icon'></i> 
-                  <!-- <span class="color"><font-awesome-icon icon="fa-list icon" class="fonticon" ></font-awesome-icon></span> -->
                   <span class="text nav-text">To Do List</span>
                 </router-link>
             </li>
@@ -73,10 +71,10 @@
             </li>
 
             <li class="nav-link">
-              <a href="#" @click="handleResume">
+              <router-link :to="{name: 'ProjectsList'}">
                 <i class="bx bx-wallet icon"></i>
-                <span class="text nav-text">Resume Validating</span>
-              </a>
+                <span class="text nav-text">Project List</span>
+              </router-link>
             </li>
           </ul>
         </div>
