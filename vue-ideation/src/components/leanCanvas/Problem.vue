@@ -68,7 +68,6 @@
             @close="closeDeleteModal" >
 
             <h2 class="modal-title">Confirm Delete?</h2>
-            <p>{{tempId}}</p>
             <div class="grid grid-cols-2 gap-2">
                 <button class="general-button full-width" @click="closeDeleteModal">Cancel</button>
                 <button class="general-button-danger full-width" @click="deleteContent">Delete</button>

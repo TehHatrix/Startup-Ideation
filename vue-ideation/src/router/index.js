@@ -16,7 +16,6 @@ import LandingThankYou from "../views/LandingMaker/ThankYouPage.vue"
 import store from '@/store'
 
 Vue.use(VueRouter);
-
 const routes = [
   {
     path: "/",

@@ -203,7 +203,7 @@ export default {
     this.validationPhase = projectValPhase.data.validationPhase;
     //Validation Phase
     this.$store.commit("setCurrentProjectID", this.projectId);
-    console.log(this.projectId);
+    // console.log(this.projectId);
 
     switch (this.validationPhase) {
       case "hypothesis": {

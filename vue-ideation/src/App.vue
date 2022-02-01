@@ -30,16 +30,16 @@ import { mapGetters } from "vuex";
 import GeneralToast from "./components/GeneralToast.vue";
 import Sidebar from "./components/Sidebar.vue";
 import SideNavbar from "./components/SidebarNav.vue";
-// import Navbar from "./components/Navbar.vue";
+import Navbar from "./components/Navbar.vue";
 export default {
   components: {
     GeneralToast,
     Sidebar,
     SideNavbar,
-    // Navbar,
+    Navbar,
   },
   mounted() {
-    console.log(this.$route.name)
+    // console.log(this.$route.name)
   },
   computed: {
     ...mapGetters(["authenticated", "project"]),

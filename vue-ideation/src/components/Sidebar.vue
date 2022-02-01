@@ -30,12 +30,10 @@
 
           <ul class="menu-links">
             <li class="nav-link">
-              <a href="#">
                 <router-link :to="{name: 'Project', params: currentProjectID}">
                   <i class="bx bx-home-alt icon"></i>
                   <span class="text nav-text">Dashboard</span>
                 </router-link>
-              </a>
             </li>
 
             <li class="nav-link">
@@ -117,7 +115,7 @@ export default {
     ...mapGetters(['project'])
   },
   mounted () {
-    console.log(this.currentProjectID);
+    // console.log(this.currentProjectID);
   },
   methods: {
     handleResume() {

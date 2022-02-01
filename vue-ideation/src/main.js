@@ -5,7 +5,7 @@ import store from './store'
 import '@/assets/style.css'
 import Axios from 'axios'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faStar, faList, faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faBrain, faChalkboard, faUserEdit,faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faArrowUpFromBracket, faTrashCan,faPenToSquare,faMoneyCheckDollar,faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faStar, faList, faCircleExclamation,faUsers, faBullseye, faScroll, faListCheck, faCheck, faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faBrain, faChalkboard, faUserEdit,faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faArrowUpFromBracket, faTrashCan,faPenToSquare,faMoneyCheckDollar, faRightFromBracket} from '@fortawesome/free-solid-svg-icons'
 import { faCircleCheck,faFaceSmile } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueApexCharts from "vue-apexcharts";
@@ -14,7 +14,7 @@ import Echo from 'laravel-echo'
 import './assets/style.scss'
 import api from '@/api/config'
 /* add icons to the library */
-library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faCircleCheck,faArrowUpFromBracket,faTrashCan,faPenToSquare,faMoneyCheckDollar, faFaceSmile,faArrowRightFromBracket )
+library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faCircleCheck,faArrowUpFromBracket,faTrashCan,faPenToSquare,faMoneyCheckDollar, faFaceSmile, faRightFromBracket )
 Vue.use(VueApexCharts);
 
 // setup laravel echo for pusher 
