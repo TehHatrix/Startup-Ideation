@@ -12,7 +12,7 @@
               Hey, {{ user.name }}!
               <font-awesome-icon icon="fa-regular fa-face-smile" />
             </p>
-            <a class="is-active" @click="logout">Logout <font-awesome-icon icon="fa-solid fa-right-from-bracket" /></a>
+            <a class="is-active pointer" @click="logout">Logout <font-awesome-icon icon="fa-solid fa-right-from-bracket" /></a>
           </div>
         </div>
         <!-- <button class="hamburger">
@@ -46,10 +46,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.is-active {
+.pointer{
   cursor: pointer;
 }
+
 .logo {
   display: flex;
   align-items: center;
