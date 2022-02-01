@@ -31,7 +31,7 @@
           <ul class="menu-links">
             <li class="nav-link">
               <a href="#">
-                <router-link :to="{name: 'Project', params: projectId}">
+                <router-link :to="{name: 'Project', params: currentProjectID}">
                   <i class="bx bx-home-alt icon"></i>
                   <span class="text nav-text">Dashboard</span>
                 </router-link>
@@ -39,14 +39,14 @@
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'TodoPage', params: projectId}">
+                <router-link :to="{name: 'TodoPage', params: currentProjectID}">
                   <i class='bx bx-list-ul icon'></i> 
                   <span class="text nav-text">To Do List</span>
                 </router-link>
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'ChatPage', params: projectId}">
+                <router-link :to="{name: 'ChatPage', params: currentProjectID}">
                   <i class='bx bx-message-dots icon' ></i>
 
                   <span class="text nav-text">Project Chat</span>
@@ -55,7 +55,7 @@
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'LeanCanvas', params: projectId}" >
+                <router-link :to="{name: 'LeanCanvas', params: currentProjectID}" >
                   <i class='bx bx-brain icon' ></i> 
 
                   <span class="text nav-text">Lean Canvas</span>
@@ -64,7 +64,7 @@
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'FreeCanvas', params: projectId}">
+                <router-link :to="{name: 'FreeCanvas', params: this.currentProjectID}">
                   <i class='bx bx-chalkboard icon' ></i>
                   <span class="text nav-text">Free Canvas</span>
                 </router-link>
@@ -98,19 +98,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   data() {
     return {
       togglesidebar: false,
-      projectId: this.$route.params.id
+      // projectId: this.$route.params.id
     };
   },
   computed: {
+  ...mapGetters(['currentProjectID']),
     toggleClose() {
       return {
         close: this.togglesidebar === false,
       };
     },
+  },
+  mounted () {
+    console.log(this.currentProjectID);
   },
   methods: {
     handleResume() {
@@ -407,7 +412,7 @@ body.dark .switch::before {
   left: 250px;
   height: 100vh;
   width: calc(100% - 250px);
-  background-color: #e4e9f7;
+  background-color: #F3F1F5;
   transition: all 0.3s ease;
 }
 .home .text {

@@ -469,7 +469,8 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+  },
 };
 </script>
 
@@ -479,7 +480,7 @@ export default {
 }
 
 .theadNone {
-  background: #f9f9f9;
+  background: #F3F1F5;
 }
 
 .deleteEditButton {
