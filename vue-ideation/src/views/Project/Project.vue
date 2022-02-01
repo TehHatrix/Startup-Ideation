@@ -269,7 +269,7 @@ export default {
     beginningPhase() {
       return (
         (this.validationPhase == "hypothesis" && this.hypothesisvalidated) ||
-        (this.validationPhase == "landing" && this.surveyvalidated)
+        (this.validationPhase == "landing" && (this.surveyvalidated || this.surveyCreated))
       );
     },
 

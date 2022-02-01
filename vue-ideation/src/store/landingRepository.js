@@ -21,6 +21,9 @@ const getters = {
     landingRevenueGoal: (state) => state.landingRevenueGoal,
     landingName: (state) => state.landingName,
     editingMode: (state) => state.editingMode,
+    pageHTML: (state) => state.pageHTML, 
+    pageCSS: (state) => state.pageCSS, 
+    previewModeRepo: (state) => state.previewMode, 
 };
 
 const actions = {

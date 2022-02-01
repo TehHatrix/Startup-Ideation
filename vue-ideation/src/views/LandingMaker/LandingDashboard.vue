@@ -162,7 +162,7 @@ export default {
           opacity: 0.5,
         },
         grid: {
-          show: false,
+        show: false,
         },
         xaxis: {
           type: "datetime",
@@ -172,7 +172,7 @@ export default {
   },
   methods: {
     async handleDelete() {
-      alert("Are you sure you want to delete this Survey?");
+      alert("Are you sure you want to delete this Landing Page?");
       await landingApi.deleteLandingPage(this.currentProjectID);
       this.$router.push({
         name: "Project",
@@ -186,6 +186,8 @@ export default {
     },
     previewLanding() {
       this.$store.commit("setPreviewTrue");
+      this.$store.commit("setpageHTML",this.landingHTML)
+      this.$store.commit("setpageCSS",this.landingCSS)
       this.$router.push("/landingpage");
     },
     async getLandingData() {

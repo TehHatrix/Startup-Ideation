@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="container">
+  <div class="containerNavigation">
     <nav>
       <!-- <h1>Startup Ideation System</h1> -->
       <div class="containerFlex">
@@ -54,7 +54,7 @@ img {
   width: 40px;
 }
 
-.container {
+.containerNavigation {
   max-width: 1280px;
   margin: 0 auto;
   display: flex;
@@ -79,7 +79,6 @@ nav {
 }
 
 .menu {
-  // display: none;
   display: flex;
   flex: 1 1 0%;
   justify-content: flex-end;

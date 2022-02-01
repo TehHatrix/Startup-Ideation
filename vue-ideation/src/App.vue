@@ -6,6 +6,7 @@
       </transition>
     </div>
 
+
     <sidebar v-if="authenticated && noSidebarRoute === false">
       <transition name="fade">
         <side-navbar>
@@ -20,6 +21,7 @@
       </navbar>
       <router-view v-else></router-view>
     </transition>
+    
   </div>
 </template>
 
@@ -28,21 +30,22 @@ import { mapGetters } from "vuex";
 import GeneralToast from "./components/GeneralToast.vue";
 import Sidebar from "./components/Sidebar.vue";
 import SideNavbar from "./components/SidebarNav.vue";
-import Navbar from "./components/Navbar.vue";
+// import Navbar from "./components/Navbar.vue";
 export default {
   components: {
     GeneralToast,
     Sidebar,
     SideNavbar,
-    Navbar,
+    // Navbar,
   },
   mounted() {
+    console.log(this.$route.name)
   },
   computed: {
     ...mapGetters(["authenticated", "project"]),
     noNavbarRoute(){
       if (
-        this.$route.name === "HomeGuest" || this.$route.name === "LandingEditor" || this.$route.name === "LandingPage" || this.$route.name === "SurveyShare" ) {
+        this.$route.name === "HomeGuest" || this.$route.name === "LandingEditor" || this.$route.name === "LandingPage" || this.$route.name === "SurveyShare" ||this.$route.name === "LandingPageShare" || this.$route.name === "LandingThankYou" ) {
         return true;
       }
       return false;
@@ -53,7 +56,7 @@ export default {
         this.$route.name === "LandingEditor" ||
         this.$route.name === "LandingPage" ||
         this.$route.name === "SurveyShare" ||
-        this.$route.name === "ProjectsList" || this.$route.name === "HomeGuest" 
+        this.$route.name === "ProjectsList" || this.$route.name === "HomeGuest"  || this.$route.name === "LandingPageShare" || this.$route.name === "LandingThankYou"
       ) {
         return true;
       }
