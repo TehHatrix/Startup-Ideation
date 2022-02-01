@@ -10,6 +10,18 @@
             "
           >
             <div class="customerInfo">
+              <div v-if="this.editable">
+                <input
+                  id="inputField"
+                  type="file"
+                  ref="registerinput"
+                  @change="handleImage"
+                  required
+                />
+                <label for="inputField" class="uploadButton"
+                  ><font-awesome-icon icon="fa-solid fa-pen-to-square"
+                /></label>
+              </div>
               <img :src="imagePath" />
               <p class="custName">
                 <strong
@@ -51,10 +63,7 @@
               </p>
               <general-button
                 v-if="this.editable"
-                @click.native="
-                  editableToggle();
-                  saveEditedData();
-                "
+                @click.native="saveEditedData()"
                 >Save Profile</general-button
               >
               <general-button
@@ -152,6 +161,7 @@ export default {
         cust_phone_num: "",
         custemail: "",
       },
+      customerFormData: null,
     };
   },
   components: {
@@ -160,17 +170,19 @@ export default {
     GeneralButton,
   },
   computed: {
-    ...mapGetters([
-      "fromCustomer",
-      "currentID",
-      "interviewIndex",
-    ]),
+    ...mapGetters(["fromCustomer", "currentID", "interviewIndex"]),
     contenteditable() {
       return this.editable ? true : false;
     },
   },
   methods: {
-    updateLogs(logsText){
+    handleImage(event) {
+      const formData = new FormData();
+      formData.append("custimage", event.target.files[0]);
+      this.customerFormData = formData;
+    },
+
+    updateLogs(logsText) {
       this.customerLogsData = logsText.text;
     },
 
@@ -210,15 +222,87 @@ export default {
     editableToggle() {
       this.editable = !this.editable;
     },
+    checkErrorUpdate() {
+      let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      let phonePattern = /^\d{10}$/;
+      if (this.customer.custemail != "") {
+        if (emailPattern.test(this.customer.custemail) === false) {
+          this.$store.commit("setTypeToast", "Error");
+          this.$store.commit("setMessage", "Please input a proper email!");
+          this.$store.commit("showToast");
+          return false;
+        }
+      }
+      //Means that it want to change the phone num
+      if (this.customer.cust_phone_num != "") {
+        if (phonePattern.test(this.customer.cust_phone_num) === false) {
+          this.$store.commit("setTypeToast", "Error");
+          this.$store.commit(
+            "setMessage",
+            "Please input a proper Phone Number!"
+          );
+          this.$store.commit("showToast");
+          return false;
+        }
+      }
+      return true;
+    },
+
+    avoidRevertOriginal() {
+      if (this.customer.custname != "") {
+        this.customerName = this.customer.custname;
+      }
+      if (this.customer.custocc != "") {
+        this.customerOcc = this.customer.custocc;
+      }
+      if (this.customer.cust_phone_num != "") {
+        this.customerPhone = this.customer.cust_phone_num;
+      }
+      if (this.customer.custemail != "") {
+        this.customerEmail = this.customer.custemail;
+      }
+    },
+
     async saveEditedData() {
-      let saveProfile = await customerApi.updateCustomer(
-        this.currentID,
-        this.customer
-      );
-      if (saveProfile.data.success == false) {
-        throw new Error("Could not update Customer Details");
-      } else {
-        this.$router.go();
+      //Some error handling for email and phone number
+      this.checkErrorUpdate();
+      if (this.checkErrorUpdate()) {
+        if (this.customerFormData == null) {
+          let saveProfile = await customerApi.updateCustomer(
+            this.currentID,
+            this.customer
+          );
+          if (saveProfile.data.success == false) {
+            throw new Error("Could not update Customer Details");
+          } else {
+            this.avoidRevertOriginal();
+            this.$store.commit("closeToast");
+            this.editableToggle();
+            this.$router.go();
+          }
+        }
+        //Got Image
+        else {
+          this.customerFormData.append("custname", this.customer.custname);
+          this.customerFormData.append("custocc", this.customer.custocc);
+          this.customerFormData.append(
+            "cust_phone_num",
+            this.customer.cust_phone_num
+          );
+          this.customerFormData.append("custemail", this.customer.custemail);
+          let saveProfile = await customerApi.updateCustomer(
+            this.currentID,
+            this.customerFormData
+          );
+          if (saveProfile.data.success == false) {
+            throw new Error("Could not update Customer Details");
+          } else {
+            this.avoidRevertOriginal();
+            this.$store.commit("closeToast");
+            this.editableToggle();
+            this.$router.go();
+          }
+        }
       }
     },
     closeModal() {
@@ -238,6 +322,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+input[type="file"] {
+  display: none;
+}
+.uploadButton {
+  position: absolute;
+  margin-top: 10px;
+  left: 40px;
+  width: 30px;
+  height: 33px;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  // text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color: #fff;
+  background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(136, 67, 255, 0.425);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    box-shadow: 0px 15px 20px rgba(136, 67, 255, 0.425);
+    transform: translateY(-7px);
+  }
+  svg {
+    margin-top: 8px;
+    margin-left: 9px;
+  }
+}
+
 .fa-star {
   color: #e67100;
   font-size: 20px;

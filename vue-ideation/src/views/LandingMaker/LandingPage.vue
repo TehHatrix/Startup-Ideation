@@ -116,12 +116,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["currentTemplate", "currentProjectID"]),
+    ...mapGetters(["currentTemplate", "currentProjectID","pageHTML","pageCSS","previewModeRepo"]),
   },
   mounted() {
     if (this.previewMode) {
-      let css = this.$store.state.landingRepository.pageCSS;
-      this.savedHTML = this.$store.state.landingRepository.pageHTML;
+      let css = this.pageCSS;
+      this.savedHTML = this.pageHTML;
       this.styleTag = document.createElement("style");
       this.styleTag.appendChild(document.createTextNode(css));
       document.head.appendChild(this.styleTag);
@@ -140,7 +140,7 @@ export default {
   },
 
   async created() {
-    this.previewMode = this.$store.state.landingRepository.previewMode;
+    this.previewMode = this.previewModeRepo;
     //Get Landing Page Data
     if (this.previewMode === false) {
       let projectID = atob(this.$route.params.landingID);

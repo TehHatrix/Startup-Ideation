@@ -315,9 +315,9 @@ export default {
   display: flex;
   /* justify-content: center; */
   align-items: center;
-  gap: 50px;
+  gap: 30px;
   height: auto;
-  width: 90%;
+  width: 98%;
   margin: auto;
   position: relative;
   top: 15px;

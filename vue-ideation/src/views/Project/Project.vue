@@ -203,6 +203,7 @@ export default {
     this.validationPhase = projectValPhase.data.validationPhase;
     //Validation Phase
     this.$store.commit("setCurrentProjectID", this.projectId);
+    console.log(this.projectId);
 
     switch (this.validationPhase) {
       case "hypothesis": {
@@ -268,7 +269,7 @@ export default {
     beginningPhase() {
       return (
         (this.validationPhase == "hypothesis" && this.hypothesisvalidated) ||
-        (this.validationPhase == "landing" && this.surveyvalidated)
+        (this.validationPhase == "landing" && (this.surveyvalidated || this.surveyCreated))
       );
     },
 
@@ -330,9 +331,8 @@ export default {
 
     async routeHypothesis() {
       let leanCanvasData = await leanCanvasApi.getAllContent(this.projectId);
-      console.log(leanCanvasData);
       if (
-        leanCanvasData.data.content[0].length === 0 &&
+        leanCanvasData.data.content[0].length === 0 ||
         leanCanvasData.data.content[1].length === 0
       ) {
         this.$store.commit("setTypeToast", "Error");
@@ -474,6 +474,10 @@ export default {
     letter-spacing: 2px;
     color: #0b090a;
   }
+}
+
+.validationContainer{
+  padding-bottom: 15px;
 }
 
 .validationCard {

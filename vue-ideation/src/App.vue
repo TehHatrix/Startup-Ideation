@@ -1,18 +1,27 @@
 <template>
   <div id="app">
-    <transition name="toast">
-      <div v-if="toastBoolean">
+    <div v-if="toastBoolean" class="wrapperToast">
+      <transition name="fade">
         <general-toast></general-toast>
-      </div>
-    </transition>
+      </transition>
+    </div>
+
+
     <sidebar v-if="authenticated && noSidebarRoute === false">
       <transition name="fade">
-        <router-view> </router-view>
+        <side-navbar>
+          <router-view> </router-view>
+        </side-navbar>
       </transition>
     </sidebar>
+
     <transition v-else name="fade">
-      <router-view> </router-view>
+      <navbar v-if="noNavbarRoute === false">
+        <router-view> </router-view>
+      </navbar>
+      <router-view v-else></router-view>
     </transition>
+    
   </div>
 </template>
 
@@ -20,17 +29,34 @@
 import { mapGetters } from "vuex";
 import GeneralToast from "./components/GeneralToast.vue";
 import Sidebar from "./components/Sidebar.vue";
+import SideNavbar from "./components/SidebarNav.vue";
+// import Navbar from "./components/Navbar.vue";
 export default {
   components: {
     GeneralToast,
     Sidebar,
+    SideNavbar,
+    // Navbar,
+  },
+  mounted() {
+    console.log(this.$route.name)
   },
   computed: {
     ...mapGetters(["authenticated", "project"]),
+    noNavbarRoute(){
+      if (
+        this.$route.name === "HomeGuest" || this.$route.name === "LandingEditor" || this.$route.name === "LandingPage" || this.$route.name === "SurveyShare" ||this.$route.name === "LandingPageShare" || this.$route.name === "LandingThankYou" ) {
+        return true;
+      }
+      return false;
+    },
+
     noSidebarRoute() {
       if (
         this.$route.name === "LandingEditor" ||
-        this.$route.name === "LandingPage" || this.$route.name === "SurveyShare" || this.$route.name === "ProjectsList"
+        this.$route.name === "LandingPage" ||
+        this.$route.name === "SurveyShare" ||
+        this.$route.name === "ProjectsList" || this.$route.name === "HomeGuest"  || this.$route.name === "LandingPageShare" || this.$route.name === "LandingThankYou"
       ) {
         return true;
       }
@@ -44,7 +70,14 @@ export default {
 };
 </script>
 
-<style >
+<style>
+/* .wrapperToast{
+position:fixed;
+top:0;
+left: 0;
+z-index: 10000000000000;
+} */
+
 #confetti-canvas {
   z-index: 1000;
 }
@@ -73,8 +106,8 @@ export default {
 }
 
 .toast-enter-active {
-  transition: all 0.5s ease;
-  /* transition: wobble 0.5s ease; */
+  /* transition: all 0.5s ease; */
+  transition: wobble 0.5s ease;
 }
 
 .toast-leave-from {

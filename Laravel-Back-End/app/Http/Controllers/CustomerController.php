@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -51,19 +52,18 @@ class CustomerController extends Controller
             ]);
         }
         $file = $request->file('image');
-
-        return response()->json([
-            'file' => $file,
-            'success' => true
-        ]);
         $data = $validator->validated();
-        /** @var \Illuminate\Filesystem\FilesystemManager $disk */
-        $disk = Storage::disk('gcs');
-        $file = $request->file('image');
-        $appendImage = $disk->put('customer-pictures',$file);
-        $fileName= basename($appendImage);
-        $folderFileName= "customer-pictures/".$fileName;
-        $url = $disk->url($folderFileName);
+        if ($file == null) {
+            $url = "https://storage.googleapis.com/startup-ideation/customer-pictures/default/logo.png";
+        } else {
+            /** @var \Illuminate\Filesystem\FilesystemManager $disk */
+            $disk = Storage::disk('gcs');
+            $file = $request->file('image');
+            $appendImage = $disk->put('customer-pictures', $file);
+            $fileName = basename($appendImage);
+            $folderFileName = "customer-pictures/" . $fileName;
+            $url = $disk->url($folderFileName);
+        }
         $insertCustomer = DB::table('customer')->insert([
             'interview_ID' => $interviewID,
             'custname' => $data['name'],
@@ -74,12 +74,13 @@ class CustomerController extends Controller
             'image_path' => $url,
             'logs' => "",
         ]);
-        $averageScoreCustomers = DB::table('customer')->where('interview_ID',$interviewID)->avg('custscore');
+        $averageScoreCustomers = DB::table('customer')->where('interview_ID', $interviewID)->avg('custscore');
         $updateDetailsInterviewScore = [
             'overall_score' => $averageScoreCustomers
         ];
-        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID',$interviewID)->update($updateDetailsInterviewScore);
+        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID', $interviewID)->update($updateDetailsInterviewScore);
         return  response()->json([
+            'insertCustomer' => $insertCustomer,
             'success' => true,
             'errors' => null
         ]);
@@ -129,16 +130,24 @@ class CustomerController extends Controller
             ]);
         }
         $data = $validator->validated();
-        // return array_filter($data);
-        // $updateDetails = [
-        //     'custname' => $data['currentEditedName'],
-        //     'custocc' => $data['currentEditedOcc'],
-        //     'cust_phone_num' => $data['currentEditedPhone'],
-        //     'custemail' => $data['currentEditedEmail']
-        // ]; 
-        $updateScript = DB::table('customer')
+        if(sizeof(array_filter($data)) != 0){
+            $updateData = DB::table('customer')
             ->where('cust_ID', '=', $custid)
             ->update(array_filter($data));
+        }
+        $file = $request->file('custimage');
+        if ($file != null) {
+            /** @var \Illuminate\Filesystem\FilesystemManager $disk */
+            $disk = Storage::disk('gcs');
+            $file = $request->file('custimage');
+            $appendImage = $disk->put('customer-pictures', $file);
+            $fileName = basename($appendImage);
+            $folderFileName = "customer-pictures/" . $fileName;
+            $url = $disk->url($folderFileName);
+            $updateImage = DB::table('customer')
+            ->where('cust_ID', '=', $custid)
+            ->update(["image_path" => $url]);
+        }
         return  response()->json([
             'success' => true,
             'errors' => null
@@ -158,18 +167,20 @@ class CustomerController extends Controller
             ]);
         }
         $data = $validator->validated();
-        $averageScoreCustomers = DB::table('customer')->where('interview_ID',$data['interviewID'])->avg('custscore');
         $updateDetails = [
             'custscore' => $data['score'],
-        ];
-        $updateDetailsInterviewScore = [
-            'overall_score' => $averageScoreCustomers
         ];
         $updateScore = DB::table('customer')
             ->where('cust_ID', '=', $custid)
             ->update($updateDetails);
-        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID',$data['interviewID'])->update($updateDetailsInterviewScore);
+        $averageScoreCustomers = DB::table('customer')->where('interview_ID', $data['interviewID'])->avg('custscore');
+        $updateDetailsInterviewScore = [
+            'overall_score' => $averageScoreCustomers
+        ];
+        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID', $data['interviewID'])->update($updateDetailsInterviewScore);
+
         return  response()->json([
+            'averageCustomerScore' => $averageScoreCustomers,
             'updateCustomerScore' => $updateScore,
             'updateInterviewScore' => $updateInterviewOverallScore,
             'success' => true,
@@ -191,7 +202,7 @@ class CustomerController extends Controller
         $data = $validator->validated();
         $updateDetails = [
             'logs' => $data['text'],
-        ]; 
+        ];
         $updateScript = DB::table('customer')
             ->where('cust_ID', '=', $custid)
             ->update($updateDetails);
@@ -212,13 +223,20 @@ class CustomerController extends Controller
      */
     public function deleteCustomer($customerid)
     {
-        $interviewID = DB::table('customer')->where('cust_ID','=',$customerid)->pluck('interview_ID');
-        DB::table('customer')->where('cust_ID','=',$customerid)->delete();
-        $averageScoreCustomers = DB::table('customer')->where('interview_ID',$interviewID)->avg('custscore');
-        $updateDetailsInterviewScore = [
-            'overall_score' => $averageScoreCustomers
-        ];
-        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID',$interviewID)->update($updateDetailsInterviewScore);
+        $interviewID = DB::table('customer')->where('cust_ID', '=', $customerid)->value('interview_ID');
+        DB::table('customer')->where('cust_ID', '=', $customerid)->delete();
+        $averageScoreCustomers = DB::table('customer')->where('interview_ID', $interviewID)->avg('custscore');
+        if ($averageScoreCustomers == NULL) {
+            $updateDetailsInterviewScore = [
+                'overall_score' => 0.0
+            ];
+        } else {
+            $updateDetailsInterviewScore = [
+                'overall_score' => $averageScoreCustomers
+            ];
+        }
+
+        $updateInterviewOverallScore = DB::table('interview')->where('interview_ID', $interviewID)->update($updateDetailsInterviewScore);
         return response()->json(['success' => true, 'message' => 'successfully deleted']);
     }
 }

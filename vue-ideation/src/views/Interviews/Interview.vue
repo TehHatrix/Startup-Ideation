@@ -9,16 +9,17 @@
 <script>
 import InterviewHeader from "./InterviewHeader.vue";
 import CustomerInterview from "./CustomerInterview.vue";
-// import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 export default {
   components: {
     InterviewHeader,
     CustomerInterview,
   },
   computed: {
-    // ...mapGetters(['currentProjectID'])
+    ...mapGetters(['currentProjectID'])
   },
   mounted () {
+    console.log(this.currentProjectID);
   },
 };
 </script>
@@ -36,7 +37,7 @@ export default {
     grid-area: header;
   }
   .customerInterview {
-    margin-left: 60px;
+    margin-left: 130px;
     margin-top: 60px;
     grid-area: customercontainer;
   }

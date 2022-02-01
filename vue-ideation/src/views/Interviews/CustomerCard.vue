@@ -97,8 +97,10 @@ export default {
       await customerApi.deleteCustomer(customerID);
       setTimeout(() => {
         this.$router.go();
-      }, 2300);
+      }, 300);
     },
+
+
     showModalCustomer() {
       this.modalCustomer = true;
       this.$store.commit("setcurrentID", this.customerID);

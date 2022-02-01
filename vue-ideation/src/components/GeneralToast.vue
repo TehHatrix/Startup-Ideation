@@ -22,12 +22,12 @@
           </g>
         </svg>
       </div>
-      <div class="toast__content">
-        <p class="toast__type">{{ toastType }}</p>
-        <p class="toast__message">
-          {{ toastMessage }}
-        </p>
-      </div>
+        <div class="toast__content">
+          <p class="toast__type">{{ toastType }}</p>
+          <p class="toast__message">
+            {{ toastMessage }}
+          </p>
+        </div>
       <div class="toast__close" @click="closeToast()">
         <svg
           version="1.1"
@@ -79,7 +79,7 @@ export default {
 }
 
 .toast {
-  position: absolute;
+  position: fixed;
   margin-left: auto;
   margin-right: auto;
   left: 0;
@@ -160,5 +160,29 @@ export default {
 
 .toast--green:before {
   background-color: #198754;
+}
+
+.toast-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-leave-to {
+  opacity: 0;
+  transform: translateY(-60px);
+}
+
+.toast-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

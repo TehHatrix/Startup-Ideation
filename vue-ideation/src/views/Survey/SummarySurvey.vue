@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="containerSummarySurvey">
     <h1 class="header">Survey Summary</h1>
     <div class="card" v-for="(item, index) in steps" :key="index">
       <div class="content">
@@ -36,7 +36,6 @@
             v-for="(item, index2) in item.answer"
             :key="index2"
           >
-            <!-- How to set v model based on question -->
             <input
               class="inp-cbx"
               :id="index2"
@@ -402,6 +401,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.containerSummarySurvey{
+  margin-left: 30px;
+}
+
 .selected {
   color: #8743ff;
 }

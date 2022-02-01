@@ -45,8 +45,6 @@ export default {
       else{
         throw new Error("Cannot create Customer")
       }
-      
-      
     },
 
     async getCustomerInterview() {
