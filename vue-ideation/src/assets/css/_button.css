@@ -151,6 +151,13 @@
     transform: translateY(-5px);
 }
 
+.general-button:disabled {
+    background: grey;
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
 .general-button-colored {
 
     width: fit-content;

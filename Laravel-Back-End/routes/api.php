@@ -17,6 +17,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TodoController;
+use App\Models\LeanCanvas;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
@@ -147,8 +148,9 @@ Route::group([
     // lean canvas route
     Route::post('/projects/{projectID}/leancanvas', [LeanCanvasController::class, 'addContent']);
     Route::get('/projects/{projectID}/leancanvas', [LeanCanvasController::class, 'index']);
-    Route::delete('/projects/leancanvas/{contentType}/{contentId}', [LeanCanvasController::class, 'deleteContent']);
-    Route::put('/projects/leancanvas/{contentType}/{contentId}', [LeanCanvasController::class, 'updateContent']);
+    Route::delete('/projects/leancanvas/{contentId}/type/{type}', [LeanCanvasController::class, 'deleteContent']);
+    Route::put('/projects/leancanvas/{contentId}/type/{type}', [LeanCanvasController::class, 'updateContent']);
+    Route::get('/projects/leancanvas/{canvasId}/type/{type}', [LeanCanvasController::class, 'getSegment']);
 
 
     // collaborator

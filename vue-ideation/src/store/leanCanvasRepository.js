@@ -2,23 +2,33 @@ import api from '@/api/leanCanvasApi'
 
 const state = {
     leanContent: [],
-    errors: []
+    errors: [],
+    customerSegment: [],
+    leanProblem: [],
 }
 
 const getters = {
     leanContent: state => state.leanContent,
-    customerSegment: state => state.leanContent[0]
+    customerSegment: state => state.customerSegment,
+    leanProblem: state => state.leanProblem,
 }
 
 const mutations = {
     SET_CONTENTS(state, payload) {
         state.leanContent = payload
-        // localStorage.setItem('leanContent', JSON.parse(payload))
     },
 
     DESTROY_CONTENT(state) {
         state.leanContent = []
-    }
+    },
+
+    SET_CUSTOMER_SEGMENT(state, payload) {
+        state.customerSegment = payload
+    },
+
+    SET_LEAN_PROBLEM(state, payload) {
+        state.leanProblem = payload
+    },
 }
 
 const actions = {
@@ -28,10 +38,10 @@ const actions = {
         if(res.data.success) {
             commit('SET_CONTENTS', res.data.content)
         } 
-        
         return res
+    },
 
-    }
+
 }
 
 export default {

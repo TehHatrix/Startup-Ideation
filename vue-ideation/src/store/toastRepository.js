@@ -27,6 +27,7 @@ const mutations = {
     setTimeout( () => {
       state.showToast = false
     }, 2000)
+    state.showToast = false
   }
 };
 

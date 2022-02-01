@@ -11,11 +11,15 @@ export default {
         return api.get(`api/projects/${projectId}/leancanvas`)
     },
 
-    async deleteContent(contentId, contentType) {
-        return api.delete(`api/projects/leancanvas/${contentType}/${contentId}`)
+    async deleteContent(canvasId, type) {
+        return api.delete(`api/projects/leancanvas/${canvasId}/type/${type}`)
     },
 
-    async updateContent(type, contentId, payload) {
-        return api.put(`api/projects/leancanvas/${type}/${contentId}`, payload)
-    }
+    async updateContent(contentId, type, payload) {
+        return api.put(`api/projects/leancanvas/${contentId}/type/${type}`, payload)
+    },
+
+    async getSegment(canvasId, type) {
+        return api.get(`api/projects/leancanvas/${canvasId}/type/${type}`)
+    },
 }

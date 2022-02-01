@@ -44,7 +44,7 @@ export default {
 };
 </script>
 
-<style>
+<style >
 #confetti-canvas {
   z-index: 1000;
 }

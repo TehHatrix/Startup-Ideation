@@ -133,8 +133,7 @@ class LeanCanvasController extends Controller
     }
 
 
-    public function deleteContent($type, $contentId) {
-
+    public function deleteContent($contentId, $type) {
 
         $content = null;
 
@@ -158,13 +157,19 @@ class LeanCanvasController extends Controller
             $content = UnfairAdvantage::find($contentId);
         }
 
+        if($content == null) {
+            return response()->json([
+                'success' => false
+            ]);
+        }
+
         $content->delete();
         return response()->json([
             'success' => true
         ]);
     }
 
-    public function updateContent(Request $request, $type, $contentId) {
+    public function updateContent(Request $request, $contentId, $type) {
 
         $validator = Validator::make($request->all(), [
             'topic' => 'required',
@@ -207,12 +212,45 @@ class LeanCanvasController extends Controller
         ]);
     }
 
+    public function getSegment($canvasId, $type) {
 
+        if($type == 1) {
+            $content = CustomerSegment::where('canvas_id', $canvasId)->get();            
 
+        } else if ($type == 2) {
+            $content = Problem::where('canvas_id', $canvasId)->get();            
+        } else if ($type == 3) {
+            $content = Revenue::where('canvas_id', $canvasId)->get();            
 
+        } else if ($type == 4) {
+            $content = Solution::where('canvas_id', $canvasId)->get();            
 
+        } else if ($type == 5) {
+            $content = UniqueValueProposition::where('canvas_id', $canvasId)->get();            
 
-    
-    
-    
+        } else if ($type == 6) {
+            $content = Channel::where('canvas_id', $canvasId)->get();            
+
+        } else if ($type == 7) {
+            $content = KeyMetric::where('canvas_id', $canvasId)->get();            
+
+        } else if ($type == 8) {
+            $content = CostStructure::where('canvas_id', $canvasId)->get();            
+
+        } else if ($type == 9) {
+            $content = UnfairAdvantage::where('canvas_id', $canvasId)->get();            
+
+        } else {
+            return response()->jsonO([
+                'success' => false,
+                'errors' => 'Type not Exist'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'errors' => null,
+            'content' => $content
+        ]);
+    }
 }

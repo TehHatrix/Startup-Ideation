@@ -31,7 +31,7 @@
           <ul class="menu-links">
             <li class="nav-link">
               <a href="#">
-                <router-link :to="{name: 'Project', params: projectId}">
+                <router-link :to="{name: 'Project', params: project.id}">
                   <i class="bx bx-home-alt icon"></i>
                   <span class="text nav-text">Dashboard</span>
 
@@ -40,7 +40,7 @@
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'TodoPage', params: projectId}">
+                <router-link :to="{name: 'TodoPage', params: project.id}">
                   <i class='bx bx-list-ul icon'></i> 
                   <!-- <span class="color"><font-awesome-icon icon="fa-list icon" class="fonticon" ></font-awesome-icon></span> -->
                   <span class="text nav-text">To Do List</span>
@@ -48,7 +48,7 @@
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'ChatPage', params: projectId}">
+                <router-link :to="{name: 'ChatPage', params: project.id}">
                   <i class='bx bx-message-dots icon' ></i>
 
                   <span class="text nav-text">Project Chat</span>
@@ -57,7 +57,7 @@
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'LeanCanvas', params: projectId}" >
+                <router-link :to="{name: 'LeanCanvas', params: project.id}" >
                   <i class='bx bx-brain icon' ></i> 
 
                   <span class="text nav-text">Lean Canvas</span>
@@ -66,7 +66,7 @@
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'FreeCanvas', params: projectId}">
+                <router-link :to="{name: 'FreeCanvas', params: project.id}">
                   <i class='bx bx-chalkboard icon' ></i>
                   <span class="text nav-text">Free Canvas</span>
                 </router-link>
@@ -100,11 +100,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   data() {
     return {
       togglesidebar: false,
-      projectId: this.$route.params.id
     };
   },
   computed: {
@@ -113,6 +113,8 @@ export default {
         close: this.togglesidebar === false,
       };
     },
+
+    ...mapGetters(['project'])
   },
   methods: {
     handleResume() {
@@ -336,6 +338,8 @@ body.dark .sidebar li a:hover .text {
   flex-direction: column;
   justify-content: space-between;
   overflow-y: scroll;
+  -ms-overflow-style: none; /* IE 11 */
+  scrollbar-width: none; /* Firefox 64 */
 }
 .menu-bar::-webkit-scrollbar {
   display: none;
