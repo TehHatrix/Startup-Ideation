@@ -30,51 +30,45 @@
 
           <ul class="menu-links">
             <li class="nav-link">
-              <a href="#">
-                <router-link :to="{name: 'Project', params: currentProjectID}">
-                  <i class="bx bx-home-alt icon"></i>
-                  <span class="text nav-text">Dashboard</span>
-                </router-link>
+              <a @click="routeSidebar('Project')">
+                <i class="bx bx-home-alt icon"></i>
+                <span class="text nav-text">Dashboard</span>
               </a>
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'TodoPage', params: currentProjectID}">
-                  <i class='bx bx-list-ul icon'></i> 
-                  <span class="text nav-text">To Do List</span>
-                </router-link>
+              <a @click="routeSidebar('TodoPage')">
+                <i class="bx bx-list-ul icon"></i>
+                <span class="text nav-text">To Do List</span>
+              </a>
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'ChatPage', params: currentProjectID}">
-                  <i class='bx bx-message-dots icon' ></i>
-
-                  <span class="text nav-text">Project Chat</span>
-
-                </router-link>
+              <a @click="routeSidebar('ChatPage')">
+                <i class="bx bx-message-dots icon"></i>
+                <span class="text nav-text">Project Chat</span>
+              </a>
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'LeanCanvas', params: currentProjectID}" >
-                  <i class='bx bx-brain icon' ></i> 
-
-                  <span class="text nav-text">Lean Canvas</span>
-
-                </router-link>
+              <a @click="routeSidebar('LeanCanvas')">
+                <i class="bx bx-brain icon"></i>
+                <span class="text nav-text">Lean Canvas</span>
+              </a>
             </li>
 
             <li class="nav-link">
-                <router-link :to="{name: 'FreeCanvas', params: this.currentProjectID}">
-                  <i class='bx bx-chalkboard icon' ></i>
-                  <span class="text nav-text">Free Canvas</span>
-                </router-link>
+              <a @click="routeSidebar('FreeCanvas')">
+                <i class="bx bx-chalkboard icon"></i>
+                <span class="text nav-text">Free Canvas</span>
+              </a>
             </li>
 
             <li class="nav-link">
-              <router-link :to="{name: 'ProjectsList'}">
+              <a @click="routeSidebar('ProjectsList')">
                 <i class="bx bx-wallet icon"></i>
                 <span class="text nav-text">Project List</span>
-              </router-link>
+              </a>
             </li>
           </ul>
         </div>
@@ -98,7 +92,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -107,17 +101,25 @@ export default {
     };
   },
   computed: {
-  ...mapGetters(['currentProjectID']),
+    ...mapGetters(["project", "currentProjectID"]),
+
     toggleClose() {
       return {
         close: this.togglesidebar === false,
       };
     },
   },
-  mounted () {
+  mounted() {
     console.log(this.currentProjectID);
   },
   methods: {
+    routeSidebar(routename) {
+      this.$router.push({
+        name: routename,
+        params: { id: this.currentProjectID },
+      });
+    },
+
     handleResume() {
       // this.$router.push({})
     },
@@ -412,7 +414,7 @@ body.dark .switch::before {
   left: 250px;
   height: 100vh;
   width: calc(100% - 250px);
-  background-color: #F3F1F5;
+  background-color: #f3f1f5;
   transition: all 0.3s ease;
 }
 .home .text {
