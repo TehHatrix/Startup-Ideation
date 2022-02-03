@@ -26,15 +26,17 @@
                 class="inputField"
                 name="name"
                 id="name"
+                v-model="userName"
                 required
               />
               <h3>Email Address</h3>
               <div class="goalsCurrency">
                 <input
-                  type="text"
+                  type="email"
                   class="inputField"
                   name="name"
                   id="name"
+                  v-model="userEmail"
                   required
                 />
               </div>
@@ -76,23 +78,58 @@ export default {
       totalpageView: 0,
       todayPageView: 0,
       currentprice: 0,
+      userName: "",
+      userEmail: "",
     };
   },
   methods: {
     routeBack() {
       this.$store.commit("setPreviewFalse");
+      this.$store.commit("setFromPreview", true);
       this.$router.go(-1);
     },
+    checkInputPricing() {
+      //Error Handling for email and name
+      if (this.userName == "") {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit("setMessage", "Please enter your name");
+        this.$store.commit("showToast");
+        return false;
+      } else if (this.userEmail == "") {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit("setMessage", "Please enter your email");
+        this.$store.commit("showToast");
+        return false;
+      } else {
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailPattern.test(this.userEmail) === false) {
+          this.$store.commit("setTypeToast", "Error");
+          this.$store.commit("setMessage", "Please enter an appropriate email");
+          this.$store.commit("showToast");
+          return false;
+        }
+      }
+      return true;
+    },
     async sendDataLanding() {
-      //Get money
-      let payload = {
-        revenue: this.currentprice,
-      };
-      //incrementdatabaseSignUp
-      await landingApi.handleRevenueSignUp(this.currentID, payload);
-      //Add to earlyadopterlanding table (later feature)
-      //Route to thank you page
-      this.$router.push({ name: "LandingThankYou" });
+      this.checkInputPricing();
+      if (this.checkInputPricing()) {
+        //Store to pricing user (projectID, pricinguserdata)
+        let pricingUser = {
+          name: this.userName,
+          email: this.userEmail,
+        };
+        await landingApi.storePricingUser(this.currentID,pricingUser)
+        //Get money
+        let payload = {
+          revenue: this.currentprice,
+        };
+        //incrementdatabaseSignUp
+        await landingApi.handleRevenueSignUp(this.currentID, payload);
+        //Add to earlyadopterlanding table (later feature)
+        //Route to thank you page
+        this.$router.push({ name: "LandingThankYou" });
+      }
     },
 
     injectpricingButton() {
@@ -116,7 +153,13 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["currentTemplate", "currentProjectID","pageHTML","pageCSS","previewModeRepo"]),
+    ...mapGetters([
+      "currentTemplate",
+      "currentProjectID",
+      "pageHTML",
+      "pageCSS",
+      "previewModeRepo",
+    ]),
   },
   mounted() {
     if (this.previewMode) {
@@ -140,6 +183,7 @@ export default {
   },
 
   async created() {
+        this.$store.commit("closeToast");
     this.previewMode = this.previewModeRepo;
     //Get Landing Page Data
     if (this.previewMode === false) {
@@ -176,9 +220,6 @@ export default {
         await landingApi.incrementTotalPageView(this.currentProjectID);
       }
     }
-    // console.log(this.todayPageView);
-    // console.log(this.totalpageView);
-    // console.log(this.remainderPageView);
   },
   destroyed() {
     this.$store.commit("setPreviewFalse");

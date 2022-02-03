@@ -39,7 +39,6 @@ export default {
     Navbar,
   },
   mounted() {
-    console.log(this.$route.name)
   },
   computed: {
     ...mapGetters(["authenticated", "project"]),

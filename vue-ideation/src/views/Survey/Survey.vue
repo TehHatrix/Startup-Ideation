@@ -69,7 +69,7 @@
             :class="dangerInput"
             name="name"
             id="name"
-            placeholder="Please tell us why are you dissapointed with our product.."
+            placeholder="Please tell us why.."
             v-model="currentTextboxAnswer"
           >
           </textarea>
@@ -186,7 +186,7 @@ export default {
       currentDate: undefined,
       previewMode: false,
       passedProjectID: 0,
-      productName: "[Your Product Name]",
+      productName: "Your Product Name",
       dissapointedTextBox: false,
       endQuestion: false,
       hybridAnswer: false,
@@ -596,6 +596,7 @@ export default {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   width: 95%;
   height: 600px;
+  margin-top:70px;
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }

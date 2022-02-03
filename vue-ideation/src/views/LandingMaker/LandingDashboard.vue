@@ -9,6 +9,7 @@
       <share-landing-modal :shareableLink="encodeShareLink"
         >Share Page</share-landing-modal
       >
+      <pricing-user-modal></pricing-user-modal>
       <disabled-button class="updatetrashButton" @click.native="handleDelete()"
         ><font-awesome-icon icon="fa-solid fa-trash-can"
       /></disabled-button>
@@ -76,10 +77,11 @@ import RevenueTarget from "../../components/icons/revenueTarget.vue";
 import ChartCard from "@/components/ChartCard.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
 import landingApi from "@/api/landingApi.js";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 import ShareLandingModal from "../../components/ShareLandingModal.vue";
 import DisabledButton from "@/components/DisabledButton.vue";
 import LandingUpdateModal from "../../components/LandingUpdateModal.vue";
+import PricingUserModal from "@/components/PricingUserModal.vue";
 export default {
   components: {
     DashboardCard,
@@ -92,9 +94,10 @@ export default {
     ShareLandingModal,
     DisabledButton,
     LandingUpdateModal,
+    PricingUserModal,
   },
   computed: {
-    ...mapGetters(["currentProjectID"]),
+    // ...mapGetters(["currentProjectID"]),
     encodeShareLink() {
       let encodelandingID = btoa(this.currentProjectID);
       return window.location.origin + "/landingpage/" + encodelandingID;
@@ -112,6 +115,7 @@ export default {
       landingName: "",
       landingHTML: "",
       landingCSS: "",
+      currentProjectID: 0,
 
       series: [
         {
@@ -182,7 +186,7 @@ export default {
     editLanding() {
       //Set Editing Mode
       this.$store.commit("setEditingMode", true);
-      this.$router.push("/editor/landing");
+      this.$router.push({name: "LandingEditor", params:{id: this.currentProjectID}});
     },
     previewLanding() {
       this.$store.commit("setPreviewTrue");
@@ -227,9 +231,9 @@ export default {
       }
     },
   },
-  mounted() {},
 
   async created() {
+    this.currentProjectID = this.$route.params.id
     await this.getLandingData();
     // let today = new Date(2022,1,21)
 

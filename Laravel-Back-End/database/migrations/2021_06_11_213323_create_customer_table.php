@@ -16,7 +16,7 @@ class CreateCustomerTable extends Migration
         Schema::create('customer', function (Blueprint $table) {
             $table->id('cust_ID');
             $table->unsignedBigInteger('interview_ID');
-            $table->foreign('interview_ID')->references('interview_ID')->on('interview');
+            $table->foreign('interview_ID')->references('interview_ID')->on('interview')->onDelete('cascade');
             $table->string('custname');
             $table->decimal('custscore',2,1)->nullable();
             $table->string('custocc');

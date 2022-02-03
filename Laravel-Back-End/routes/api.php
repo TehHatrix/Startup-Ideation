@@ -63,6 +63,7 @@ Route::prefix('/interview')->group(function () {
     Route::get('/index/{id}', [InterviewController::class, 'index']);
     Route::post('/store', [InterviewController::class, 'store']);
     Route::post('/updatescript/{interviewID}', [InterviewController::class, 'updateScript']);
+    Route::put('/updateobjectivesgoal/{interviewID}', [InterviewController::class, 'updateObjectivesGoal']);
     // Route::put('/{id}', [HypothesisController::class,'update']);
     // Route::put('/custprobid/{customerproblem_id}/{tablenumber}/{table}', [HypothesisController::class,'updateCustomerProblem']);
     // Route::delete('/custprob/{customerproblem_id}',[HypothesisController::class,'destroy']);
@@ -83,7 +84,10 @@ Route::prefix('/customer')->group(function () {
 
 Route::prefix('/landing')->group(function () {
     Route::get('/index/{projectID}',[LandingController::class,'index']);
+    Route::get('/getpricinguser/{projectID}',[LandingController::class,'getPricingUser']);
     Route::post('/store/{projectID}', [LandingController::class, 'store']);
+    Route::post('/storepricinguser/{projectID}', [LandingController::class, 'storePricingUser']);
+    Route::post('/uploadeditorimage/{projectID}',[LandingController::class, 'uploadImageEditor']);
     Route::put('/update/{projectID}',[LandingController::class, 'update']);
     Route::put('/updateGoalName/{projectID}',[LandingController::class, 'updateGoalName']);
     Route::put('/updateseries/{projectID}',[LandingController::class, 'updateSeries']);

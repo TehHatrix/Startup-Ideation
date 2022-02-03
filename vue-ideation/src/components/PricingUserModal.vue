@@ -1,9 +1,8 @@
 <template>
   <div>
     <general-button @click.native="showModal = true">
-      Share Survey
+      View Sign Ups
     </general-button>
-
     <div id="modal-comp">
       <transition name="fade" appear>
         <div
@@ -16,17 +15,22 @@
         <div class="modal" v-if="showModal">
           <transition name="fade" appear>
             <div class="preInterview">
-              <h2>Your Survey Link!</h2>
-              <span class="inlineLink">
-                <font-awesome-icon icon="fa-solid fa-link" />
-                <textarea
-                  id="sharebox"
-                  rows="4"
-                  cols="50"
-                  v-model="shareableLink"
-                  readonly
-                ></textarea>
-              </span>
+              <h2>Sign Up Responses</h2>
+              <div v-if="this.pricingUsers.length == 0"> There are no responses yet! Share your landing page to get responses!</div>
+              <div
+                class="responseCard"
+                v-for="(user, index) in pricingUsers"
+                :key="index"
+              >
+                <span class="iconColor"
+                  ><font-awesome-icon icon="fa-solid fa-font" />
+                </span>
+                Name : <strong>{{ user.username }}</strong> <br />
+                <span class="iconColor"
+                  ><font-awesome-icon icon="fa-regular fa-envelope" />
+                </span>
+                Email : <strong>{{ user.useremail }}</strong>
+              </div>
             </div>
           </transition>
         </div>
@@ -37,44 +41,47 @@
 
 <script>
 import GeneralButton from "./GeneralButton.vue";
+import landingApi from "@/api/landingApi.js";
+import { mapGetters } from "vuex";
 export default {
-  props: {
-    shareableLink: {
-      type: String,
-    },
-  },
   components: { GeneralButton },
   data() {
     return {
       showModal: false,
+      pricingUsers: undefined,
     };
   },
-  methods: {},
-  mounted() {},
-  computed: {},
+  computed: {
+    ...mapGetters(["currentProjectID"]),
+  },
+  async created() {
+    let pricingUsers = await landingApi.getPricingUser(this.currentProjectID);
+    this.pricingUsers = pricingUsers.data.data;
+    console.log(this.pricingUsers);
+  },
 };
 </script>
 
-<style lang = 'scss' scoped>
-.fa-link {
+<style lang="scss" scoped>
+.iconColor {
   color: #8743ff;
+  margin-left: 5px;
 }
 
-.inlineLink {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-textarea {
-  width: 100%;
-  height: 35px;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  font-size: 16px;
-  font-family: "Poppins";
+.responseCard {
+  height: auto;
+  width: auto;
+  margin: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: #fff;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.16), 0 5px 8px rgba(0, 0, 0, 0.23);
+  border-radius: 5px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: scroll;
+  &:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  }
 }
 
 .inputField {

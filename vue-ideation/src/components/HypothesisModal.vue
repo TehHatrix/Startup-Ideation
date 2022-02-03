@@ -63,14 +63,16 @@
               @updateScript="updateInterview"
             >
             </notepad>
-            <general-button
-              v-if="showNotepad"
-              @click.native="
-                showNotepad = false;
-                showPreInterview = true;
-              "
-              >Back</general-button
-            >
+            <div class="notepadButtons">
+              <general-button
+                v-if="showNotepad"
+                @click.native="
+                  showNotepad = false;
+                  showPreInterview = true;
+                "
+                >Back</general-button
+              >
+            </div>
           </div>
         </transition>
       </div>
@@ -95,37 +97,58 @@ export default {
         "Does the customer think our solution solves the right problem?",
         "Does the customer think our solution is better than existing products/services?",
       ],
-      interviewGoals: [5,10,15,20],
+      interviewGoals: [5, 10, 15, 20],
       currentInterviewGoals: null,
-      currentLearningObjectives: "",
+      currentLearningObjectives: null,
       interviewScript:
         "1. Thanks for taking my call, I’m doing some research on [main activity related to problem]. Before we start, can you tell me a bit about yourself? \
-  - Focus on learning about WHO your customer is before moving onto the problem.\
-2. When was the last time you [main activity related to problem]?\
-3. What’s the biggest challenge you face when [main activity related to problem]?\
-  - Listen if they mention the problem you’re trying to solve.\
-  - If not mentioned, then it may not be a big enough problem! Dig deeper into their biggest problem.\
-4. Why is this a problem for you?\
-5. How often does this happen?\
-6. Have you tried to solve it? If so, what did you do?\
-7. How did you discover that solution?\
-8. How satisfied were you with the outcome?\
-  - If unsatisfied, what does your preferred solution look like? How would this solve the problem?\
-9. I’m actually exploring a solution to solve your problem. Can I contact you for feedback if we find a solution?\
-10. I’m trying to understand this from more perspectives. Do you know 1 or 2 other people dealing with this problem who I can speak with?",
+  \n- Focus on learning about WHO your customer is before moving onto the problem.\
+\n\n2. When was the last time you [main activity related to problem]?\
+\n\n3. What’s the biggest challenge you face when [main activity related to problem]?\
+  \n- Listen if they mention the problem you’re trying to solve.\
+  \n- If not mentioned, then it may not be a big enough problem! Dig deeper into their biggest problem.\
+\n\n4. Why is this a problem for you?\
+\n\n5. How often does this happen?\
+\n\n6. Have you tried to solve it? If so, what did you do?\
+\n\n7. How did you discover that solution?\
+\n\n8. How satisfied were you with the outcome?\
+  \n- If unsatisfied, what does your preferred solution look like? How would this solve the problem?\
+\n\n9. I’m actually exploring a solution to solve your problem. Can I contact you for feedback if we find a solution?\
+\n\n10. I’m trying to understand this from more perspectives. Do you know 1 or 2 other people dealing with this problem who I can speak with?",
     };
   },
   methods: {
     routeInterview() {
-      this.$emit("routeInterview");
+      if (this.currentInterviewGoals == null) {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "Please define the goal before proceeding!"
+        );
+        this.$store.commit("showToast");
+      } else if (this.currentLearningObjectives == null) {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "Please define the learning objectives before proceeding!"
+        );
+        this.$store.commit("showToast");
+      } else {
+        let interviewData = {
+          goal: this.currentInterviewGoals,
+          objective: this.currentLearningObjectives,
+          script: this.interviewScript,
+        }
+        this.$emit("routeInterview",interviewData);
+      }
     },
     passOption(value) {
       this.currentLearningObjectives = value;
       this.$emit("clickedObjective", value);
     },
-    passGoal(value){
+    passGoal(value) {
       this.currentInterviewGoals = value;
-      this.$emit("clickedGoal",value)
+      this.$emit("clickedGoal", value);
     },
     updateInterview(scriptPassed) {
       this.interviewScript = scriptPassed;
@@ -133,20 +156,20 @@ export default {
     },
   },
   mounted() {
-    this.currentLearningObjectives =
-      this.$store.state.hypothesisRepository.hypothesis[
-        this.$store.state.hypothesisRepository.currentIndex
-      ].learningObjectives;
-    if (
-      this.$store.state.hypothesisRepository.hypothesis[
-        this.$store.state.hypothesisRepository.currentIndex
-      ].script !== ""
-    ) {
-      this.interviewScript =
-        this.$store.state.hypothesisRepository.hypothesis[
-          this.$store.state.hypothesisRepository.currentIndex
-        ].script;
-    }
+    // this.currentLearningObjectives =
+    //   this.$store.state.hypothesisRepository.hypothesis[
+    //     this.$store.state.hypothesisRepository.currentIndex
+    //   ].learningObjectives;
+    // if (
+    //   this.$store.state.hypothesisRepository.hypothesis[
+    //     this.$store.state.hypothesisRepository.currentIndex
+    //   ].script !== ""
+    // ) {
+    //   this.interviewScript =
+    //     this.$store.state.hypothesisRepository.hypothesis[
+    //       this.$store.state.hypothesisRepository.currentIndex
+    //     ].script;
+    // }
   },
   computed: {
     getLearningObjState() {
@@ -206,6 +229,11 @@ export default {
 .notepadContent {
   ::v-deep button {
     margin-top: 30px;
+  }
+  .notepadButtons{
+    margin-top: 30px;
+    display: flex;
+    gap:20px;
   }
 }
 

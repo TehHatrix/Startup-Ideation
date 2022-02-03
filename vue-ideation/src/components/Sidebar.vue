@@ -24,7 +24,7 @@
       <div class="menu-bar">
         <div class="menu">
           <!-- <li class="search-box">
-                    <i class='bx bx-search icon'></i>
+                    <i class='bx bx-search icon'></i> 
                     <input type="text" placeholder="Search...">
                 </li> -->
 
@@ -70,6 +70,18 @@
                 <span class="text nav-text">Project List</span>
               </a>
             </li>
+            <li class="nav-link" v-if="this.$route.name == 'Interview'">
+              <a @click="routeSidebar('Hypothesis')">
+                <i class="bx bx-abacus icon"></i>
+                <span class="text nav-text">Hypothesis</span>
+              </a>
+            </li>
+            <li class="nav-link" v-if="this.$route.name == 'SurveySummary' || this.$route.name == 'Survey'  ">
+              <a @click="routeSidebar('SurveyDashboard')">
+                <i class="bx bx-line-chart icon"></i>
+                <span class="text nav-text">Back to Dashboard</span>
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -108,9 +120,6 @@ export default {
         close: this.togglesidebar === false,
       };
     },
-  },
-  mounted() {
-    console.log(this.currentProjectID);
   },
   methods: {
     routeSidebar(routename) {

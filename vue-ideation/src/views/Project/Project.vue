@@ -94,7 +94,7 @@
       <h2>Validation</h2>
       <div v-if="validationFinished" class="validationCard">
         <div class="cardProgress" :class="validationProgress"></div>
-        <arrow-left v-if="midPhase" class ="backArrow" @click.native="backPhase"></arrow-left>
+        <arrow-left v-if="midPhase" class ="backArrow congrats" @click.native="backPhase"></arrow-left>
                   <div class="congratsText">
                     <h1>CONGRATS!</h1>
           <p>You have successfully completed all three validation phase!</p>
@@ -341,7 +341,7 @@ export default {
         );
         this.$store.commit("showToast");
       } else {
-        this.$router.push({ name: "Hypothesis" });
+        this.$router.push({ name: "Hypothesis", params:{id: this.projectId} });
       }
     },
 
@@ -350,7 +350,7 @@ export default {
       if (this.validationPhase == "hypothesis") {
         this.$router.push("/hypothesis");
       } else if (this.validationPhase == "landing") {
-        this.$router.push({ name: "LandingDashboard" });
+        this.$router.push({ name: "LandingDashboard", params:{id: this.projectId} });
       } else if (this.validationPhase == "survey") {
         this.$router.push({
           name: "SurveyDashboard",
@@ -550,6 +550,11 @@ export default {
   border-radius: 20px 20px 0px 0px;
   height: 10px;
   background: linear-gradient(180deg, #8743ff 0%, #4136f1 100%);
+}
+
+.congrats{
+  margin-top: 5px;
+  margin-left: 10px;
 }
 
 .congratsText {

@@ -331,6 +331,12 @@ export default {
       }
     },
     checkMCQQuestion(answerType, questionNumber) {
+      if(questionNumber === 1){
+        answerType = answerType.replace('Other','').trim()
+      }
+      else if(questionNumber === 3){
+        answerType = answerType.replace('I would use','').trim()
+      }
       //If not available in label chartoption
       if (
         this.chartOptions[questionNumber].labels.includes(answerType) === false
@@ -338,7 +344,7 @@ export default {
         //push to label and series
         this.chartOptions[questionNumber].labels.push(answerType);
         this.series[questionNumber].push(1);
-        //if not available in steps[index].answer
+        //if not available in steps[index].answer (to append to checkbox)
         if (
           this.steps[questionNumber - 1].answer.includes(answerType) === false
         ) {
@@ -369,7 +375,6 @@ export default {
   },
   async created() {
     let projectID = this.$route.params.projectID;
-    console.log(projectID);
     let userAnswer = await surveyApi.getUserAnswer(projectID);
     let userArray = userAnswer.data.userAnswer;
     //Append All data

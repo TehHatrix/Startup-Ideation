@@ -26,7 +26,7 @@ const routes = [
     // beforeEnter: middleware.user
   },
   {
-    path: "/hypothesis",
+    path: "/hypothesis/:id",
     name: "Hypothesis",
     component: Hypothesis,
     meta: { requiresAuth: true },
@@ -40,7 +40,7 @@ const routes = [
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/templates/landing",
+    path: "/templates/landing/:id",
     name: "LandingChooseTemplates",
     component: LandingChooseTemplates,
     meta: { requiresAuth: true },
@@ -68,7 +68,7 @@ const routes = [
   //   // beforeEnter: middleware.guest,
   // },
   {
-    path: "/editor/landing",
+    path: "/editor/landing/:id",
     name: "LandingEditor",
     component: LandingEditor,
     meta: { requiresAuth: true },
@@ -89,7 +89,7 @@ const routes = [
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/landing/dashboard",
+    path: "/landing/dashboard/:id",
     name: "LandingDashboard",
     component: LandingDashboard,
     meta: { requiresAuth: true },

@@ -16,7 +16,7 @@ class CreateInterviewTable extends Migration
         Schema::create('interview', function (Blueprint $table) {
             $table->id('interview_ID');
             $table->unsignedBigInteger('hypothesis_ID');
-            $table->foreign('hypothesis_ID')->references('hypothesis_ID')->on('hypotheses');
+            $table->foreign('hypothesis_ID')->references('hypothesis_ID')->on('hypotheses')->onDelete('cascade');
             $table->text('script')->nullable();
             $table->string('objective');
             $table->integer('goal');

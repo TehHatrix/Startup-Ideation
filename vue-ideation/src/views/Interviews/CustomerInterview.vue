@@ -25,11 +25,11 @@
 import CustomerCard from "./CustomerCard.vue";
 import AddCustomerCard from "./AddCustomerCard.vue";
 import customerApi from "@/api/customerApi.js";
-import { mapGetters } from "vuex";
 export default {
   data() {
     return {
       customerCards: [],
+      interviewIndex : 0,
     };
   },
   components: {
@@ -55,9 +55,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["interviewIndex"]),
+    // ...mapGetters(["interviewIndex"]),
   },
   mounted() {
+    this.interviewIndex = this.$route.params.id
     this.getCustomerInterview();
   },
   created() {},

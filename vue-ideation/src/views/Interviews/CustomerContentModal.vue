@@ -113,6 +113,11 @@
           @click.native="showCustomerContent"
           >Back</general-button
         >
+        <general-button
+          v-if="modalScript"
+          @click.native="saveLogs"
+          >Save</general-button
+        >
       </div>
     </div>
   </div>
@@ -180,6 +185,19 @@ export default {
       const formData = new FormData();
       formData.append("custimage", event.target.files[0]);
       this.customerFormData = formData;
+    },
+
+    async saveLogs() {
+      let logs = {
+        text: this.customerLogsData,
+      };
+      let logsUpdate = await customerApi.updateLogsCustomer(
+        this.currentID,
+        logs
+      );
+      if (logsUpdate.data.success === false) {
+        throw new Error("Could not update Customer Logs");
+      }
     },
 
     updateLogs(logsText) {
@@ -442,6 +460,7 @@ input[type="file"] {
         height: 470px;
         border-radius: 20px;
         background: #f0f0f0;
+        white-space: pre-wrap; 
 
         p {
           padding-left: 10px;

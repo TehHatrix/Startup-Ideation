@@ -340,16 +340,20 @@
 
 <script>
 import circleArrowLeft from "@/components/icons/circlearrowleft.vue";
+import { mapGetters } from 'vuex';
 export default {
   components: {
     circleArrowLeft,
   },
   methods: {
     handleBack() {
-      this.$router.push({ name: "LandingChooseTemplates" });
+      this.$router.push({ name: "LandingChooseTemplates", params:{id:this.currentProjectID} });
     },
 
     handlePricing() {},
+  },
+  computed: {
+    ...mapGetters(['currentProjectID'])
   },
 };
 </script>

@@ -16,7 +16,7 @@ class CreateUserAnswerTable extends Migration
         Schema::create('user_answer', function (Blueprint $table) {
         $table->id('userAnswerID');
         $table->unsignedBigInteger('surveyID');
-        $table->foreign('surveyID')->references('surveyID')->on('survey');
+        $table->foreign('surveyID')->references('surveyID')->on('survey')->onDelete('cascade');
         $table->string('discover');
         $table->string('dissapointed');
         $table->string('reasonDissapoint');

@@ -16,7 +16,7 @@ class CreateLandingPagesTable extends Migration
         Schema::create('landing_pages', function (Blueprint $table) {
             $table->id("landingpageID");
             $table->unsignedBigInteger('projectID');
-            $table->foreign('projectID')->references('id')->on('projects');
+            $table->foreign('projectID')->references('id')->on('projects')->onDelete('cascade');
             $table->integer('sign_ups');
             $table->integer('unique_view');
             $table->integer('expected_revenue');

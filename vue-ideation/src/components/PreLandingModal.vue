@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import GeneralButton from "./GeneralButton.vue";
 export default {
   components: { GeneralButton },
@@ -80,7 +81,8 @@ export default {
       if (this.wrongNameInput === false && this.wrongRevenueInput === false) {
         this.$store.commit("setLandingName", this.landingName);
         this.$store.commit("setLandingRevenueGoal", this.landingGoalRevenue);
-        this.$router.push({ name: "LandingChooseTemplates" });
+        console.log(this.currentProjectID)
+        this.$router.push({ name: "LandingChooseTemplates" , params:{id:this.currentProjectID}});
       }
     },
     checkInput() {
@@ -98,6 +100,7 @@ export default {
   },
   mounted() {},
   computed: {
+    ...mapGetters(['currentProjectID']),
     dangerName() {
       return {
         danger: this.wrongNameInput,

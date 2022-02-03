@@ -108,6 +108,26 @@ class InterviewController extends Controller
         ]);
     }
 
+    public function updateObjectivesGoal(Request $request, $interviewID){
+        $validator = Validator::make($request->all(), [
+            'objective' => 'string|nullable',
+            'goal' => 'integer|nullable',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $updateInterview = DB::table('interview')->where('interview_ID',$interviewID)->update(array_filter($data));
+        return  response()->json([
+            'updateStatus' => $updateInterview,
+            'success' => true,
+            'errors' => null
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

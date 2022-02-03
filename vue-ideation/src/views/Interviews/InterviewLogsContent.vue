@@ -2,9 +2,9 @@
   <div class="interviewLogs">
     <div class="notepad">
       <div class="top"></div>
-      <div class="paper" contenteditable="true" @blur="handleNotepad($event)">
+      <div class="paper" contenteditable="true" @input="handleNotepad($event)">
         <div>
-          {{ interviewLogsContent }}
+          {{ currentContent }}
         </div>
       </div>
     </div>
@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import customerApi from "@/api/customerApi.js";
-import interviewApi from "@/api/interviewApi.js";
+// import customerApi from "@/api/customerApi.js";
+// import interviewApi from "@/api/interviewApi.js";
 import { mapGetters } from "vuex";
 export default {
   props: {
@@ -24,6 +24,11 @@ export default {
       type: String,
     },
   },
+  data() {
+    return {
+      currentContent: this.interviewLogsContent,
+    }
+  },
   computed: {
     ...mapGetters(["currentID", "interviewIndex"]),
   },
@@ -33,25 +38,18 @@ export default {
         text: e.target.innerText,
       };
       if (this.noteType === "logs") {
-        let logsUpdate = await customerApi.updateLogsCustomer(
-          this.currentID,
-          textObject
-        );
-        if (logsUpdate.data.success === false) {
-          throw new Error("Could not update Customer Logs");
-        } else {
-          this.$emit("changeLogs", textObject);
-        }
+        this.$emit("changeLogs", textObject);
+        // let logsUpdate = await customerApi.updateLogsCustomer(
+        //   this.currentID,
+        //   textObject
+        // );
+        // if (logsUpdate.data.success === false) {
+        //   throw new Error("Could not update Customer Logs");
+        // } else {
+
+        // }
       } else if (this.noteType === "script") {
-        let scriptUpdate = await interviewApi.updateScript(
-          this.interviewIndex,
-          textObject
-        );
-        if (scriptUpdate.data.success === false) {
-          throw new Error("Could not update Interview Script");
-        } else {
-          this.$emit("changeScript", textObject);
-        }
+        this.$emit("changeScript", textObject);
       } else {
         throw new Error("Note Type could not found!");
       }
@@ -66,8 +64,9 @@ export default {
   max-width: 900px;
   box-shadow: 10px 10px 40px rgba(black, 0.15);
   border-radius: 0 0 10px 10px;
-  overflow: hidden;
+  overflow: scroll;
   margin: auto;
+  max-height: 650px;
 }
 
 .top {

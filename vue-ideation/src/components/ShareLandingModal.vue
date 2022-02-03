@@ -17,6 +17,8 @@
           <transition name="fade" appear>
             <div class="preInterview">
               <h2>Your Landing Page Link!</h2>
+              <span class="inlineLink">
+              <font-awesome-icon icon="fa-solid fa-link" />
               <textarea
                 id="sharebox"
                 rows="4"
@@ -24,6 +26,8 @@
                 v-model="shareableLink"
                 readonly
               ></textarea>
+              </span>
+
             </div>
           </transition>
         </div>
@@ -53,6 +57,16 @@ export default {
 </script>
 
 <style lang = 'scss' scoped>
+.fa-link{
+  color:#8743FF;
+}
+
+.inlineLink{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 textarea {
   width: 100%;
   height: 35px;
@@ -61,6 +75,7 @@ textarea {
   box-sizing: border-box;
   border: 2px solid #ccc;
   font-size: 16px;
+    font-family: 'Poppins';
 }
 
 .inputField {

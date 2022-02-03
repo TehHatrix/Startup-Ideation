@@ -2,7 +2,7 @@
   <div>
     <div class="notepad">
       <div class="top"></div>
-      <div class="paper" contenteditable="true" @blur="handleInput($event)">
+      <div class="paper" contenteditable="true" @input="handleInput($event)">
         {{ interviewScript }}
       </div>
     </div>
@@ -19,12 +19,13 @@ export default {
   data() {
     return {
       interviewScript: this.passedValue,
+      passedScript: null,
     };
   },
   methods: {
     handleInput(e){
-      this.interviewScript = e.target.innerText;
-      this.$emit("updateScript",this.interviewScript)
+      this.passedScript = e.target.innerText;
+      this.$emit("updateScript",this.passedScript)
     }
   },
 };
@@ -36,10 +37,11 @@ $paper-line: #94acd4;
 
 .notepad {
   width: 80%;
-  max-width: 600px;
+  max-width: 700px;
   box-shadow: 10px 10px 40px rgba(black, 0.15);
   border-radius: 0 0 10px 10px;
-  overflow: hidden;
+  overflow: scroll;
+  max-height: 650px;
 }
 
 .top {

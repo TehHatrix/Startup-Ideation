@@ -202,7 +202,7 @@ export default {
       await hypothesisApi.deleteHypothesis(hypothesisID);
       setTimeout(() => {
         this.$router.go();
-      }, 2300);
+      }, 300);
     },
     async updateHypothesis(index) {
       this.$set(this.editable, index, true);
@@ -252,7 +252,7 @@ export default {
         console.log(saveHypothesis);
       }
     },
-    async routeInterview() {
+    async routeInterview(passedInterviewData) {
       try {
         let cust_seg =
           this.custseg_data[this.$store.state.hypothesisRepository.currentIndex]
@@ -288,17 +288,9 @@ export default {
         let hypothesisIDdata = hypothesisResult.data.hypothesisID;
         const interviewData = {
           hypothesisID: hypothesisIDdata,
-          script:
-            this.$store.state.hypothesisRepository.hypothesis[
-              this.$store.state.hypothesisRepository.currentIndex
-            ].script,
-          objective:
-            this.$store.state.hypothesisRepository.hypothesis[
-              this.$store.state.hypothesisRepository.currentIndex
-            ].learningObjectives,
-          goal: this.$store.state.hypothesisRepository.hypothesis[
-            this.$store.state.hypothesisRepository.currentIndex
-          ].goal,
+          script: passedInterviewData.script,
+          objective: passedInterviewData.objective,
+          goal: passedInterviewData.goal,
           overallScore: 0.0,
           progress: 0,
         };
@@ -432,10 +424,10 @@ export default {
     async getHypothesisData() {
       try {
         const customersegWithproblems = await this.$http.get(
-          `http://localhost:80/api/getproblemswithcustSeg/${this.currentProjectID}`
+          `http://localhost:80/api/getproblemswithcustSeg/${this.$route.params.id}`
         );
         const hypothesisData = await this.$http.get(
-          `http://localhost:80/api/getproblemHypothesis/${this.currentProjectID}`
+          `http://localhost:80/api/getproblemHypothesis/${this.$route.params.id}`
         );
         this.custseg_data = customersegWithproblems.data;
         this.defined_hypothesis = hypothesisData.data;

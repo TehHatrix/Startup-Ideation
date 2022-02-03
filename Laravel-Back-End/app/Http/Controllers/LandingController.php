@@ -23,6 +23,18 @@ class LandingController extends Controller
         ]);
     }
 
+    public function getPricingUser($projectID)
+    {
+        $landingID = DB::table('landing_pages')->where('projectID',$projectID)->value('landingpageID');
+        $pricingUsers = DB::table('pricinguser')->where('landingpageID','=',$landingID)->get();
+        return response()->json([
+            'success' => true,
+            'data' => $pricingUsers,
+        ]);
+    }
+
+
+
     public function checkExistLandingProject($projectID){
         $searchProjectID = DB::table('landing_pages')->where('projectID','=',$projectID)->exists();
         return $searchProjectID;
@@ -86,8 +98,29 @@ class LandingController extends Controller
             'success' => true,
             'errors' => null
         ]);
+    }
 
-        //
+    public function storePricingUser(Request $request,$projectID){
+        $validator = Validator::make($request->all(), [
+            'name' => 'string|required',
+            'email' => 'string|required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ]);
+        }
+        $data = $validator->validated();
+        $landingID = DB::table('landing_pages')->where('projectID',$projectID)->value('landingpageID');
+        $insertDetail = ['landingpageID' => $landingID,'username' => $data['name'], 'useremail' => $data['email']];
+        $storePricingUser = DB::table('pricinguser')->insert($insertDetail);
+        return  response()->json([
+            'storeStatus' => $storePricingUser,
+            'success' => true,
+            'errors' => null
+        ]);
+
     }
 
     /**
@@ -141,6 +174,12 @@ class LandingController extends Controller
             'landingCSS' => $data['css'],
         ];
         DB::table('landing_pages')->where('projectID',$projectid)->update($updateDetails);
+    }
+
+    public function uploadImageEditor(Request $request,$projectID){
+        return $request->all();
+        $file = $request->file('files');
+        return $file;
     }
 
     public function updateSeries(Request $request, $projectid){

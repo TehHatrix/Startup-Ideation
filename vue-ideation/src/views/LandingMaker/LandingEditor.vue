@@ -94,6 +94,7 @@ export default {
       editor: "",
       editingHTML: "",
       editingCSS: "",
+      currentProjectID: 0,
     };
   },
   methods: {
@@ -105,7 +106,7 @@ export default {
       this.$router.push({ name: "LandingChooseTemplates" });
     },
     handleBackDashboard() {
-      this.$store.commit("setEditingMode",false)
+      this.$store.commit("setEditingMode", false);
       this.$router.push({ name: "LandingDashboard" });
     },
     injectModal() {
@@ -150,8 +151,8 @@ export default {
         if (updatePage.data.success === false) {
           throw new Error("Update Landing Page Fail!");
         } else {
-          this.$store.commit("setEditingMode",false)
-          this.$router.push({name: "LandingDashboard"});
+          this.$store.commit("setEditingMode", false);
+          this.$router.push({ name: "LandingDashboard" });
         }
       } else {
         let addPage = await landingApi.addLandingPage(
@@ -161,8 +162,8 @@ export default {
         if (addPage.data.success === false) {
           throw new Error("Add Landing Page Fail!");
         } else {
-          this.$store.commit("setEditingMode",false)
-          this.$router.push({name: "LandingDashboard"});
+          this.$store.commit("setEditingMode", false);
+          this.$router.push({ name: "LandingDashboard" });
         }
       }
     },
@@ -174,13 +175,16 @@ export default {
       "templatePricingHTML",
       "templateFooterHTML",
       "currentTemplate",
-      "currentProjectID",
       "landingName",
       "landingRevenueGoal",
       "editingMode",
+      "fromPreview",
+      "pageHTML",
+      "pageCSS"
     ]),
   },
   async mounted() {
+    this.currentProjectID = this.$route.params.id
     this.editor = grapesjs.init({
       container: "#editor",
       fromElement: true,
@@ -192,6 +196,12 @@ export default {
         autoload: true, // Autoload stored data on init
         stepsBeforeSave: 1, // If autosave enabled, indicates how many changes are necessary before store method is triggered
       },
+      // assetManager:{
+      //   // upload: 'http://localhost/api/landing/uploadeditorimage/1',
+      //   upload: await landingApi.uploadEditorImage(1,'files'),
+      //   uploadName: 'files',
+      // },
+
       plugins: [grapesjsBlocks, grapesjsTabs, grapesjsForms, grapesjsNavbar],
       pluginsOpts: {
         grapesjsBlocks: {},
@@ -292,7 +302,6 @@ export default {
     const handleClose = () => {
       this.styleComponents = false;
     };
-
     editor.on("component:selected", handleOpen);
     editor.on("component:deselected", handleClose);
 
@@ -371,6 +380,10 @@ export default {
       editor.addComponents(landing.data.data[0].landingHTML);
       editor.setStyle(landing.data.data[0].landingCSS);
       //Bug Editing
+    } else if (this.fromPreview) {
+      editor.addComponents(this.pageHTML);
+      editor.setStyle(this.pageCSS);
+      this.$store.commit("setFromPreview",false);
     } else {
       //Get Passed Landing Page Template
       editor.addComponents(this.templateHTML);
@@ -394,9 +407,9 @@ export default {
       // );
     }
   },
-  async created() {},
-  beforeDestroy () {
-    this.editor.runCommand('core:canvas-clear');
+  beforeDestroy() {
+    this.$store.commit("setFromPreview",false);
+    this.editor.runCommand("core:canvas-clear");
   },
 };
 </script>

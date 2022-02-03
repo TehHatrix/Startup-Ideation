@@ -62,7 +62,7 @@ import RevenueTarget from "../../components/icons/revenueTarget.vue";
 import ChartCard from "@/components/ChartCard.vue";
 import GeneralButton from "@/components/GeneralButton.vue";
 import surveyApi from "@/api/surveyApi.js";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
 import ShareSurveyModal from "../../components/ShareSurveyModal.vue";
 import DisabledButton from "@/components/DisabledButton.vue";
 import SurveyUpdateModal from "../../components/SurveyUpdateModal.vue";
@@ -88,6 +88,7 @@ export default {
       currentDate: undefined,
       todayPageView: 0,
       remainderPageView: 0,
+      currentProjectID: undefined,
 
       series: [
         {
@@ -170,27 +171,56 @@ export default {
       let encodeProjectID = btoa(this.currentProjectID);
       return window.location.origin + "/survey/share/" + encodeProjectID;
     },
-    ...mapGetters(["currentProjectID"]),
+    // ...mapGetters(["currentProjectID"]),
   },
 
   async created() {
+    this.currentProjectID = this.$route.params.projectID;
     //Get Survey Data and Bind
     let surveyData = await surveyApi.getSurveyData(this.currentProjectID);
     this.surveyName = surveyData.data.surveyData[0].survey_name;
     this.totalResponse = surveyData.data.surveyData[0].responses;
     this.totalView = surveyData.data.surveyData[0].total_view;
     this.goalResponse = surveyData.data.surveyData[0].responses_goal;
+    //If achieved goal
+    //Get Dissapointed data
+    let userAnswer = await surveyApi.getUserAnswer(this.currentProjectID);
+    let dissapointedData = userAnswer.data.userAnswer.map(function (el) {
+      return el.dissapointed;
+    });
+    //Calculate percentage of how many dissapointed
+    let dissapointCount = 0;
+    for (let i = 0; i < dissapointedData.length; i++) {
+      if (
+        dissapointedData[i] == "Very Disappointed" ||
+        dissapointedData[i] == "Somewhat Disappointed"
+      ) {
+        dissapointCount++;
+      }
+    }
+    let dissapointPercentage =
+      (dissapointCount / dissapointedData.length) * 100;
+    //If dissapointed > 40% (means product is a must have)
     if (
       this.totalResponse >= this.goalResponse &&
       surveyData.data.surveyData[0].validated === false
     ) {
-      await surveyApi.setValidated(this.currentProjectID);
-      this.$store.commit("setTypeToast", "Success");
-      this.$store.commit(
-        "setMessage",
-        "Congrats you have achieved the goal! This product has a Product/Market Fit Potential!"
-      );
-      this.$store.commit("showToast");
+      if (dissapointPercentage >= 40) {
+        await surveyApi.setValidated(this.currentProjectID);
+        this.$store.commit("setTypeToast", "Success");
+        this.$store.commit(
+          "setMessage",
+          "Congrats you have achieved the goal! This product has a Product/Market Fit Potential!"
+        );
+        this.$store.commit("showToast");
+      } else {
+        this.$store.commit("setTypeToast", "Error");
+        this.$store.commit(
+          "setMessage",
+          "Congrats you have achieved the goal response! However, This product does not have a Product/Market Fit Potential due to low 'Dissapointed' Rates! Re-iterate your survey to find more customer"
+        );
+        this.$store.commit("showToast");
+      }
     }
     this.currentDate = surveyData.data.surveyData[0].current_date;
     this.todayPageView = surveyData.data.surveyData[0].today_view;

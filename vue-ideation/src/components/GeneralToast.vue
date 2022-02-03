@@ -118,6 +118,7 @@ export default {
 
 .toast__type {
   color: #3e3e3e;
+  font-size: 20px;
   font-weight: 700;
   margin-top: 0;
   margin-bottom: 8px;

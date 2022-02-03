@@ -10,6 +10,7 @@ const state = {
     templateCSS: "",
     templateFooterHTML: "",
     landingRevenueGoal: 0,
+    fromPreview: false,
 };
 
 const getters = {
@@ -24,6 +25,7 @@ const getters = {
     pageHTML: (state) => state.pageHTML, 
     pageCSS: (state) => state.pageCSS, 
     previewModeRepo: (state) => state.previewMode, 
+    fromPreview: (state) => state.fromPreview,
 };
 
 const actions = {
@@ -74,6 +76,9 @@ const mutations = {
     },
     setTemplateCSS(state,css){
         state.templateCSS = css;
+    },
+    setFromPreview(state,boolean){
+        state.fromPreview = boolean;
     },
     clearHTMLCSS(state){
         state.pageHTML = "";

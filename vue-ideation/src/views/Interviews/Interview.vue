@@ -18,9 +18,6 @@ export default {
   computed: {
     ...mapGetters(['currentProjectID'])
   },
-  mounted () {
-    console.log(this.currentProjectID);
-  },
 };
 </script>
 

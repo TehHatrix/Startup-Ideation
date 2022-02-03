@@ -1,6 +1,9 @@
 <template>
   <div>
     <div class="card">
+      <div class="updateInterviewButton">
+        <update-interview-modal></update-interview-modal>
+      </div>
       <div class="overallScore">
         <p>Current Overall Score</p>
       </div>
@@ -123,6 +126,7 @@
             <general-button @click.native="closeScriptModal"
               >Close</general-button
             >
+            <general-button @click.native="saveScript">Save</general-button>
           </div>
         </div>
       </div>
@@ -140,7 +144,8 @@ import interviewLogsContent from "./InterviewLogsContent.vue";
 import GeneralButton from "../../components/GeneralButtonNonHover.vue";
 import SuccessButton from "../../components/SuccessButton.vue";
 import DisabledButton from "../../components/DisabledButton.vue";
-import { mapGetters } from "vuex";
+// import { mapGetters } from "vuex";
+import UpdateInterviewModal from "./UpdateInterviewModal.vue";
 
 export default {
   components: {
@@ -151,9 +156,11 @@ export default {
     GeneralButton,
     SuccessButton,
     DisabledButton,
+    UpdateInterviewModal,
   },
   data() {
     return {
+      interviewIndex: 0,
       scriptModal: false,
       interviewScript: "",
       rating: 0.0,
@@ -166,8 +173,21 @@ export default {
     };
   },
   methods: {
-    updateScript(textObject){
-      this.interviewScript = textObject.text
+    async saveScript() {
+      let script = {
+        text: this.interviewScript,
+      };
+      let scriptUpdate = await interviewApi.updateScript(
+        this.interviewIndex,
+        script
+      );
+      if (scriptUpdate.data.success === false) {
+        throw new Error("Could not update Interview Script");
+      }
+    },
+
+    updateScript(textObject) {
+      this.interviewScript = textObject.text;
     },
 
     routeHypothesis() {
@@ -209,7 +229,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["interviewIndex"]),
+    // ...mapGetters(["interviewIndex"]),
     interviewDone() {
       if (this.customerScores !== undefined) {
         if (this.interviewGoals - this.customerScores.length == 0) {
@@ -229,18 +249,31 @@ export default {
     },
   },
   async created() {
+    this.interviewIndex = this.$route.params.id;
     await this.getInterviewData(this.interviewIndex);
     //If Good score and reached goal
-    if((this.interviewGoals - this.customerScores.length == 0) && this.rating >= 3.5){
+    if (
+      this.interviewGoals - this.customerScores.length == 0 &&
+      this.rating >= 3.5
+    ) {
       await hypothesisApi.setHypothesisValidated(this.interviewIndex);
     }
-
   },
 };
 </script>
 <style lang = 'scss' scoped>
 * {
   font-family: "Poppins";
+}
+
+.updateInterviewButton {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  ::v-deep button {
+    height: 30px;
+    width: 30px;
+  }
 }
 
 .customerInfoModal {

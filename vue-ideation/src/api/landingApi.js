@@ -4,6 +4,15 @@ export default {
   async addLandingPage(payload, projectID) {
     return api.post(`api/landing/store/${projectID}`, payload);
   },
+
+  async storePricingUser(projectID,payload){
+    return api.post(`api/landing/storepricinguser/${projectID}`, payload);
+  },
+
+  async getPricingUser(projectID){
+    return api.get(`api/landing/getpricinguser/${projectID}`);
+  },
+
   async getLandingData(projectID) {
     return api.get(`api/landing/index/${projectID}`);
   },
@@ -60,7 +69,15 @@ export default {
 
   async checkValidated(projectID){
     return api.get(`api/landing/checkvalidate/${projectID}`);
-  }
+  },
+
+  async uploadEditorImage(projectID,data){
+    return api.post(`api/landing/uploadeditorimage/${projectID}`,data);
+  },
+
+
+
+  
 
   //   async addHypothesis(payload) {
   //    return api.post('api/hypothesis/store',payload)

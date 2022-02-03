@@ -16,7 +16,7 @@ class CreateSurveyTable extends Migration
         Schema::create('survey', function (Blueprint $table) {
             $table->id("surveyID");
             $table->unsignedBigInteger('projectID');
-            $table->foreign('projectID')->references('id')->on('projects');
+            $table->foreign('projectID')->references('id')->on('projects')->onDelete('cascade');
             $table->string("survey_name");
             $table->integer("responses");
             $table->integer("responses_goal");
