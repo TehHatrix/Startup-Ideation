@@ -15,8 +15,8 @@
                     <tr v-for="(task, index) in tasks" :key="index"  >
                         <!-- <td class="t-center"><input type="checkbox" @change="setComplete(task)" v-model="task.completed" ></td> -->
                         <td>
-                            <label class="c-toggle-switch" >
-                                <input type="checkbox" class="c-toggle-checkbox" @change="setComplete(task)" v-model="task.completed" >
+                            <label class="c-toggle-switch" v-if="user.id === task.assigned_to || task.assigned_to === null">
+                                <input type="checkbox" class="c-toggle-checkbox" @change="setComplete(task)" v-model="task.completed"  >
                                 <span class="c-switch-btn"></span>
                             </label>    
                         </td>

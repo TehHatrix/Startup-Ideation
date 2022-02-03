@@ -14,4 +14,5 @@ class UniqueValueProposition extends Model
     public function canvas() {
         return $this->belongsTo(LeanCanvas::class);
     }
+
 }

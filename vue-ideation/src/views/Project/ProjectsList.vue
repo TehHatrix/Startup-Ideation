@@ -20,16 +20,16 @@
         <!-- project add modal  -->
         <project-modal
         :showModal="showModal"
-        @close="showModal = false; project.project_name = ''; project.project_description= ''" >
+        @close="showModal = false; projectForm.project_name = ''; projectForm.project_description= ''" >
           <h2 class="modal-title" >Add New Project</h2>
           <form @submit.prevent="addProject" >
             <div>
               <div class="input-container">
-                <input class="material-input" type="text" v-model="project.project_name" id="name" required>
+                <input class="material-input" type="text" v-model="projectForm.project_name" id="name" required>
                 <label class="material-label" for="name" >Project Name</label>
               </div>
               <div class="input-container" >
-                <input class="material-input" id="description" type="text " v-model="project.project_description" required>
+                <input class="material-input" id="description" type="text " v-model="projectForm.project_description" required>
                 <label class="material-label" for="description">Project Description</label>
               </div>
             </div>
@@ -66,7 +66,7 @@ export default {
   },
   data() {
     return {
-      project: {
+      projectForm: {
         project_name: "",
         project_description: "",
       },
@@ -81,9 +81,9 @@ export default {
       try {
         if(!this.processing && this.showModal) {
           this.processing = true
-          let res = await api.setProject(this.project);
+          let res = await api.setProject(this.projectForm);
           if (res.data.success) {
-            this.project.project_name = this.project.project_description = "";
+            this.projectForm.project_name = this.projectForm.project_description = "";
             let res = await this.$store.dispatch("getProjects");
             if(res.data.success) {
               this.showModal = false;
@@ -132,7 +132,7 @@ export default {
   
   },
   computed: {
-    ...mapGetters(["user", "projects"]),
+    ...mapGetters(["user", "projects", 'project']),
   },
   async mounted() {
     try {
@@ -146,6 +146,8 @@ export default {
   },
 
   created() {
+    // console.log(this.project.id)
+    window.Echo.leaveChannel(`Project.${this.project.id}`)
     this.$store.commit("DESTROY_PROJECT_LOCALLY");
     this.$store.commit('SET_TASKS_NULL')
     this.$store.commit('SET_FREE_CANVAS_NULL')
@@ -159,6 +161,7 @@ export default {
 
   beforeDestroy() {
     this.disconnect()
+    
   }
 };
 </script>

@@ -120,7 +120,10 @@ export default {
         close: this.togglesidebar === false,
       };
     },
+
+    ...mapGetters(['project'])
   },
+  
   methods: {
     routeSidebar(routename) {
       this.$router.push({
@@ -350,6 +353,8 @@ body.dark .sidebar li a:hover .text {
   flex-direction: column;
   justify-content: space-between;
   overflow-y: scroll;
+  -ms-overflow-style: none; /* IE 11 */
+  scrollbar-width: none; /* Firefox 64 */
 }
 .menu-bar::-webkit-scrollbar {
   display: none;

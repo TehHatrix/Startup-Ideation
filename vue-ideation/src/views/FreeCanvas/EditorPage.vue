@@ -68,6 +68,10 @@ export default {
     beforeDestroy() {
         this.disconnect()
     },
+
+    destroyed() {
+        this.$store.commit('closeToast')
+    },
     computed: {
         ...mapGetters([
             'canvas',
@@ -112,13 +116,13 @@ export default {
                     if(data.success) {
                         this.$store.commit('setTypeToast', 'Success')
                         this.$store.commit('setMessage', 'Successfully Updated')
-                        this.$store.commit('showTimeoutToast')
+                        this.$store.commit('showToast')
                         await this.$store.dispatch('getFreeCanvasContent', this.$route.params.canvasId)
                         this.processing = false
                     } else { 
                         this.$store.commit('setTypeToast', 'Error')
                         this.$store.commit('setMessage', 'Error update')
-                        this.$store.commit('showTimeoutToast')
+                        this.$store.commit('showToast')
                         this.processing = false
                     }
 

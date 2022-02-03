@@ -2,6 +2,7 @@
     <transition name="fade">
         <div
         v-if="showModal"
+        id="modal-project"
         class="fixed inset-0 w-full h-screen flex items-center justify-center bg-semi-75 bg-gray-100  "
         style="background: rgba(0, 0, 0, 0.75); "
         @click.self="close" >
@@ -47,6 +48,10 @@ export default {
 }
 </script>
 <style scoped>
+    .modal-project {
+        z-index: 999;
+    }
+
     .fade-enter-active,
     .fade-leave-active {
     transition: all 0.4s;
@@ -90,6 +95,7 @@ export default {
 
     .bg-gray-100 {
         background: rgba(0, 0, 0, 0.75);
+        z-index: 9;
     }
 
     .max-w-2xl {

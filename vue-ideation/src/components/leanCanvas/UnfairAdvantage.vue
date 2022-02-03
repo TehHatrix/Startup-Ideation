@@ -2,15 +2,16 @@
     <div>
         <div class="c-body-card">
             <div class="c-body-title " >
-                Customer Segment
+                Unfair Advantage
             </div>
             <div class="c-body-content" :style="guide ? {height: '70vh' } : {height: '30rem'}">
                 <div class="general-button" @click="openAddModal">
                     NEW
                 </div>
-                <!--!! list of customer segment  -->
-                <div class="content-container">
-                    <div v-for="(seg, index) in customerSegment" :key="index" class="lean-content-card">
+
+                <!--!! list of Problem  -->
+                <div class="content-container" >
+                    <div v-for="(seg, index) in unfairAdvantage" :key="index" class="lean-content-card">
                         <div class="lean-divider">
                             <div class="lean-topic">
                                 <span>{{ seg.topic }}</span>
@@ -40,12 +41,13 @@
             :showModal="showAddModal"
             @close="closeAddModal" >
 
-            <h2 class="modal-title">Add Customer Segment</h2>
+            <h2 class="modal-title">Add Unfair Advantage</h2>
             <form @submit.prevent="addContent">
                 <div class="input-container">
                     <input type="text" class="material-input" id="topic" v-model="contentForm.topic" >
-                    <label for="topic" class="material-label">Content</label>
+                    <label for="topic" class="material-label">Unfair Advantage</label>
                 </div>
+
                 <div class="text-right">
                     <button class="general-button">Submit</button>
                 </div>
@@ -73,7 +75,7 @@
             <form @submit.prevent="addContent">
                 <div class="input-container">
                     <input type="text" class="material-input" id="topic" v-model="tempContent.topic" >
-                    <label for="topic" class="material-label">Customer Segment</label>
+                    <label for="topic" class="material-label">Unfair Advantage</label>
                 </div>
                 <div class="text-right">
                     <button class="general-button" @click="updateContent">Update</button>
@@ -91,28 +93,28 @@ import api from '../../api/leanCanvasApi'
 import { mapGetters } from 'vuex'
 
 export default {
-    name: "CustomerSegment",
+    name: "RevenueLeanCanvas",
     components: {
         'modal': ProjectModalVue
     },
     props: ['user', 'guide'],
     computed: {
         ...mapGetters([
-            'customerSegment',
-            'collaborator'
+            'unfairAdvantage',
+            'collaborator',
         ])
     },
 
     data() {
         return {
-            type: 1,
+            type: 9,
             projectId: this.$route.params.id,
             showAddModal: false,
             contentForm: {
                 topic: null,
                 customer_segment_id: null,
                 publisher_id: this.user.id,
-                contentType: 1,
+                contentType: 9,
             },
             tempId: null,
 
@@ -126,68 +128,17 @@ export default {
             processing: false,
         }
     },
-
-    created() {
-    },
-
     destroyed() {
         this.$store.commit('closeToast')
     },
 
     methods: {
-        connect() {
-            window.Echo.private(`Project.${this.$route.params.id}`)
-                        .listen('LeanCanvasUpdated', async (e) => {
-                            if(e.type == this.type) {
-                                let {data} = await api.getSegment(this.projectId, this.type)
 
-                                if(data.success) {
-                                    this.$store.commit('SET_CUSTOMER_SEGMENT', data.content)
-                                } 
-                                this.updateAllSegmentDependent()
-                            }
-                        })
-        },
-
-        disconnect() {
-            window.Echo.leaveChannel(`Project.${this.$route.params.id}`)
-        },
-
-        async updateAllSegmentDependent() {
-            this.updateSolution()
-            this.updateProblem()
-            this.updateUniqueValueProposition()
-        },
-
-        async updateSolution() {
+        async setSegment() {
             try {
-                let {data} = await api.getSegment(this.projectId, 4)
+                let {data} = await api.getSegment(this.projectId, this.type)
                 if(data.success) {
-                    this.$store.commit('SET_LEAN_SOLUTION', data.content)
-                }
-
-            } catch (error) {
-                console.log(error)
-            }
-        },
-
-        async updateProblem() {
-            try {
-                let {data} = await api.getSegment(this.projectId, 2)
-                if(data.success) {
-                    this.$store.commit('SET_LEAN_PROBLEM', data.content)
-                }
-
-            } catch (error) {
-                console.log(error)
-            }
-        },
-
-        async updateUniqueValueProposition() {
-            try {
-                let {data} = await api.getSegment(this.projectId, 5)
-                if(data.success) {
-                    this.$store.commit('SET_UNIQUE_VALUE_PROPOSITION', data.content)
+                    this.$store.commit('SET_UNFAIR_ADVANTAGE', data.content)
                 }
 
             } catch (error) {
@@ -196,8 +147,8 @@ export default {
         },
 
         closeAddModal() {
-            this.contentForm.topic = null
             this.showAddModal = false
+            this.contentForm.topic = null
         },
 
         openAddModal() {
@@ -210,21 +161,16 @@ export default {
                     this.processing = true
                     let {data} = await api.addContent(this.projectId, this.contentForm)
                     if(data.success) {
-                        let res = await api.getSegment(this.projectId, this.type)
-                        if(res.data.success) {
-                            this.$store.commit('SET_CUSTOMER_SEGMENT', res.data.content)
-                        }
+                        this.setSegment()
 
-                        this.updateAllSegmentDependent()
-
-                        this.closeAddModal()
+                        this.showAddModal = false
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Success')
                         this.$store.commit('setMessage', 'Successfully Added')
                         this.$store.commit('showTimeoutToast')
                     } else {
-                        this.closeAddModal()
+                        this.showAddModal = false
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Error')
@@ -242,6 +188,7 @@ export default {
             return user != null ? user.username : 'removed collaborator' 
         },
 
+
         openDeleteModal(id) {
             this.tempId = id
             this.showDeleteModal = true
@@ -258,11 +205,7 @@ export default {
                     this.processing = true
                     let res = await api.deleteContent(this.tempId, this.type)
                     if(res.data.success) {
-                        let resAll = await api.getSegment(this.projectId, this.type)
-                        if(resAll.data.success) {
-                            this.$store.commit('SET_CUSTOMER_SEGMENT', resAll.data.content)
-                        }
-                        this.updateAllSegmentDependent()
+                        this.setSegment()
 
                         this.closeDeleteModal()
                         this.processing = false
@@ -300,11 +243,7 @@ export default {
                     this.processing = true
                     let {data} = await api.updateContent(this.tempId, this.type, this.tempContent)
                     if(data.success) {
-                        let resAll = await api.getSegment(this.projectId, this.type)
-                        if(resAll.data.success) {
-                            this.$store.commit('SET_CUSTOMER_SEGMENT', resAll.data.content)
-                        }
-                        this.updateAllSegmentDependent()
+                        this.setSegment()
                         
                         this.closeUpdateModal()
                         this.processing = false
@@ -320,9 +259,8 @@ export default {
             } catch (error) {
                 console.log(error)
             }
-        }
+        },
 
-        
 
         
     }
@@ -341,6 +279,115 @@ export default {
 
     .content-container {
         padding: 0 2rem;
+    }
+
+
+
+        /* select starting stylings ------------------------------*/
+    .select {
+        position: relative;
+    }
+
+    .select-text {
+        position: relative;
+        font-family: inherit;
+        background-color: transparent;
+        width: stretch;
+        padding: 10px 10px 10px 0;
+        font-size: 18px;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0, 0.12);
+    }
+
+    /* Remove focus */
+    .select-text:focus {
+        outline: none;
+        border-bottom: 1px solid rgba(0,0,0, 0);
+    }
+
+        /* Use custom arrow */
+    .select .select-text {
+        appearance: none;
+        -webkit-appearance:none
+    }
+
+    .select:after {
+        position: absolute;
+        top: 18px;
+        right: 10px;
+        /* Styling the down arrow */
+        width: 0;
+        height: 0;
+        padding: 0;
+        content: '';
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid rgba(0, 0, 0, 0.12);
+        pointer-events: none;
+    }
+
+
+    /* LABEL ======================================= */
+    .select-label {
+        color: rgba(0,0,0, 0.5);
+        font-size: 18px;
+        font-weight: normal;
+        position: absolute;
+        pointer-events: none;
+        left: 0;
+        top: 10px;
+        transition: 0.2s ease all;
+    }
+
+    /* active state */
+    .select-text:focus ~ .select-label, .select-text:valid ~ .select-label {
+        color: #2F80ED;
+        top: -20px;
+        transition: 0.2s ease all;
+        font-size: 14px;
+    }
+
+    /* BOTTOM BARS ================================= */
+    .select-bar {
+        position: relative;
+        display: block;
+        width: stretch;
+    }
+
+    .select-bar:before, .select-bar:after {
+        content: '';
+        height: 2px;
+        width: 0;
+        bottom: 1px;
+        position: absolute;
+        background: #2F80ED;
+        transition: 0.2s ease all;
+    }
+
+    .select-bar:before {
+        left: 50%;
+    }
+
+    .select-bar:after {
+        right: 50%;
+    }
+
+    /* active state */
+    .select-text:focus ~ .select-bar:before, .select-text:focus ~ .select-bar:after {
+        width: 50%;
+    }
+
+    /* HIGHLIGHTER ================================== */
+    .select-highlight {
+        position: absolute;
+        height: 60%;
+        width: stretch;
+        top: 25%;
+        left: 0;
+        pointer-events: none;
+        opacity: 0.5;
+
     }
 
     

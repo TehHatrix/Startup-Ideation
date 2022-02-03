@@ -17,9 +17,7 @@
                         <div class="body" @click="currentCategory = categoriesArr[2]" :class="currentCategory === categoriesArr[2] ? 'selected-category' : '' " >
                             {{ categoriesArr[2] }}
                         </div>
-                        <div class="body" @click="currentCategory = categoriesArr[3]" :class="currentCategory === categoriesArr[3] ? 'selected-category' : '' " >
-                            {{ categoriesArr[3] }}
-                        </div>
+
 
                     </div>
                 </div>
