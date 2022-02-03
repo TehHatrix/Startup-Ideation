@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="styled-table">
+    <div class="styled-table" v-if="!loading">
       <table>
         <thead>
           <tr>
@@ -125,7 +125,13 @@
           </tr>
         </tbody>
       </table>
-      <div v-if="noData" class="noDataWarning">Please fill in the customer segment and problems inside the Lean Canvas first before validating hypothesis!</div>
+      <div v-if="noData" class="noDataWarning">
+        Please fill in the customer segment and problems inside the Lean Canvas
+        first before validating hypothesis!
+      </div>
+    </div>
+    <div v-else>
+      <loading-screen></loading-screen>
     </div>
   </div>
 </template>
@@ -138,6 +144,7 @@ import hypothesisApi from "@/api/hypothesisApi";
 import interviewApi from "@/api/interviewApi";
 import GeneralButton from "../components/GeneralButton.vue";
 import GeneralButtonNonHover from "../components/GeneralButtonNonHover.vue";
+import LoadingScreenVue from "@/components/general/LoadingScreen.vue";
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -146,12 +153,14 @@ export default {
     DisabledButton,
     GeneralButton,
     GeneralButtonNonHover,
+    "loading-screen": LoadingScreenVue,
   },
   created() {
     this.getHypothesisData();
   },
   data() {
     return {
+      loading: true,
       noData: false,
       updateFrequency: [],
       updateSeverity: [],
@@ -431,7 +440,10 @@ export default {
         );
         this.custseg_data = customersegWithproblems.data;
         this.defined_hypothesis = hypothesisData.data;
-        if (this.custseg_data.length === 0 && this.defined_hypothesis.length === 0){
+        if (
+          this.custseg_data.length === 0 &&
+          this.defined_hypothesis.length === 0
+        ) {
           this.noData = true;
         }
         for (let index in this.custseg_data) {
@@ -456,13 +468,13 @@ export default {
           this.$store.dispatch("checkHypothesisInitialized", index);
           this.modaldisabled[index] = true;
         }
+        this.loading = false;
       } catch (error) {
         console.log(error);
       }
     },
   },
-  mounted() {
-  },
+  mounted() {},
 };
 </script>
 
@@ -472,7 +484,7 @@ export default {
 }
 
 .theadNone {
-  background: #F3F1F5;
+  background: #f3f1f5;
 }
 
 .deleteEditButton {
@@ -541,10 +553,10 @@ p {
   margin-right: 30px;
 }
 
-.noDataWarning{
+.noDataWarning {
   margin-top: 10px;
   text-align: center;
   font-weight: bold;
-  color: #FF3156;
+  color: #ff3156;
 }
 </style>

@@ -1,7 +1,8 @@
 <template>
   <div class="interviewContainer">
-    <interview-header class="interviewHeader"> </interview-header>
-    <customer-interview class="customerInterview"> </customer-interview>
+    <interview-header class="interviewHeader">
+    </interview-header>
+    <customer-interview  class="customerInterview"> </customer-interview>
   </div>
 </template>
 
@@ -9,14 +10,22 @@
 <script>
 import InterviewHeader from "./InterviewHeader.vue";
 import CustomerInterview from "./CustomerInterview.vue";
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
   components: {
     InterviewHeader,
     CustomerInterview,
   },
+  data() {
+    return {
+    }
+  },
+  methods: {
+  },
   computed: {
-    ...mapGetters(['currentProjectID'])
+    ...mapGetters(["currentProjectID"]),
+  },
+  mounted () {
   },
 };
 </script>
