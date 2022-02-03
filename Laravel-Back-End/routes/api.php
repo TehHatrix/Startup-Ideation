@@ -151,6 +151,7 @@ Route::group([
     Route::delete('/projects/leancanvas/{contentId}/type/{type}', [LeanCanvasController::class, 'deleteContent']);
     Route::put('/projects/leancanvas/{contentId}/type/{type}', [LeanCanvasController::class, 'updateContent']);
     Route::get('/projects/leancanvas/{canvasId}/type/{type}', [LeanCanvasController::class, 'getSegment']);
+    Route::get('/projects/leancanvas/{canvasId}/all', [LeanCanvasController::class, 'getAllSegment']);
 
 
     // collaborator

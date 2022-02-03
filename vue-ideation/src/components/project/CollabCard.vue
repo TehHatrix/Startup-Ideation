@@ -9,31 +9,11 @@
                 
                 <div class="user-list" v-for="(collab, index) in collaborator" :key="index">
                     <span>{{ collab.username }}</span>
-                    <button id="collab-btn" class="general-button-danger" @click="openDeleteModal(collab.id)">
+                    <button id="collab-btn" class="general-button-danger" @click="openDeleteModal(collab.id)" v-if="collab.id !== project.creator_id && user.id === project.creator_id">
                         <font-awesome-icon icon="trash-alt" ></font-awesome-icon>
                     </button>
                 </div>
 
-                <!-- <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="user-row" v-for="(collab, index) in collaborator" :key="index">
-                            <td>{{ collab.username }}</td>
-                            <td v-if="collab.id === project.creator_id">Owner</td>
-                            <td v-else>
-                                Collaborator
-                                <span @click="openDeleteModal(collab.id)" v-if="user.id === project.creator_id" class="delete-button">
-                                    <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> -->
             </div>
         </div>
 
@@ -109,12 +89,14 @@ export default {
         async addCollab() {
             try {
                 let {data} = await api.addUser(this.project.id, {username: this.tempUserSearch})
-                console.log(data)
                 if(data.success) {
                     await this.$store.dispatch('getProject', this.project.id)
-                    this.showAddModal = false
+                    this.closeAddModal()
                 } else {
-                    alert(data.errors)
+                    this.closeAddModal()
+                    this.$store.commit('setTypeToast', 'Error')
+                    this.$store.commit('setMessage', data.errors)
+                    this.$store.commit('showToast')
                 }
             } catch(error) {
                 console.log(error)
@@ -227,5 +209,10 @@ export default {
         width: 8rem;
     }
 
+
+</style>
+
+
+<style lang="scss">
 
 </style>

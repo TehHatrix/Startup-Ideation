@@ -2,16 +2,19 @@
     <div>
         <div class="c-body-card">
             <div class="c-body-title " >
-                Problem
+                Solution
             </div>
-            <div class="c-body-content" :style="guide ? {height: '70vh' } : {height: '30rem'}">
+            <div class="c-body-content" :style="guide ? {height: '70vh' } : {height: '30rem'}" >
                 <div class="general-button" @click="openAddModal">
                     NEW
                 </div>
 
                 <!--!! list of Problem  -->
                 <div class="content-container" >
-                    <div v-for="(seg, index) in leanProblem" :key="index" class="lean-content-card">
+                    <div v-if="leanSolution === []">
+                        <h2>No Solution yet</h2>
+                    </div>
+                    <div v-for="(seg, index) in leanSolution" :key="index" class="lean-content-card" v-else>
                         <div class="lean-divider">
                             <div class="lean-topic">
                                 <span>{{ seg.topic }}</span>
@@ -44,25 +47,14 @@
             :showModal="showAddModal"
             @close="closeAddModal" >
 
-            <h2 class="modal-title">Add Problem</h2>
+            <h2 class="modal-title">Add Solution</h2>
             <form @submit.prevent="addContent">
                 <div class="input-container">
                     <input type="text" class="material-input" id="topic" v-model="contentForm.topic" >
-                    <label for="topic" class="material-label">Problem</label>
+                    <label for="topic" class="material-label">Solution</label>
                 </div>
 
-                <div class="select input-container" v-if="customerSegment === []" >
-                    <select id="" class="select-text" v-model="contentForm.customer_segment_id" required>
-                        <option value="" disabled selected></option>
-                        <option v-for="(cust, index) in customerSegment" :key="index" :value="cust.id">{{ cust.topic }}</option>
-                    </select>
-
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label for="" class="select-label">For Customer Segment</label>
-                </div>
-
-                <div class="select input-container" v-else>
+                <div class="select input-container" >
                     <select id="" class="select-text" v-model="contentForm.customer_segment_id" required>
                         <option value="" disabled selected></option>
                         <option v-for="(cust, index) in customerSegment" :key="index" :value="cust.id">{{ cust.topic }}</option>
@@ -100,18 +92,10 @@
             <form @submit.prevent="addContent">
                 <div class="input-container">
                     <input type="text" class="material-input" id="topic" v-model="tempContent.topic" >
-                    <label for="topic" class="material-label">Content</label>
+                    <label for="topic" class="material-label">Solution</label>
                 </div>
-                <div class="select input-container" v-if="customerSegment === []" >
-                    <select id="" class="select-text" v-model="tempContent.customer_segment_id" required>
-                        <option value="" disabled selected></option>
-                    </select>
 
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label for="" class="select-label">For Customer Segment</label>
-                </div>
-                <div class="select input-container" v-else >
+                <div class="select input-container" >
                     <select id="" class="select-text" v-model="tempContent.customer_segment_id" required>
                         <option value="" disabled selected></option>
                         <option v-for="(cust, index) in customerSegment" :key="index" :value="cust.id">{{ cust.topic }}</option>
@@ -145,7 +129,7 @@ export default {
     props: ['user', 'guide'],
     computed: {
         ...mapGetters([
-            'leanProblem',
+            'leanSolution',
             'collaborator',
             'customerSegment'
         ])
@@ -153,14 +137,14 @@ export default {
 
     data() {
         return {
-            type: 2,
+            type: 4,
             projectId: this.$route.params.id,
             showAddModal: false,
             contentForm: {
                 topic: null,
                 customer_segment_id: null,
                 publisher_id: this.user.id,
-                contentType: 2,
+                contentType: 4,
             },
             tempId: null,
 
@@ -168,8 +152,7 @@ export default {
 
             showUpdateModal: false, 
             tempContent: {
-                topic: null,
-                customer_segment_id: null
+                topic: null
             },
 
             processing: false,
@@ -186,7 +169,7 @@ export default {
             try {
                 let {data} = await api.getSegment(this.projectId, this.type)
                 if(data.success) {
-                    this.$store.commit('SET_LEAN_PROBLEM', data.content)
+                    this.$store.commit('SET_LEAN_SOLUTION', data.content)
                 }
 
             } catch (error) {
@@ -198,6 +181,7 @@ export default {
             this.showAddModal = false
             this.contentForm.topic = null
             this.contentForm.customer_segment_id = null
+
         },
 
         openAddModal() {
@@ -214,14 +198,14 @@ export default {
                     if(data.success) {
                         this.setSegment()
 
-                        this.closeAddModal()
+                        this.showAddModal = false
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Success')
                         this.$store.commit('setMessage', 'Successfully Added')
                         this.$store.commit('showTimeoutToast')
                     } else {
-                        this.closeAddModal()
+                        this.showAddModal = false
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Error')
@@ -275,7 +259,6 @@ export default {
         },
 
         openUpdateModal(segment) {
-
             this.tempContent.topic = segment.topic
             this.tempId = segment.id  
             this.tempContent.customer_segment_id = segment.customer_segment_id
@@ -287,7 +270,6 @@ export default {
             this.tempId = null
             this.tempContent.customer_segment_id = null
             this.showUpdateModal = false
-
         },
 
         async updateContent() {
@@ -316,11 +298,10 @@ export default {
             }
         },
 
-        segmentName(id) {
+        segmentName(id) {                
             let cust = this.customerSegment.find( (cs) => cs.id === id )
             if(cust == null) return 'None'
-
-            return cust.topic
+            return cust.topic 
         }
 
         

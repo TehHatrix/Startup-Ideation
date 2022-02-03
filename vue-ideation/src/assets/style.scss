@@ -58,8 +58,6 @@ $color-green: #abc3b5;
         margin-top: 1rem;
         overflow: scroll;
         padding: .7rem;
-        height: 70vh;
-
         .general-button {
             width: 100%;
             text-align: center;
@@ -73,9 +71,6 @@ $color-green: #abc3b5;
     }
 }
 
-.c-info-card {
-    
-}
 
 .c-expand-card {
 
@@ -415,8 +410,6 @@ $color-green: #abc3b5;
             opacity: 0;
             width: 20%;
             transition: all 0.3s ease 0s;
-            
-            
         }
     }
 

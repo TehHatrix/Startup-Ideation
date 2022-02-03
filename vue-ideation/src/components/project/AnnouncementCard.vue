@@ -3,7 +3,7 @@
         <div class="announcement-title">
             <h2>Announcement</h2>
             <div v-if="project.creator_id === user.id">
-                <button @click="showAnnounModal = true" class="general-button">Create Announcement</button>
+                <button id="hover-white" @click="showAnnounModal = true" class="general-button">Create Announcement</button>
             </div>
         </div>  
         <div class="announcement-body">
@@ -47,7 +47,7 @@
                     <input type="text" id="description" class="material-input" v-model="editForm.description" required>
                     <label for="description" class="material-label">Description</label>
                 </div>
-                <div>
+                <div class="text-right"> 
                     <button class="general-button">Update</button>
                 </div>
             </form>
@@ -57,9 +57,9 @@
          :showModal="showDeleteModal"
          @close="closeDeleteModal">
             <h2 class="modal-title">Confirm Delete</h2>
-            <div class="btn-container">
-                <button class="c-btn-danger" @click="deleteAnnouncement">Confirm</button>
-                <button class="c-btn-primary-outline" @click="closeDeleteModal">Cancel</button>
+            <div class="grid grid-cols-2 gap-2">
+                <button class="general-button full-width" @click="closeDeleteModal">Cancel</button>
+                <button class="general-button-danger full-width" @click="deleteAnnouncement">Confirm</button>
             </div>
         </modal>
 
@@ -79,7 +79,7 @@
                     <input type="text" id="description" class="material-input" v-model="announForm.description" required>
                     <label for="description" class="material-label" >Description</label>
                 </div>
-                <div class="input-container">
+                <div class="text-right">
                     <button class="general-button">Submit</button>
                 </div>
             </form>
@@ -217,6 +217,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+    #hover-white:hover {
+        background: #fff;
+        color: black;
+        box-shadow: 0px 15px 20px rgb( 0, 0, 0, .2 );
+        
+    }
     .notifications__item {
         display: flex;
         align-items: center;
@@ -230,7 +236,7 @@ export default {
         background-color: white;
         border-radius: 5px;
         transition: all .3s ease-in;
-        border: none;
+        border: 2px solid black;
     }
 
     .notifications__item__title,
@@ -274,9 +280,10 @@ export default {
     * Animation part
     */
     .notifications__item:hover {
-    background-color: #f7f7f7;
-    transform: scale( 0.95 );
-    box-shadow: 0px 5px 10px 0px rgb( 0, 0, 0, .2 );
+        background-color: #f7f7f7;
+        transform: scale( 1.05 );
+
+        box-shadow: 0px 5px 10px 0px rgb( 0, 0, 0, .2 );
     }
 
     .notifications__item:hover .notifications__item__option { opacity: 1; }
@@ -400,11 +407,12 @@ export default {
         margin-bottom: 2rem;
 
         .announcement-title {
-            background-color: #14213d;
+            background: linear-gradient(180deg, #8743FF 0%, #4136F1 100%);
+
             color: white;
             padding: 0.2rem 0.5rem;
             letter-spacing: 0.1rem;
-            font-size: 1rem;
+            font-size: .9rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -417,7 +425,7 @@ export default {
             padding-top: 2rem;
             min-height: 20rem;
             overflow: scroll;
-            background-color: #e5e5e5;
+            background-color: #fff;
             border-bottom-left-radius: 1rem;
             border-bottom-right-radius: 1rem;
         }

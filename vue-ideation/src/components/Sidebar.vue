@@ -112,7 +112,7 @@ export default {
     ...mapGetters(['project'])
   },
   mounted() {
-    console.log(this.currentProjectID);
+    // console.log(this.currentProjectID);
   },
   methods: {
     routeSidebar(routename) {

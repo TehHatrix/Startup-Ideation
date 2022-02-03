@@ -157,12 +157,33 @@ const routes = [
     beforeEnter: middleware.guest,
   },
 
+  // {
+  //   path: "/projects/:id/leancanvas",
+  //   name: "LeanCanvas",
+  //   component: () => import("../views/LeanCanvas/LeanCanvas.vue"),
+  //   meta: { requiresAuth: true },
+  //   beforeEnter: middleware.guest,
+  // },
   {
-    path: "/projects/:id/leancanvas",
-    name: "LeanCanvas",
-    component: () => import("../views/LeanCanvas/LeanCanvas.vue"),
-    meta: { requiresAuth: true },
+    path: '/projects/:id/lean-canvas',
+    name: 'LeanCanvas',
+    component: () => import('../views/LeanCanvas/LeanCanvasPage.vue'),
     beforeEnter: middleware.guest,
+
+  },
+  {
+    path: '/projects/:id/lean-canvas/view',
+    name: 'LeanCanvasFull',
+    component: () => import('../views/LeanCanvas/LeanCanvasFull.vue'),
+    beforeEnter: middleware.guest,
+
+  },
+  {
+    path: '/projects/:id/lean-canvas/guide',
+    name: 'LeanCanvasGuide',
+    component: () => import('../views/LeanCanvasGuide/LeanCanvasGuide.vue'),
+    beforeEnter: middleware.guest,
+
   },
   {
     path: '/projects/:id/freecanvas',
@@ -185,17 +206,6 @@ const routes = [
     
   },
 
-  {
-    path: '/lean-canvas/learnmore',
-    name: 'LeanCanvasInformation',
-    component: () => import('../views/LeanCanvasInformation.vue'),
-  },
-
-  {
-    path: '/projects/:id/lean-canvas/guide',
-    name: 'LeanCanvasGuide',
-    component: () => import('../views/LeanCanvasGuide/LeanCanvasGuide.vue')
-  }
 ];
 
 const router = new VueRouter({

@@ -2,22 +2,19 @@
     <div>
         <div class="c-body-card">
             <div class="c-body-title " >
-                Problem
+                Revenue
             </div>
             <div class="c-body-content" :style="guide ? {height: '70vh' } : {height: '30rem'}">
                 <div class="general-button" @click="openAddModal">
                     NEW
                 </div>
 
-                <!--!! list of Problem  -->
+                <!--!! list of Problem  --> 
                 <div class="content-container" >
-                    <div v-for="(seg, index) in leanProblem" :key="index" class="lean-content-card">
+                    <div v-for="(seg, index) in leanRevenue" :key="index" class="lean-content-card">
                         <div class="lean-divider">
                             <div class="lean-topic">
                                 <span>{{ seg.topic }}</span>
-                                <span class="cs-segment">
-                                    For Customer Segment: {{ segmentName(seg.customer_segment_id) }}
-                                </span>
                                 <span class="created-by">
                                     Created by: {{ getPublisherName(seg.publisher_id) }}
                                 </span>
@@ -44,33 +41,11 @@
             :showModal="showAddModal"
             @close="closeAddModal" >
 
-            <h2 class="modal-title">Add Problem</h2>
+            <h2 class="modal-title">Add Revenue</h2>
             <form @submit.prevent="addContent">
                 <div class="input-container">
                     <input type="text" class="material-input" id="topic" v-model="contentForm.topic" >
-                    <label for="topic" class="material-label">Problem</label>
-                </div>
-
-                <div class="select input-container" v-if="customerSegment === []" >
-                    <select id="" class="select-text" v-model="contentForm.customer_segment_id" required>
-                        <option value="" disabled selected></option>
-                        <option v-for="(cust, index) in customerSegment" :key="index" :value="cust.id">{{ cust.topic }}</option>
-                    </select>
-
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label for="" class="select-label">For Customer Segment</label>
-                </div>
-
-                <div class="select input-container" v-else>
-                    <select id="" class="select-text" v-model="contentForm.customer_segment_id" required>
-                        <option value="" disabled selected></option>
-                        <option v-for="(cust, index) in customerSegment" :key="index" :value="cust.id">{{ cust.topic }}</option>
-                    </select>
-
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label for="" class="select-label">For Customer Segment</label>
+                    <label for="topic" class="material-label">Revenue</label>
                 </div>
 
                 <div class="text-right">
@@ -102,26 +77,6 @@
                     <input type="text" class="material-input" id="topic" v-model="tempContent.topic" >
                     <label for="topic" class="material-label">Content</label>
                 </div>
-                <div class="select input-container" v-if="customerSegment === []" >
-                    <select id="" class="select-text" v-model="tempContent.customer_segment_id" required>
-                        <option value="" disabled selected></option>
-                    </select>
-
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label for="" class="select-label">For Customer Segment</label>
-                </div>
-                <div class="select input-container" v-else >
-                    <select id="" class="select-text" v-model="tempContent.customer_segment_id" required>
-                        <option value="" disabled selected></option>
-                        <option v-for="(cust, index) in customerSegment" :key="index" :value="cust.id">{{ cust.topic }}</option>
-                    </select>
-
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label for="" class="select-label">For Customer Segment</label>
-                </div>
-
                 <div class="text-right">
                     <button class="general-button" @click="updateContent">Update</button>
                 </div>
@@ -138,29 +93,28 @@ import api from '../../api/leanCanvasApi'
 import { mapGetters } from 'vuex'
 
 export default {
-    name: "ProblemLeanCanvas",
+    name: "RevenueLeanCanvas",
     components: {
         'modal': ProjectModalVue
     },
     props: ['user', 'guide'],
     computed: {
         ...mapGetters([
-            'leanProblem',
+            'leanRevenue',
             'collaborator',
-            'customerSegment'
         ])
     },
 
     data() {
         return {
-            type: 2,
+            type: 3,
             projectId: this.$route.params.id,
             showAddModal: false,
             contentForm: {
                 topic: null,
                 customer_segment_id: null,
                 publisher_id: this.user.id,
-                contentType: 2,
+                contentType: 3,
             },
             tempId: null,
 
@@ -168,8 +122,7 @@ export default {
 
             showUpdateModal: false, 
             tempContent: {
-                topic: null,
-                customer_segment_id: null
+                topic: null
             },
 
             processing: false,
@@ -186,7 +139,7 @@ export default {
             try {
                 let {data} = await api.getSegment(this.projectId, this.type)
                 if(data.success) {
-                    this.$store.commit('SET_LEAN_PROBLEM', data.content)
+                    this.$store.commit('SET_LEAN_REVENUE', data.content)
                 }
 
             } catch (error) {
@@ -197,7 +150,6 @@ export default {
         closeAddModal() {
             this.showAddModal = false
             this.contentForm.topic = null
-            this.contentForm.customer_segment_id = null
         },
 
         openAddModal() {
@@ -208,20 +160,18 @@ export default {
             try {
                 if(!this.processing && this.showAddModal) {
                     this.processing = true
-                    if(this.contentForm.customer_segment_id == -1) this.contentForm.customer_segment_id = null
-
                     let {data} = await api.addContent(this.projectId, this.contentForm)
                     if(data.success) {
                         this.setSegment()
 
-                        this.closeAddModal()
+                        this.showAddModal = false
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Success')
                         this.$store.commit('setMessage', 'Successfully Added')
                         this.$store.commit('showTimeoutToast')
                     } else {
-                        this.closeAddModal()
+                        this.showAddModal = false
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Error')
@@ -238,6 +188,7 @@ export default {
             let user = this.collaborator.find( (user) => user.id === id )
             return user != null ? user.username : 'removed collaborator' 
         },
+
 
         openDeleteModal(id) {
             this.tempId = id
@@ -275,17 +226,14 @@ export default {
         },
 
         openUpdateModal(segment) {
-
             this.tempContent.topic = segment.topic
             this.tempId = segment.id  
-            this.tempContent.customer_segment_id = segment.customer_segment_id
             this.showUpdateModal = true
         }, 
 
         closeUpdateModal() {
             this.tempContent.topic = null
             this.tempId = null
-            this.tempContent.customer_segment_id = null
             this.showUpdateModal = false
 
         },
@@ -294,8 +242,6 @@ export default {
             try {
                 if(!this.processing && this.showUpdateModal) {
                     this.processing = true
-                    if(this.tempContent.customer_segment_id === -1) this.tempContent.customer_segment_id = null
-
                     let {data} = await api.updateContent(this.tempId, this.type, this.tempContent)
                     if(data.success) {
                         this.setSegment()
@@ -316,14 +262,6 @@ export default {
             }
         },
 
-        segmentName(id) {
-            let cust = this.customerSegment.find( (cs) => cs.id === id )
-            if(cust == null) return 'None'
-
-            return cust.topic
-        }
-
-        
 
         
     }

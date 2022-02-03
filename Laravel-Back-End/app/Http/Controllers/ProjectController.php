@@ -310,8 +310,18 @@ class ProjectController extends Controller
                 'success' => false
             ]);
         }
-
+        
         $project = Project::find($projectId);
+        // check if it is the same collab
+        $currentCollab = $project->users()->get();
+        foreach($currentCollab as $value) {
+            if($value->id == $user->id) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => 'User is already a collaborator  '
+                ]);
+            }
+        }
         $project->users()->attach($user->id);
 
         broadcast(new CollaboratorAdded($user->id));

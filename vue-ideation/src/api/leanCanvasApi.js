@@ -22,4 +22,8 @@ export default {
     async getSegment(canvasId, type) {
         return api.get(`api/projects/leancanvas/${canvasId}/type/${type}`)
     },
+
+    async getAllSegment(canvasId) {
+        return api.get(`api/projects/leancanvas/${canvasId}/all`)
+    }
 }
