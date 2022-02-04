@@ -12,6 +12,8 @@ const state = {
     keyMetric: [],
     costStructure: [],
     unfairAdvantage: [],
+    problemStatusArray: [],
+
 
 }
 
@@ -25,7 +27,8 @@ const getters = {
     leanChannel: state => state.leanChannel,
     keyMetric: state => state.keyMetric,
     costStructure: state => state.costStructure,
-    unfairAdvantage: state => state.unfairAdvantage
+    unfairAdvantage: state => state.unfairAdvantage,
+    problemStatusArray: state => state.problemStatusArray
 }
 
 const mutations = {
@@ -72,6 +75,10 @@ const mutations = {
     SET_UNFAIR_ADVANTAGE(state, payload) {
         state.unfairAdvantage = payload
     },
+
+    SET_PROBLEM_STATUS_ARRAY(state, payload) {
+        state.problemStatusArray = payload
+    }
 
 }
 

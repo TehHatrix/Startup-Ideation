@@ -5,7 +5,7 @@
             <ul class="ul-chat" >
                 <li :class=" message.user_id === user.id ? 'user-message' : '' " >
                     <div class="chat-bubble" :class=" message.user_id === user.id ? 'self-message' : 'other-message' " >
-                        <div class="delete-button" @click="openDeleteModal(message.id)"  >
+                        <div class="delete-button" @click="openDeleteModal(message.id)" v-if="message.user_id === user.id" >
                             <font-awesome-icon icon="trash-alt" size="xs"></font-awesome-icon>
                         </div>
                         <div class="chat-name">

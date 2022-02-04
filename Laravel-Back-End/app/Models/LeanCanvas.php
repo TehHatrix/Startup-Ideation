@@ -50,4 +50,8 @@ class LeanCanvas extends Model
     public function solution() {
         return $this->hasMany(Solution::class, 'canvas_id');
     }
+
+    public function problemStatus() {
+        return $this->hasMany(ProblemStatus::class, 'lean_canvas_id');
+    }
 }

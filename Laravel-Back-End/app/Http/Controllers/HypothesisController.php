@@ -7,6 +7,7 @@ use App\Models\CustomerSegment;
 use App\Models\Hypotheses;
 use App\Models\Interview;
 use App\Models\Problem;
+use App\Models\ProblemStatus;
 use ArrayObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -172,6 +173,9 @@ class HypothesisController extends Controller
     public function setHypothesisTrue($interviewID){
         $hypothesisID = DB::table('interview')->where('interview_ID',$interviewID)->value('hypothesis_ID');
         $validate = DB::table('hypotheses')->where('hypothesis_ID', $hypothesisID)->update(['status' => true]);
+        $problemId = DB::table('hypotheses')->where('hypothesis_ID', $hypothesisID)->value('problem_id');
+        $problemStatus = DB::table('problem_statuses')->where('problem_id', $problemId)->update(['validated' => true]);
+
         return  response()->json([
             'validateResult' => $validate,
             'success' => true,

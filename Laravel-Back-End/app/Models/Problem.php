@@ -30,4 +30,8 @@ class Problem extends Model
     public function customerSegment() {
         return $this->belongsTo(CustomerSegment::class);
     }
+
+    public function problemStatus() {
+        return $this->hasOne(ProblemStatus::class);
+    }
 }

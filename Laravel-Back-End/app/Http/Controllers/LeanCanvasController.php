@@ -9,6 +9,7 @@ use App\Models\CustomerSegment;
 use App\Models\KeyMetric;
 use App\Models\LeanCanvas;
 use App\Models\Problem;
+use App\Models\ProblemStatus;
 use App\Models\Project;
 use App\Models\Revenue;
 use App\Models\Solution;
@@ -85,6 +86,14 @@ class LeanCanvasController extends Controller
             $content->publisher_id = $data['publisher_id'];
             $content->canvas()->associate($canvas[0]->id);
             $content->customerSegment()->associate($data['customer_segment_id'])->save();
+
+            if($data['contentType'] === 2) {
+                $problemStatus = new ProblemStatus();
+                $problemStatus->validated = false;
+                $problemStatus->problem()->associate($content->id);
+                $problemStatus->canvas()->associate($content->canvas_id);
+                $problemStatus->save();
+            }
 
         } else if ($data['contentType'] === 5) {
             // * for optional depend on cust Segment
@@ -291,8 +300,15 @@ class LeanCanvasController extends Controller
             'unfairAdvantage' => $ua
 
         ]);
+    }
 
+    public function getStatusValidated($canvasId) {
 
+        $problemArr = ProblemStatus::where('lean_canvas_id', $canvasId)->get();
+        return response()->json([
+            'success' => true,
+            'problemStatusArray' => $problemArr
+        ]); 
     }
     
 }

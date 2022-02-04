@@ -9,7 +9,7 @@
           <span class="desc-description">{{ project.project_description }}</span>
         </div>
         
-        <button class="general-button-colored" @click="openSettingModal">SETTING</button>
+        <button class="general-button-colored" @click="openSettingModal" v-if="user.id === project.creator_id">SETTING</button>
       </div>
     </div>
 <!-- ??? quick accessbutton -->

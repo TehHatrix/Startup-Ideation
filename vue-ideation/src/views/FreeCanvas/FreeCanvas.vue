@@ -7,7 +7,7 @@
             </div>
 
             <div class="page-body ">
-                <div class="grid grid-cols-3">
+                <div class="grid grid-cols-3 gap-3">
 
                     <div v-for="(canvas, index) in freeCanvas" :key="index" class="" >
                         <!-- <p class="content-card" @click="goContent(canvas.id)" >{{ canvas.name }}</p> -->
@@ -28,7 +28,7 @@
                             </div>
                         </div>  -->
 
-                        <div class="book-wrapper">
+                        <!-- <div class="book-wrapper">
                             <div class="book-notebook">
                                 <div class="book-cover" :class="coverColor(canvas.name)" @click="goContent(canvas.id)">
                                     <div class="book-skin">
@@ -46,6 +46,20 @@
                                     </div>
                                 </div>                               
                             </div>
+                        </div> -->
+
+                        <div class="canvas-wrapper">
+                            <div class="canvas-title">
+                                <span>{{ canvas.name }}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="general-button-success"  @click="openUpdateModal(canvas)">
+                                    <font-awesome-icon icon="fa-edit" size="lg"></font-awesome-icon>
+                                </button>
+                                <button class="general-button-danger" @click="openDeleteModal(canvas)">
+                                    <font-awesome-icon icon="trash-alt" size="lg"></font-awesome-icon>
+                                </button>
+                            </div>  
                         </div>
 
                     </div>
@@ -504,5 +518,31 @@ export default {
         justify-content: space-between;
         align-items: center;
     }
+
+    .canvas-wrapper{
+        border: 2px solid black;
+        background: #fff;
+        padding: 1rem 1rem;
+        
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1rem 1rem;
+        box-shadow: 0px 5px 10px 0px rgb( 0, 0, 0, .2 );
+        
+        .canvas-title {
+            font-size: 1.1rem;
+            width: 80%;
+            overflow: hidden;
+            cursor: pointer;
+
+
+        }
+
+        .grid {
+            width: 20%;
+        }
+
+    }   
     
 </style>`

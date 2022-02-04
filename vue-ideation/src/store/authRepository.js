@@ -41,6 +41,7 @@ const actions = {
         if(data.success) {
             commit('SET_USER', null)
             commit('SET_AUTHENTICATED', false)
+            // window.Echo.leaveChannel()
             // localStorage.removeItem('user')
         } else {
             console.log('fail to logout')

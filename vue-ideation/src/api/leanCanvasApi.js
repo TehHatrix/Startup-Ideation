@@ -25,5 +25,9 @@ export default {
 
     async getAllSegment(canvasId) {
         return api.get(`api/projects/leancanvas/${canvasId}/all`)
+    },
+
+    async getStatusValidate(canvasId) {
+        return api.get(`api/projects/leancanvas/${canvasId}/status`)
     }
 }
