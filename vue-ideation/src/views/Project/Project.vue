@@ -173,6 +173,7 @@ export default {
       showDeleteModal: false,
       //validationPhase
       validationPhase: "",
+      dbvalidationPhase: "",
       //definedboolean
       landingvalidated: false,
       landingCreated: false,
@@ -201,6 +202,7 @@ export default {
 
     let projectValPhase = await api.getValidationPhase(this.projectId);
     this.validationPhase = projectValPhase.data.validationPhase;
+    this.dbvalidationPhase = projectValPhase.data.validationPhase;
     //Validation Phase
     this.$store.commit("setCurrentProjectID", this.projectId);
 
@@ -268,7 +270,8 @@ export default {
     beginningPhase() {
       return (
         (this.validationPhase == "hypothesis" && this.hypothesisvalidated) ||
-        (this.validationPhase == "landing" && (this.surveyvalidated || this.surveyCreated))
+        (this.validationPhase == "landing" && (this.surveyvalidated || this.surveyCreated)) ||
+        (this.dbvalidationPhase == "survey" && this.validationPhase == "landing")
       );
     },
 

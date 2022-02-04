@@ -208,13 +208,18 @@ export default {
   },
   methods: {
     async deleteHypothesis(hypothesisID) {
-      await hypothesisApi.deleteHypothesis(hypothesisID);
-      setTimeout(() => {
-        this.$router.go();
-      }, 300);
+      let confirmDelete = confirm(
+        "Are you sure you want to delete this hypothesis?"
+      );
+      if (confirmDelete) {
+        await hypothesisApi.deleteHypothesis(hypothesisID);
+        setTimeout(() => {
+          this.$router.go();
+        }, 300);
+      }
     },
     async updateHypothesis(index) {
-      this.$set(this.editable, index, true);
+      this.$set(this.editable, index, !this.editable[index]);
     },
     show() {
       this.$modal.show("pre-interview-modal");

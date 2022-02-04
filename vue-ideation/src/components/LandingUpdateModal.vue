@@ -109,7 +109,7 @@ export default {
         }
         setTimeout(() => {
           this.$router.go();
-        }, 2000);
+        }, 200);
       }
     },
     checkInput() {
@@ -165,7 +165,7 @@ export default {
   border: 1px solid #ccc;
   transition: all 0.3s ease 0s;
   background-color: #f6fafd;
-
+  font-family: 'Poppins';
   &:focus {
     border: 1px solid rgb(133, 133, 133);
   }

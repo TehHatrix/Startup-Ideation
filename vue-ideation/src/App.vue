@@ -6,22 +6,29 @@
       </transition>
     </div>
 
-
-    <sidebar v-if="authenticated && noSidebarRoute === false">
-      <transition name="fade">
-        <side-navbar>
+    <div v-if="authenticated && noTransitionRoute">
+      <router-view> </router-view>
+    </div>
+    <sidebar v-else-if="authenticated && noSidebarRoute === false">
+      <side-navbar>
+        <vue-page-transition name="fade-in-right">
           <router-view> </router-view>
-        </side-navbar>
-      </transition>
+        </vue-page-transition>
+      </side-navbar>
     </sidebar>
-
-    <transition v-else name="fade">
-      <navbar v-if="noNavbarRoute === false">
+    <navbar v-else-if="authenticated && noNavbarRoute === false">
+      <vue-page-transition name="fade-in-right">
         <router-view> </router-view>
-      </navbar>
-      <router-view v-else></router-view>
-    </transition>
-    
+      </vue-page-transition>
+    </navbar>
+    <vue-page-transition
+      v-else-if="authenticated && noNavbarRoute && noSidebarRoute"
+      name="fade-in-right"
+    >
+      <router-view></router-view>
+    </vue-page-transition>
+
+    <router-view v-else></router-view>
   </div>
 </template>
 
@@ -31,6 +38,7 @@ import GeneralToast from "./components/GeneralToast.vue";
 import Sidebar from "./components/Sidebar.vue";
 import SideNavbar from "./components/SidebarNav.vue";
 import Navbar from "./components/Navbar.vue";
+
 export default {
   components: {
     GeneralToast,
@@ -38,13 +46,18 @@ export default {
     SideNavbar,
     Navbar,
   },
-  mounted() {
-  },
+  mounted() {},
   computed: {
     ...mapGetters(["authenticated", "project"]),
-    noNavbarRoute(){
+    noNavbarRoute() {
       if (
-        this.$route.name === "HomeGuest" || this.$route.name === "LandingEditor" || this.$route.name === "LandingPage" || this.$route.name === "SurveyShare" ||this.$route.name === "LandingPageShare" || this.$route.name === "LandingThankYou" ) {
+        this.$route.name === "HomeGuest" ||
+        this.$route.name === "LandingEditor" ||
+        this.$route.name === "LandingPage" ||
+        this.$route.name === "SurveyShare" ||
+        this.$route.name === "LandingPageShare" ||
+        this.$route.name === "LandingThankYou"
+      ) {
         return true;
       }
       return false;
@@ -55,11 +68,21 @@ export default {
         this.$route.name === "LandingEditor" ||
         this.$route.name === "LandingPage" ||
         this.$route.name === "SurveyShare" ||
-        this.$route.name === "ProjectsList" || this.$route.name === "HomeGuest"  || this.$route.name === "LandingPageShare" || this.$route.name === "LandingThankYou"
+        this.$route.name === "ProjectsList" ||
+        this.$route.name === "HomeGuest" ||
+        this.$route.name === "LandingPageShare" ||
+        this.$route.name === "LandingThankYou"
       ) {
         return true;
       }
       return false;
+    },
+    noTransitionRoute() {
+      if (this.$route.name === "LandingPage") {
+        return true;
+      } else {
+        return false;
+      }
     },
 
     toastBoolean() {

@@ -104,6 +104,7 @@ class LandingController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'string|required',
             'email' => 'string|required',
+            'pricing' => 'integer|required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -113,7 +114,7 @@ class LandingController extends Controller
         }
         $data = $validator->validated();
         $landingID = DB::table('landing_pages')->where('projectID',$projectID)->value('landingpageID');
-        $insertDetail = ['landingpageID' => $landingID,'username' => $data['name'], 'useremail' => $data['email']];
+        $insertDetail = ['landingpageID' => $landingID,'username' => $data['name'], 'useremail' => $data['email'],'pricing' => $data['pricing']];
         $storePricingUser = DB::table('pricinguser')->insert($insertDetail);
         return  response()->json([
             'storeStatus' => $storePricingUser,

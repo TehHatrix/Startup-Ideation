@@ -1,73 +1,78 @@
 <template>
-  <div class="containerSummarySurvey">
-    <h1 class="header">Survey Summary</h1>
-    <div class="card" v-for="(item, index) in steps" :key="index">
-      <div class="content">
-        <p class="questionNumber">Question {{ index + 1 }}</p>
-        <p class="question">{{ appendProductNameQuestion(item.question) }}</p>
-        <div
-          v-if="
-            item.type === 'subjective' || item.answerQuestion === 'contacts'
-          "
-          class="answerList"
-        >
+  <div>
+    <div v-if="loading"><loading-screen></loading-screen></div>
+    <div v-show="!loading" class="containerSummarySurvey">
+      <h1 class="header">Survey Summary</h1>
+      <div class="card" v-for="(item, index) in steps" :key="index">
+        <div class="content">
+          <p class="questionNumber">Question {{ index + 1 }}</p>
+          <p class="question">{{ appendProductNameQuestion(item.question) }}</p>
           <div
-            class="answerCard"
-            v-for="(answer, index) in subjectiveAnswer[index + 1]"
-            :key="index"
+            v-if="
+              item.type === 'subjective' || item.answerQuestion === 'contacts'
+            "
+            class="answerList"
           >
-            {{ answer }}
-          </div>
-        </div>
-        <div v-if="item.type === 'mcq' || item.type === 'hybrid'" id="q1chart">
-          <apexchart
-            type="pie"
-            width="380"
-            :options="chartOptions[index + 1]"
-            :series="series[index + 1]"
-          ></apexchart>
-        </div>
-        <div
-          v-if="item.type === 'mcq' || item.type === 'hybrid'"
-          class="answerList"
-        >
-          <div
-            class="checkboxGroup"
-            v-for="(item, index2) in item.answer"
-            :key="index2"
-          >
-            <input
-              class="inp-cbx"
-              :id="index2"
-              type="radio"
-              style="display: none"
-              :value="valueWithoutElement(item)"
-              v-model="majorityAnswer[index + 1]"
-              disabled
-            />
-            <label
-              class="cbx"
-              :for="index2"
-              :class="isSelected(valueWithoutElement(item))"
-              ><span
-                ><svg width="12px" height="9px" viewbox="0 0 12 9">
-                  <polyline points="1 5 4 8 11 1"></polyline></svg></span
-              ><span>{{ valueWithoutElement(item) }}</span></label
-            >
-          </div>
-        </div>
-        <div v-if="item.answerQuestion === 'dissapointed'"> 
-          <strong>Reason dissapointed</strong>
             <div
-            class="answerCard"
-            v-for="(answer, index) in reasonDissapoint"
-            :key="index"
-          >
-            {{ answer }}
-          </div>
-          
-          
+              class="answerCard"
+              v-for="(answer, index) in subjectiveAnswer[index + 1]"
+              :key="index"
+            >
+              {{ answer }}
             </div>
+          </div>
+          <div
+            v-if="item.type === 'mcq' || item.type === 'hybrid'"
+            id="q1chart"
+          >
+            <apexchart
+              type="pie"
+              width="380"
+              height="230"
+              :options="chartOptions[index + 1]"
+              :series="series[index + 1]"
+            ></apexchart>
+          </div>
+          <div
+            v-if="item.type === 'mcq' || item.type === 'hybrid'"
+            class="answerList"
+          >
+            <div
+              class="checkboxGroup"
+              v-for="(item, index2) in item.answer"
+              :key="index2"
+            >
+              <input
+                class="inp-cbx"
+                :id="index2"
+                type="radio"
+                style="display: none"
+                :value="valueWithoutElement(item)"
+                v-model="majorityAnswer[index + 1]"
+                disabled
+              />
+              <label
+                class="cbx"
+                :for="index2"
+                :class="isSelected(valueWithoutElement(item))"
+                ><span
+                  ><svg width="12px" height="9px" viewbox="0 0 12 9">
+                    <polyline points="1 5 4 8 11 1"></polyline></svg></span
+                ><span>{{ valueWithoutElement(item) }}</span></label
+              >
+            </div>
+          </div>
+          <div v-if="item.answerQuestion === 'dissapointed'">
+            <strong>Reason dissapointed</strong>
+            <div
+              class="answerCard"
+              v-for="(answer, index) in reasonDissapoint"
+              :key="index"
+            >
+              {{ answer }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -76,9 +81,14 @@
 <script>
 import surveyApi from "@/api/surveyApi.js";
 import projectApi from "@/api/projectApi.js";
+import LoadingScreenVue from "@/components/general/LoadingScreen.vue";
 export default {
+  components: {
+    "loading-screen": LoadingScreenVue,
+  },
   data() {
     return {
+      loading: true,
       reasonDissapoint: [],
       productName: "",
       subjectiveAnswer: {
@@ -162,6 +172,10 @@ export default {
             width: 380,
             type: "pie",
           },
+          legend: {
+            width: 100,
+            offsetX: -30,
+          },
           fill: {
             type: "gradient",
           },
@@ -197,6 +211,10 @@ export default {
           chart: {
             width: 380,
             type: "pie",
+          },
+          legend: {
+            width: 100,
+            offsetX: -30,
           },
           fill: {
             type: "gradient",
@@ -234,6 +252,10 @@ export default {
             width: 380,
             type: "pie",
           },
+          legend: {
+            width: 100,
+            offsetX: -30,
+          },
           fill: {
             type: "gradient",
           },
@@ -269,6 +291,10 @@ export default {
           chart: {
             width: 380,
             type: "pie",
+          },
+          legend: {
+            width: 100,
+            offsetX: -30,
           },
           fill: {
             type: "gradient",
@@ -331,11 +357,13 @@ export default {
       }
     },
     checkMCQQuestion(answerType, questionNumber) {
-      if(questionNumber === 1){
-        answerType = answerType.replace('Other','').trim()
-      }
-      else if(questionNumber === 3){
-        answerType = answerType.replace('I would use','').trim()
+      if (questionNumber === 1) {
+        answerType = answerType.replace("Other", "").trim();
+      } else if (questionNumber === 3) {
+        answerType = answerType
+          .replace("I probably wouldn’t use an alternative", "No Alternative")
+          .trim();
+        answerType = answerType.replace("I would use", "").trim();
       }
       //If not available in label chartoption
       if (
@@ -383,8 +411,8 @@ export default {
       this.checkMCQQuestion(userArray[i].discover, 1);
       //for MCQ Question 2 (dissapoint)
       this.checkMCQQuestion(userArray[i].dissapointed, 2);
-      if(userArray[i].reasonDissapoint !== null){
-        this.reasonDissapoint.push(userArray[i].reasonDissapoint)
+      if (userArray[i].reasonDissapoint !== null) {
+        this.reasonDissapoint.push(userArray[i].reasonDissapoint);
       }
       //for MCQ Question 3 (alternative)
       this.checkMCQQuestion(userArray[i].alternative, 3);
@@ -401,12 +429,13 @@ export default {
     //Get Product Name
     let projectData = await projectApi.getProject(projectID);
     this.productName = projectData.data.project.project_name;
+    this.loading = false;
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.containerSummarySurvey{
+.containerSummarySurvey {
   margin-left: 30px;
 }
 

@@ -94,12 +94,16 @@ export default {
   },
   methods: {
     async deleteCustomer(customerID) {
-      await customerApi.deleteCustomer(customerID);
-      setTimeout(() => {
-        this.$router.go();
-      }, 300);
+      let confirmDelete = confirm(
+        "Are you sure you want to delete this customer?"
+      );
+      if (confirmDelete) {
+        await customerApi.deleteCustomer(customerID);
+        setTimeout(() => {
+          this.$router.go();
+        }, 300);
+      }
     },
-
 
     showModalCustomer() {
       this.modalCustomer = true;

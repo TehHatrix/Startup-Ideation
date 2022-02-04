@@ -144,7 +144,7 @@ import interviewLogsContent from "./InterviewLogsContent.vue";
 import GeneralButton from "../../components/GeneralButtonNonHover.vue";
 import SuccessButton from "../../components/SuccessButton.vue";
 import DisabledButton from "../../components/DisabledButton.vue";
-// import { mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import UpdateInterviewModal from "./UpdateInterviewModal.vue";
 
 export default {
@@ -183,6 +183,10 @@ export default {
       );
       if (scriptUpdate.data.success === false) {
         throw new Error("Could not update Interview Script");
+      } else {
+        this.$store.commit("setTypeToast", "Success");
+        this.$store.commit("setMessage", "Update Interview Script successful!");
+        this.$store.commit("showToast");
       }
     },
 
@@ -191,7 +195,10 @@ export default {
     },
 
     routeHypothesis() {
-      this.$router.push({ name: "Hypothesis" });
+      this.$router.push({
+        name: "Hypothesis",
+        params: { id: this.project.id },
+      });
     },
 
     handleScriptLink() {
@@ -213,7 +220,8 @@ export default {
       if (isNaN(average) || average === undefined) {
         average = 0;
       }
-      this.rating = average;
+      
+      this.rating = Math.round(average * 10) / 10;
       this.interviewGoals = interviewData.data.interviewData[0].goal;
       this.currentProblem = interviewData.data.interviewData[0].problems;
       this.currentCustomerSegment =
@@ -229,7 +237,7 @@ export default {
     },
   },
   computed: {
-    // ...mapGetters(["interviewIndex"]),
+    ...mapGetters(["project"]),
     interviewDone() {
       if (this.customerScores !== undefined) {
         if (this.interviewGoals - this.customerScores.length == 0) {
@@ -237,6 +245,9 @@ export default {
         }
       }
       return false;
+    },
+    setLoadingTrue() {
+      return true;
     },
 
     customerScoresLength() {
@@ -258,6 +269,7 @@ export default {
     ) {
       await hypothesisApi.setHypothesisValidated(this.interviewIndex);
     }
+    this.$emit("finishData");
   },
 };
 </script>
@@ -346,7 +358,7 @@ export default {
   background: #fff;
   border-radius: 7px;
   display: flex;
-  /* justify-content: center; */
+  justify-content: space-around;
   align-items: center;
   gap: 30px;
   height: auto;
@@ -362,7 +374,7 @@ export default {
   .ratingCustomers {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    flex-grow: 0.45;
     margin-top: 10px;
     .fa-star {
       color: #e67100;

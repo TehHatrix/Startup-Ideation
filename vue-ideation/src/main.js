@@ -13,9 +13,11 @@ import 'remixicon/fonts/remixicon.css'
 import Echo from 'laravel-echo'
 import './assets/style.scss'
 import api from '@/api/config'
+import VuePageTransition from 'vue-page-transition'
 /* add icons to the library */
 library.add(faStar,faCircleExclamation,faUsers,faBullseye,faScroll,faListCheck,faCheck,faXmark,faArrowLeft,faArrowRight, faPlusSquare, faEdit, faTrashAlt, faCalendarWeek, faCog, faList,  faBrain, faChalkboard, faUserEdit, faUserPlus, faPlus, faCheckDouble, faPen, faCommentDots,faCircleCheck,faArrowUpFromBracket,faTrashCan,faPenToSquare,faMoneyCheckDollar, faFaceSmile,faRightFromBracket,faEnvelope, faFont,faLink )
 Vue.use(VueApexCharts);
+Vue.use(VuePageTransition);
 
 // setup laravel echo for pusher 
 window.Pusher = require('pusher-js')

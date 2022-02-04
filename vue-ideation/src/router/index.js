@@ -74,14 +74,14 @@ const routes = [
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/landingpage/",
+    path: "/landingpage/:id",
     name: "LandingPage",
     component: LandingPage,
     meta: { requiresAuth: true },
     // beforeEnter: middleware.guest,
   },
   {
-    path: "/landingpage/:landingID",
+    path: "/landingpage/share/:landingID",
     name: "LandingPageShare",
     component: LandingPage,
     // meta: { requiresAuth: true },

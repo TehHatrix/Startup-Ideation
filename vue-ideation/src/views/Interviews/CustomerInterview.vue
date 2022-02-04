@@ -60,6 +60,7 @@ export default {
   mounted() {
     this.interviewIndex = this.$route.params.id
     this.getCustomerInterview();
+    this.$emit('finishData');
 
   },
   created() {},

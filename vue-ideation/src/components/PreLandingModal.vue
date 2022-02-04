@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 import GeneralButton from "./GeneralButton.vue";
 export default {
   components: { GeneralButton },
@@ -81,8 +81,11 @@ export default {
       if (this.wrongNameInput === false && this.wrongRevenueInput === false) {
         this.$store.commit("setLandingName", this.landingName);
         this.$store.commit("setLandingRevenueGoal", this.landingGoalRevenue);
-        console.log(this.currentProjectID)
-        this.$router.push({ name: "LandingChooseTemplates" , params:{id:this.currentProjectID}});
+        console.log(this.currentProjectID);
+        this.$router.push({
+          name: "LandingChooseTemplates",
+          params: { id: this.currentProjectID },
+        });
       }
     },
     checkInput() {
@@ -100,7 +103,7 @@ export default {
   },
   mounted() {},
   computed: {
-    ...mapGetters(['currentProjectID']),
+    ...mapGetters(["currentProjectID"]),
     dangerName() {
       return {
         danger: this.wrongNameInput,
@@ -108,7 +111,7 @@ export default {
     },
     dangerRevenue() {
       return {
-        danger:this.wrongRevenueInput,
+        danger: this.wrongRevenueInput,
       };
     },
   },
@@ -116,20 +119,16 @@ export default {
 </script>
 
 <style lang = 'scss' scoped>
-
-.formTitle{
+.formTitle {
   font-size: 35px;
   font-weight: bold;
   margin-bottom: -5px;
 }
 
-.formField{
-    color:#828494;
-    font-weight: normal;
+.formField {
+  color: #828494;
+  font-weight: normal;
 }
-
-
-
 
 ::v-deep button {
   margin-top: 35px;
@@ -142,7 +141,8 @@ export default {
   width: 100%;
   border: 1px solid #ccc;
   transition: all 0.3s ease 0s;
-    background-color: #f6fafd;
+  background-color: #f6fafd;
+  font-family: "Poppins";
 
   &:focus {
     border: 1px solid rgb(133, 133, 133);

@@ -1,46 +1,55 @@
 <template>
   <div>
-    <div class="headerDashboard">
-      <p class="surveyName">{{ surveyName }} Dashboard</p>
-      <general-button @click.native="showSurvey">Preview Survey</general-button>
-      <share-survey-modal :shareableLink="encodeShareLink"></share-survey-modal>
-      <general-button @click.native="showSummary"> Summary</general-button>
-      <disabled-button class="updatetrashButton" @click.native="handleDelete()"
-        ><font-awesome-icon icon="fa-solid fa-trash-can"
-      /></disabled-button>
-      <survey-update-modal class="updatetrashButton"></survey-update-modal>
-    </div>
-    <div class="summary">
-      <h2>{{ surveyName }} Statistic</h2>
-      <div class="cardFlexContainer">
-        <dashboard-card>
-          <template #logo>
-            <sign-up :gradientBoolean="true"></sign-up
-          ></template>
-          <template #title> <h4>Responses</h4></template>
-          <template #content>
-            <h1>{{ totalResponse }}</h1>
-          </template>
-        </dashboard-card>
-        <dashboard-card>
-          <template #logo> <eyes :gradientBoolean="true"></eyes></template>
-          <template #title> <h4>Total Views</h4></template>
-          <template #content>
-            <h1>{{ totalView }}</h1>
-          </template>
-        </dashboard-card>
-        <dashboard-card>
-          <template #logo>
-            <revenue-target :gradientBoolean="true"></revenue-target>
-          </template>
-          <template #title> <h4>Responses Goal</h4></template>
-          <template #content>
-            <h1>{{ goalResponse }}</h1>
-          </template>
-        </dashboard-card>
+    <div v-if="!loading">
+      <div class="headerDashboard">
+        <p class="surveyName">{{ surveyName }} Dashboard</p>
+        <general-button @click.native="showSurvey"
+          >Preview Survey</general-button
+        >
+        <share-survey-modal
+          :shareableLink="encodeShareLink"
+        ></share-survey-modal>
+        <general-button @click.native="showSummary"> Summary</general-button>
+        <disabled-button
+          class="updatetrashButton"
+          @click.native="handleDelete()"
+          ><font-awesome-icon icon="fa-solid fa-trash-can"
+        /></disabled-button>
+        <survey-update-modal class="updatetrashButton"></survey-update-modal>
+      </div>
+      <div class="summary">
+        <h2>{{ surveyName }} Statistic</h2>
+        <div class="cardFlexContainer">
+          <dashboard-card>
+            <template #logo>
+              <sign-up :gradientBoolean="true"></sign-up
+            ></template>
+            <template #title> <h4>Responses</h4></template>
+            <template #content>
+              <h1>{{ totalResponse }}</h1>
+            </template>
+          </dashboard-card>
+          <dashboard-card>
+            <template #logo> <eyes :gradientBoolean="true"></eyes></template>
+            <template #title> <h4>Total Views</h4></template>
+            <template #content>
+              <h1>{{ totalView }}</h1>
+            </template>
+          </dashboard-card>
+          <dashboard-card>
+            <template #logo>
+              <revenue-target :gradientBoolean="true"></revenue-target>
+            </template>
+            <template #title> <h4>Responses Goal</h4></template>
+            <template #content>
+              <h1>{{ goalResponse }}</h1>
+            </template>
+          </dashboard-card>
+        </div>
       </div>
     </div>
-    <div class="chart">
+    <div v-else><loading-screen></loading-screen></div>
+    <div class="chart" v-if="!loading">
       <h2>Unique Views Charts</h2>
       <chart-card>
         <apexchart
@@ -48,8 +57,8 @@
           height="350"
           :options="chartOptions"
           :series="series"
-        ></apexchart
-      ></chart-card>
+        ></apexchart>
+      </chart-card>
     </div>
   </div>
 </template>
@@ -66,6 +75,7 @@ import surveyApi from "@/api/surveyApi.js";
 import ShareSurveyModal from "../../components/ShareSurveyModal.vue";
 import DisabledButton from "@/components/DisabledButton.vue";
 import SurveyUpdateModal from "../../components/SurveyUpdateModal.vue";
+import LoadingScreenVue from "@/components/general/LoadingScreen.vue";
 export default {
   components: {
     DashboardCard,
@@ -77,10 +87,12 @@ export default {
     ShareSurveyModal,
     DisabledButton,
     SurveyUpdateModal,
+    "loading-screen": LoadingScreenVue,
   },
   data() {
     return {
       //Response Survey data
+      loading: true,
       surveyName: "",
       totalResponse: 0,
       totalView: 0,
@@ -157,12 +169,16 @@ export default {
       this.$router.push({ name: "Survey" });
     },
     async handleDelete() {
-      alert("Are you sure you want to delete this Landing Page?");
-      await surveyApi.deleteSurvey(this.currentProjectID);
-      this.$router.push({
-        name: "Project",
-        params: { id: this.currentProjectID },
-      });
+      let confirmDelete = confirm(
+        "Are you sure you want to delete this Survey?"
+      );
+      if (confirmDelete) {
+        await surveyApi.deleteSurvey(this.currentProjectID);
+        this.$router.push({
+          name: "Project",
+          params: { id: this.currentProjectID },
+        });
+      }
     },
   },
 
@@ -227,6 +243,7 @@ export default {
     this.remainderPageView = surveyData.data.surveyData[0].remainder_view;
     this.series = [
       {
+        name: "Views",
         data: JSON.parse(surveyData.data.surveyData[0].series),
       },
     ];
@@ -242,6 +259,7 @@ export default {
       newData.splice(newData.length - 1, 1, newTodayPageView);
       this.series = [
         {
+          name: "Views",
           data: newData,
         },
       ];
@@ -267,6 +285,7 @@ export default {
       newData.push({ x: today, y: pageviewResetRemainder });
       this.series = [
         {
+          name: "Views",
           data: newData,
         },
       ];
@@ -284,6 +303,7 @@ export default {
       this.currentDate = today;
       await surveyApi.updateCurrentDate(this.currentProjectID, payload2);
     }
+    this.loading = false;
   },
 };
 </script>

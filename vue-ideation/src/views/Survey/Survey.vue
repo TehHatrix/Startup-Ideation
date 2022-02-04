@@ -1,12 +1,14 @@
 <template>
   <!-- ! TODO: Email validation input && check Ending && send to userAnswer db -->
-  <div class="card">
-    <div class="concludeContent">
-      <div class="concludeHeader">
-        <circular-progress
-          :passedPercentage="currentpercentageConclude"
-        ></circular-progress>
-        <!-- <p class="score">
+  <div>
+    <div v-if="loading"><loading-screen></loading-screen></div>
+    <div v-show="!loading" class="card">
+      <div class="concludeContent">
+        <div class="concludeHeader">
+          <circular-progress
+            :passedPercentage="currentpercentageConclude"
+          ></circular-progress>
+          <!-- <p class="score">
           <strong>Current Score </strong>
           <transition name="fade" appear>
             <span class="scoreNumber" :key="currentScore"
@@ -16,123 +18,127 @@
           </transition>
         </p>
         <general-button class="stepbackButton" v-if="currentStepsIndex > 0 && endQuestion == false" @click.native="reduceStep()">Step Back</general-button> -->
-      </div>
-      <div class="showFinal" v-if="endQuestion === true">
-        <transition name="fade" appear>
-          <span>
-          <h1><strong>Survey completed! Thank you! </strong></h1>
-          <h3>Thanks a bunch for filling that out. It means a lot to us, just like you do! We really appreciate you giving us a moment of your time today..</h3>
-          <p>You can close the window now.</p>
-          </span>
-        
-        </transition>
-      </div>
-
-      <div v-else-if="endQuestion === false">
-        <div class="concludeQuestionContainer">
+        </div>
+        <div class="showFinal" v-if="endQuestion === true">
           <transition name="fade" appear>
-            <div
-              class="concludeQuestion"
-              :key="appendProductQuestion(steps[currentStepsIndex].question)"
-            >
-              {{ appendProductQuestion(steps[currentStepsIndex].question) }}
-            </div>
+            <span>
+              <h1><strong>Survey completed! Thank you! </strong></h1>
+              <h3>
+                Thanks a bunch for filling that out. It means a lot to us, just
+                like you do! We really appreciate you giving us a moment of your
+                time today..
+              </h3>
+              <p>You can close the window now.</p>
+            </span>
           </transition>
         </div>
-        <!-- If answer is Objectives & Purely MCQ -->
-        <div v-if="answerType === 'mcq'" class="concludeAnswerSubjective">
-          <div
-            class="checkboxGroup"
-            v-for="(item, index) in answers"
-            :key="index"
-          >
-            <input
-              class="inp-cbx"
-              :id="index"
-              type="radio"
-              style="display: none"
-              @click="checkForDissapointed(item)"
-              :value="item"
-              v-model="currentMCQAnswer"
-            />
-            <label class="cbx" :for="index"
-              ><span
-                ><svg width="12px" height="9px" viewbox="0 0 12 9">
-                  <polyline points="1 5 4 8 11 1"></polyline></svg></span
-              ><span>{{ item }}</span></label
-            >
+
+        <div v-else-if="endQuestion === false">
+          <div class="concludeQuestionContainer">
+            <transition name="fade" appear>
+              <div
+                class="concludeQuestion"
+                :key="appendProductQuestion(steps[currentStepsIndex].question)"
+              >
+                {{ appendProductQuestion(steps[currentStepsIndex].question) }}
+              </div>
+            </transition>
           </div>
-          <textarea
-            v-if="dissapointedTextBox"
-            type="text"
-            class="inputField dissapointed"
-            :class="dangerInput"
-            name="name"
-            id="name"
-            placeholder="Please tell us why.."
-            v-model="currentTextboxAnswer"
-          >
-          </textarea>
-        </div>
-        <!-- If answer is Hybrid -->
-        <div
-          v-else-if="answerType === 'hybrid'"
-          class="concludeAnswerSubjective"
-        >
-          <div
-            class="checkboxGroup"
-            v-for="(item, index) in answers"
-            :key="index"
-          >
-            <input
-              class="inp-cbx"
-              :id="index"
-              type="radio"
-              style="display: none"
-              :value="valueWithoutElement(item)"
-              @click="checkHybridAnswer(item)"
-              v-model="currentMCQAnswer"
-            />
-            <label class="cbx" :for="index"
-              ><span
-                ><svg width="12px" height="9px" viewbox="0 0 12 9">
-                  <polyline points="1 5 4 8 11 1"></polyline></svg></span
-              ><span>{{ valueWithoutElement(item) }}</span></label
+          <!-- If answer is Objectives & Purely MCQ -->
+          <div v-if="answerType === 'mcq'" class="concludeAnswerSubjective">
+            <div
+              class="checkboxGroup"
+              v-for="(item, index) in answers"
+              :key="index"
             >
-            <input
-              v-if="textBoxExist(item)"
-              :type="textOrEmail"
-              class="inputField"
+              <input
+                class="inp-cbx"
+                :id="index"
+                type="radio"
+                style="display: none"
+                @click="checkForDissapointed(item)"
+                :value="item"
+                v-model="currentMCQAnswer"
+              />
+              <label class="cbx" :for="index"
+                ><span
+                  ><svg width="12px" height="9px" viewbox="0 0 12 9">
+                    <polyline points="1 5 4 8 11 1"></polyline></svg></span
+                ><span>{{ item }}</span></label
+              >
+            </div>
+            <textarea
+              v-if="dissapointedTextBox"
+              type="text"
+              class="inputField dissapointed"
               :class="dangerInput"
               name="name"
               id="name"
-              @input="appendCurrentAnswer"
+              placeholder="Please tell us why.."
               v-model="currentTextboxAnswer"
-              required
-            />
+            >
+            </textarea>
           </div>
-        </div>
-
-        <div v-else-if="answerType === 'subjective'">
-          <textarea
-            type="text"
-            class="inputField standalone"
-            :class="dangerInput"
-            name="name"
-            id="name"
-            v-model="currentTextboxAnswer"
+          <!-- If answer is Hybrid -->
+          <div
+            v-else-if="answerType === 'hybrid'"
+            class="concludeAnswerSubjective"
           >
-          </textarea>
-        </div>
+            <div
+              class="checkboxGroup"
+              v-for="(item, index) in answers"
+              :key="index"
+            >
+              <input
+                class="inp-cbx"
+                :id="index"
+                type="radio"
+                style="display: none"
+                :value="valueWithoutElement(item)"
+                @click="checkHybridAnswer(item)"
+                v-model="currentMCQAnswer"
+              />
+              <label class="cbx" :for="index"
+                ><span
+                  ><svg width="12px" height="9px" viewbox="0 0 12 9">
+                    <polyline points="1 5 4 8 11 1"></polyline></svg></span
+                ><span>{{ valueWithoutElement(item) }}</span></label
+              >
+              <input
+                v-if="textBoxExist(item)"
+                :type="textOrEmail"
+                class="inputField"
+                :class="dangerInput"
+                name="name"
+                id="name"
+                @input="appendCurrentAnswer"
+                v-model="currentTextboxAnswer"
+                required
+              />
+            </div>
+          </div>
 
-        <div class="stepButton">
-          <general-button @click.native="handleStep"> Next </general-button>
-          <general-button
-            v-if="this.currentStepsIndex > 0"
-            @click.native="handleBack"
-          >
-            Back
-          </general-button>
+          <div v-else-if="answerType === 'subjective'">
+            <textarea
+              type="text"
+              class="inputField standalone"
+              :class="dangerInput"
+              name="name"
+              id="name"
+              v-model="currentTextboxAnswer"
+            >
+            </textarea>
+          </div>
+
+          <div class="stepButton">
+            <general-button @click.native="handleStep"> Next </general-button>
+            <general-button
+              v-if="this.currentStepsIndex > 0"
+              @click.native="handleBack"
+            >
+              Back
+            </general-button>
+          </div>
         </div>
       </div>
     </div>
@@ -147,6 +153,7 @@ import { mapGetters } from "vuex";
 import GeneralButton from "../../components/GeneralButton.vue";
 import surveyApi from "@/api/surveyApi.js";
 import projectApi from "@/api/projectApi.js";
+import LoadingScreenVue from "@/components/general/LoadingScreen.vue";
 
 Vue.use(VueConfetti);
 
@@ -154,6 +161,7 @@ export default {
   components: {
     CircularProgress,
     GeneralButton,
+    "loading-screen": LoadingScreenVue,
   },
   computed: {
     dangerInput() {
@@ -182,6 +190,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       wrongInput: false,
       currentDate: undefined,
       previewMode: false,
@@ -496,7 +505,6 @@ export default {
     } else {
       this.previewMode = true;
     }
-
     if (this.previewMode === false) {
       //Get Survey Data
       let surveyData = await surveyApi.getSurveyData(this.passedProjectID);
@@ -507,7 +515,7 @@ export default {
       }
       //Get Product Name
       let projectData = await projectApi.getProject(this.passedProjectID);
-      this.productName = projectData.data.project.project_name
+      this.productName = projectData.data.project.project_name;
       //Count Page View
       let today = new Date().toLocaleDateString();
       let projectdate = new Date(this.currentDate).toLocaleDateString();
@@ -524,6 +532,7 @@ export default {
         await surveyApi.incrementTotalPageView(this.passedProjectID);
       }
     }
+    this.loading = false;
   },
 
   // destroyed () {
@@ -533,17 +542,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.showFinal{
-    display:flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  h1{
+.showFinal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  h1 {
     font-size: 50px;
     text-transform: uppercase;
   }
 }
-
 
 .inputField {
   border-radius: 5px;
@@ -596,7 +604,7 @@ export default {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   width: 95%;
   height: 600px;
-  margin-top:70px;
+  margin-top: 70px;
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }

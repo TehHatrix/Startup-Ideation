@@ -1,70 +1,75 @@
 <template>
-  <div class="container">
-    <div class="headerDashboard">
-      <h1>{{ landingName }} Dashboard</h1>
-      <general-button @click.native="editLanding"> Edit Page</general-button>
-      <general-button @click.native="previewLanding">
-        Preview Page</general-button
-      >
-      <share-landing-modal :shareableLink="encodeShareLink"
-        >Share Page</share-landing-modal
-      >
-      <pricing-user-modal></pricing-user-modal>
-      <disabled-button class="updatetrashButton" @click.native="handleDelete()"
-        ><font-awesome-icon icon="fa-solid fa-trash-can"
-      /></disabled-button>
-      <landing-update-modal class="updatetrashButton"></landing-update-modal>
-    </div>
-    <div class="summary">
-      <h2>{{ landingName }} Page Statistic</h2>
-      <div class="cardFlexContainer">
-        <dashboard-card>
-          <template #logo>
-            <sign-up :gradientBoolean="true"></sign-up
-          ></template>
-          <template #title> <h4>Sign Ups</h4></template>
-          <template #content>
-            <h1>{{ signups }}</h1>
-          </template>
-        </dashboard-card>
-        <dashboard-card>
-          <template #logo> <eyes :gradientBoolean="true"></eyes></template>
-          <template #title> <h4>Total Unique Views</h4></template>
-          <template #content>
-            <h1>{{ uniqueviews }}</h1>
-          </template>
-        </dashboard-card>
-        <dashboard-card>
-          <template #logo>
-            <revenue :gradientBoolean="true"> </revenue
-          ></template>
-          <template #title> <h4>Expected Revenue</h4></template>
-          <template #content>
-            <h1>RM {{ expectedrevenue }}</h1>
-          </template>
-        </dashboard-card>
-        <dashboard-card>
-          <template #logo>
-            <revenue-target :gradientBoolean="true"></revenue-target>
-          </template>
-          <template #title> <h4>Goals Revenue</h4></template>
-          <template #content>
-            <h1>RM {{ goalsrevenue }}</h1>
-          </template>
-        </dashboard-card>
+  <div>
+    <div v-if="!loading" class="container">
+      <div class="headerDashboard">
+        <h1>{{ landingName }} Dashboard</h1>
+        <general-button @click.native="editLanding"> Edit Page</general-button>
+        <general-button @click.native="previewLanding">
+          Preview Page</general-button
+        >
+        <share-landing-modal :shareableLink="encodeShareLink"
+          >Share Page</share-landing-modal
+        >
+        <pricing-user-modal></pricing-user-modal>
+        <disabled-button
+          class="updatetrashButton"
+          @click.native="handleDelete()"
+          ><font-awesome-icon icon="fa-solid fa-trash-can"
+        /></disabled-button>
+        <landing-update-modal class="updatetrashButton"></landing-update-modal>
+      </div>
+      <div class="summary">
+        <h2>{{ landingName }} Page Statistic</h2>
+        <div class="cardFlexContainer">
+          <dashboard-card>
+            <template #logo>
+              <sign-up :gradientBoolean="true"></sign-up
+            ></template>
+            <template #title> <h4>Sign Ups</h4></template>
+            <template #content>
+              <h1>{{ signups }}</h1>
+            </template>
+          </dashboard-card>
+          <dashboard-card>
+            <template #logo> <eyes :gradientBoolean="true"></eyes></template>
+            <template #title> <h4>Total Unique Views</h4></template>
+            <template #content>
+              <h1>{{ uniqueviews }}</h1>
+            </template>
+          </dashboard-card>
+          <dashboard-card>
+            <template #logo>
+              <revenue :gradientBoolean="true"> </revenue
+            ></template>
+            <template #title> <h4>Expected Revenue</h4></template>
+            <template #content>
+              <h1>RM {{ expectedrevenue }}</h1>
+            </template>
+          </dashboard-card>
+          <dashboard-card>
+            <template #logo>
+              <revenue-target :gradientBoolean="true"></revenue-target>
+            </template>
+            <template #title> <h4>Goals Revenue</h4></template>
+            <template #content>
+              <h1>RM {{ goalsrevenue }}</h1>
+            </template>
+          </dashboard-card>
+        </div>
+      </div>
+      <div class="chart">
+        <h2>Unique Views Charts</h2>
+        <chart-card>
+          <apexchart
+            type="area"
+            height="350"
+            :options="chartOptions"
+            :series="series"
+          ></apexchart
+        ></chart-card>
       </div>
     </div>
-    <div class="chart">
-      <h2>Unique Views Charts</h2>
-      <chart-card>
-        <apexchart
-          type="area"
-          height="350"
-          :options="chartOptions"
-          :series="series"
-        ></apexchart
-      ></chart-card>
-    </div>
+    <div v-else><loading-screen></loading-screen></div>
   </div>
 </template>
 
@@ -82,6 +87,7 @@ import ShareLandingModal from "../../components/ShareLandingModal.vue";
 import DisabledButton from "@/components/DisabledButton.vue";
 import LandingUpdateModal from "../../components/LandingUpdateModal.vue";
 import PricingUserModal from "@/components/PricingUserModal.vue";
+import LoadingScreenVue from "../../components/general/LoadingScreen.vue";
 export default {
   components: {
     DashboardCard,
@@ -95,16 +101,18 @@ export default {
     DisabledButton,
     LandingUpdateModal,
     PricingUserModal,
+    "loading-screen": LoadingScreenVue,
   },
   computed: {
     // ...mapGetters(["currentProjectID"]),
     encodeShareLink() {
       let encodelandingID = btoa(this.currentProjectID);
-      return window.location.origin + "/landingpage/" + encodelandingID;
+      return window.location.origin + "/landingpage/share/" + encodelandingID;
     },
   },
   data() {
     return {
+      loading: true,
       signups: 0,
       uniqueviews: 0,
       expectedrevenue: 0,
@@ -166,7 +174,7 @@ export default {
           opacity: 0.5,
         },
         grid: {
-        show: false,
+          show: false,
         },
         xaxis: {
           type: "datetime",
@@ -176,23 +184,33 @@ export default {
   },
   methods: {
     async handleDelete() {
-      alert("Are you sure you want to delete this Landing Page?");
-      await landingApi.deleteLandingPage(this.currentProjectID);
-      this.$router.push({
-        name: "Project",
-        params: { id: this.currentProjectID },
-      });
+      let confirmDelete = confirm(
+        "Are you sure you want to delete this Landing Page?"
+      );
+      if (confirmDelete) {
+        await landingApi.deleteLandingPage(this.currentProjectID);
+        this.$router.push({
+          name: "Project",
+          params: { id: this.currentProjectID },
+        });
+      }
     },
     editLanding() {
       //Set Editing Mode
       this.$store.commit("setEditingMode", true);
-      this.$router.push({name: "LandingEditor", params:{id: this.currentProjectID}});
+      this.$router.push({
+        name: "LandingEditor",
+        params: { id: this.currentProjectID },
+      });
     },
     previewLanding() {
       this.$store.commit("setPreviewTrue");
-      this.$store.commit("setpageHTML",this.landingHTML)
-      this.$store.commit("setpageCSS",this.landingCSS)
-      this.$router.push("/landingpage");
+      this.$store.commit("setpageHTML", this.landingHTML);
+      this.$store.commit("setpageCSS", this.landingCSS);
+      this.$router.push({
+        name: "LandingPage",
+        params: { id: this.currentProjectID },
+      });
     },
     async getLandingData() {
       let landingdata = await landingApi.getLandingData(this.currentProjectID);
@@ -233,10 +251,9 @@ export default {
   },
 
   async created() {
-    this.currentProjectID = this.$route.params.id
+    this.currentProjectID = this.$route.params.id;
     await this.getLandingData();
     // let today = new Date(2022,1,21)
-
     let today = new Date().toLocaleDateString();
     let projectdate = new Date(this.currentDate).toLocaleDateString();
     //Current Date not pushed to series chart yet
@@ -267,6 +284,7 @@ export default {
       newData.splice(newData.length - 1, 1, newTodayPageView);
       this.series = [
         {
+          name: "Views",
           data: newData,
         },
       ];
@@ -277,7 +295,6 @@ export default {
       };
       await landingApi.updateSeries(this.currentProjectID, payloadUpdate);
     }
-
     //If projectdate is not today
     else if (projectdate != today) {
       //Reset today page view and add remainder
@@ -293,6 +310,7 @@ export default {
       newData.push({ x: today, y: pageviewResetRemainder });
       this.series = [
         {
+          name: "Views",
           data: newData,
         },
       ];
@@ -310,6 +328,7 @@ export default {
       this.currentDate = today;
       await landingApi.updateCurrentDate(this.currentProjectID, payload2);
     }
+    this.loading = false;
   },
 };
 </script>

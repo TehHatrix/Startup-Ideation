@@ -1,59 +1,62 @@
 <template>
-  <div id="templateContainer">
-    <circle-arrow-left
-      v-if="previewMode"
-      @click.native="routeBack"
-      class="sticky"
-    ></circle-arrow-left>
-    <div v-html="savedHTML" ref="template"></div>
-    <div id="modal-comp">
-      <transition name="fade" appear>
-        <div
-          class="modal-overlay"
-          v-if="showModal"
-          @click="showModal = false"
-        ></div>
-      </transition>
-      <transition name="slide" appear>
-        <div class="modal" v-if="showModal">
-          <transition name="fade" appear>
-            <div class="preInterview">
-              <h1>Pricing Subscription Form</h1>
-              <slot name="hypothesisTitle"> </slot>
-              <h3>Your Name</h3>
-              <input
-                type="text"
-                class="inputField"
-                name="name"
-                id="name"
-                v-model="userName"
-                required
-              />
-              <h3>Email Address</h3>
-              <div class="goalsCurrency">
+  <div id="vueBody">
+    <div v-if="loading"><loading-screen></loading-screen></div>
+    <div id="templateContainer" v-show="!loading">
+      <circle-arrow-left
+        v-if="previewMode"
+        @click.native="routeBack"
+        class="sticky"
+      ></circle-arrow-left>
+      <div v-html="savedHTML" ref="template"></div>
+      <div id="modal-comp">
+        <transition name="fade" appear>
+          <div
+            class="modal-overlay"
+            v-if="showModal"
+            @click="showModal = false"
+          ></div>
+        </transition>
+        <transition name="slide" appear>
+          <div class="modal" v-if="showModal">
+            <transition name="fade" appear>
+              <div class="preInterview">
+                <h1>Pricing Subscription Form</h1>
+                <slot name="hypothesisTitle"> </slot>
+                <h3>Your Name</h3>
                 <input
-                  type="email"
+                  type="text"
                   class="inputField"
                   name="name"
                   id="name"
-                  v-model="userEmail"
+                  v-model="userName"
                   required
                 />
-              </div>
+                <h3>Email Address</h3>
+                <div class="goalsCurrency">
+                  <input
+                    type="email"
+                    class="inputField"
+                    name="name"
+                    id="name"
+                    v-model="userEmail"
+                    required
+                  />
+                </div>
 
-              <div class="footerButton">
-                <general-button @click.native="showModal = false">
-                  Close</general-button
-                >
-                <disabled-button v-if="previewMode">Disabled</disabled-button>
-                <general-button v-else @click.native="sendDataLanding()">
-                  Get Started</general-button
-                >
+                <div class="footerButton">
+                  <general-button @click.native="showModal = false">
+                    Close</general-button
+                  >
+                  <disabled-button v-if="previewMode">Disabled</disabled-button>
+                  <general-button v-else @click.native="sendDataLanding()">
+                    Get Started</general-button
+                  >
+                </div>
               </div>
-            </div>
-          </transition>
-        </div>
-      </transition>
+            </transition>
+          </div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
@@ -64,10 +67,17 @@ import circleArrowLeft from "@/components/icons/circlearrowleft.vue";
 import { mapGetters } from "vuex";
 import landingApi from "@/api/landingApi.js";
 import DisabledButton from "../../components/DisabledButton.vue";
+import LoadingScreenVue from "../../components/general/LoadingScreen.vue";
 export default {
-  components: { GeneralButton, circleArrowLeft, DisabledButton },
+  components: {
+    GeneralButton,
+    circleArrowLeft,
+    DisabledButton,
+    "loading-screen": LoadingScreenVue,
+  },
   data() {
     return {
+      loading: false,
       currentID: 0,
       showModal: false,
       previewMode: false,
@@ -80,6 +90,7 @@ export default {
       currentprice: 0,
       userName: "",
       userEmail: "",
+      publicMode: false,
     };
   },
   methods: {
@@ -118,8 +129,9 @@ export default {
         let pricingUser = {
           name: this.userName,
           email: this.userEmail,
+          pricing: this.currentprice,
         };
-        await landingApi.storePricingUser(this.currentID,pricingUser)
+        await landingApi.storePricingUser(this.currentID, pricingUser);
         //Get money
         let payload = {
           revenue: this.currentprice,
@@ -139,8 +151,7 @@ export default {
       this.$nextTick(() => {
         for (let i = 0; i < pricingbuttons.length; i++) {
           pricingbuttons[i].addEventListener("click", function () {
-            var vueInstance =
-              document.getElementById("templateContainer").__vue__;
+            var vueInstance = document.getElementById("vueBody").__vue__;
             vueInstance.currentprice = price[i].innerText.match(/\d+/)[0];
             vueInstance.showModal = true;
           });
@@ -155,7 +166,6 @@ export default {
   computed: {
     ...mapGetters([
       "currentTemplate",
-      "currentProjectID",
       "pageHTML",
       "pageCSS",
       "previewModeRepo",
@@ -173,8 +183,7 @@ export default {
       this.$nextTick(() => {
         for (let i = 0; i < pricingbuttons.length; i++) {
           pricingbuttons[i].addEventListener("click", function () {
-            var vueInstance =
-              document.getElementById("templateContainer").__vue__;
+            var vueInstance = document.getElementById("vueBody").__vue__;
             vueInstance.showModal = true;
           });
         }
@@ -183,7 +192,7 @@ export default {
   },
 
   async created() {
-        this.$store.commit("closeToast");
+    this.$store.commit("closeToast");
     this.previewMode = this.previewModeRepo;
     //Get Landing Page Data
     if (this.previewMode === false) {
@@ -209,17 +218,18 @@ export default {
       let projectdate = new Date(this.currentDate).toLocaleDateString();
       // Means dashboard not updated & reseted (remainder page view will be added when dashboard is visited).
       if (projectdate != today) {
-        await landingApi.incrementRemainderPageView(this.currentProjectID);
-        await landingApi.incrementTotalPageView(this.currentProjectID);
+        await landingApi.incrementRemainderPageView(this.currentID);
+        await landingApi.incrementTotalPageView(this.currentID);
       }
       //Currentdate == today
       else {
         //Todaypageview++
-        await landingApi.incrementTodayPageView(this.currentProjectID);
+        await landingApi.incrementTodayPageView(this.currentID);
         //Totalpageview++
-        await landingApi.incrementTotalPageView(this.currentProjectID);
+        await landingApi.incrementTotalPageView(this.currentID);
       }
     }
+    this.loading = false;
   },
   destroyed() {
     this.$store.commit("setPreviewFalse");

@@ -16,7 +16,10 @@
           <transition name="fade" appear>
             <div class="preInterview">
               <h2>Sign Up Responses</h2>
-              <div v-if="this.pricingUsers.length == 0"> There are no responses yet! Share your landing page to get responses!</div>
+              <div v-if="this.pricingUsers.length == 0">
+                There are no responses yet! Share your landing page to get
+                responses!
+              </div>
               <div
                 class="responseCard"
                 v-for="(user, index) in pricingUsers"
@@ -29,7 +32,11 @@
                 <span class="iconColor"
                   ><font-awesome-icon icon="fa-regular fa-envelope" />
                 </span>
-                Email : <strong>{{ user.useremail }}</strong>
+                Email : <strong>{{ user.useremail }}</strong> <br />
+                <span class="iconColor"
+                  ><font-awesome-icon icon="fa-solid fa-money-check-dollar" />
+                </span>
+                Revenue : RM <strong>{{ user.pricing }}</strong> <br />
               </div>
             </div>
           </transition>
@@ -57,7 +64,6 @@ export default {
   async created() {
     let pricingUsers = await landingApi.getPricingUser(this.currentProjectID);
     this.pricingUsers = pricingUsers.data.data;
-    console.log(this.pricingUsers);
   },
 };
 </script>

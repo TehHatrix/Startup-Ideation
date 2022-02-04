@@ -113,9 +113,7 @@
           @click.native="showCustomerContent"
           >Back</general-button
         >
-        <general-button
-          v-if="modalScript"
-          @click.native="saveLogs"
+        <general-button v-if="modalScript" @click.native="saveLogs"
           >Save</general-button
         >
       </div>
@@ -197,6 +195,13 @@ export default {
       );
       if (logsUpdate.data.success === false) {
         throw new Error("Could not update Customer Logs");
+      } else {
+        this.$store.commit("setTypeToast", "Success");
+        this.$store.commit(
+          "setMessage",
+          "Update Customer Logs successful!"
+        );
+        this.$store.commit("showToast");
       }
     },
 
@@ -460,7 +465,7 @@ input[type="file"] {
         height: 470px;
         border-radius: 20px;
         background: #f0f0f0;
-        white-space: pre-wrap; 
+        white-space: pre-wrap;
 
         p {
           padding-left: 10px;
