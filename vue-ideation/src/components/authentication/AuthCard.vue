@@ -19,7 +19,6 @@
                     <span class="auth-span">or use your account</span>
                     <input class="auth-input" type="email" placeholder="Email" v-model="formSignIn.email" />
                     <input class="auth-input" type="password" placeholder="Password" v-model="formSignIn.password" />
-                    <a class="auth-a" href="#">Forgot your password?</a>
                     <button class="auth-btn" >Sign In</button>
                 </form>
             </div>
@@ -68,13 +67,15 @@ export default {
     },  
     components: {
     },
+    destroyed() {
+        this.$store.commit('closeToast')
+    },
     methods: {
         async signUp() {
             try {
                     // this.processing = true
                     await api.createSession()
                     let res = await api.register(this.formSignUp)
-                    console.log(res)
                     if(res.data.success) {
                         this.formSignUp.name = ''
                         this.formSignUp.username = ''
@@ -84,7 +85,22 @@ export default {
 
                         this.isSignUp = false
                     } else {
-                        console.log(res.data.errors)
+                        if(typeof res.data.errors == 'object' && res.data.errors != null) {
+                            let email = res.data.errors.email ? res.data.errors.email : ''
+                            let username = res.data.errors.username ? res.data.errors.username : ''
+                            let pass = res.data.errors.password? res.data.errors.password : ''
+                            let message =  email + '\n' + username + '\n' + pass 
+
+                            
+                            this.$store.commit('setTypeToast', 'Error')
+                            this.$store.commit('setMessage', message)
+                            this.$store.commit('showToast')
+                        } else {
+                            this.$store.commit('setTypeToast', 'Error')
+                            this.$store.commit('setMessage', res.data.errors)
+                            this.$store.commit('showToast')
+                            
+                        }
 
                     }
 
@@ -104,9 +120,27 @@ export default {
                         this.formSignIn.password = ''
                         this.processing = false
                     } else {
-                        this.processing = false
+                        if(typeof res.data.errors == 'object' && res.data.errors != null) {
+                            let email = res.data.errors.email ? res.data.errors.email : ''
+                            let username = res.data.errors.username ? res.data.errors.username : ''
+                            let pass = res.data.errors.password? res.data.errors.password : ''
+                            let message =  email + '\n' + username + '\n' + pass 
+                            // alert(message)                            
+                            this.$store.commit('setTypeToast', 'Error')
+                            this.$store.commit('setMessage', message)
+                            this.$store.commit('showToast')
+                        } else {
+                            this.$store.commit('setTypeToast', 'Error')
+                            this.$store.commit('setMessage', res.data.errors)
+                            this.$store.commit('showToast')
+                            
+                        }
 
                     }
+                        this.processing = false
+                    //     this.$store.commit('setTypeToast', 'Error')
+                    //     this.$store.commit('setMessage', res.data.errors)
+                    //     this.$store.commit('showToast')
 
 
                 }
@@ -115,7 +149,6 @@ export default {
 
             }
         }
-
     }
 }
 </script>
@@ -132,6 +165,7 @@ export default {
 	max-width: 100%;
 	min-height: 500px;
     margin-bottom: 10px;
+    z-index: 0;
 }
 
 .auth-h1 {

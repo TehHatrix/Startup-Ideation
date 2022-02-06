@@ -1,5 +1,8 @@
 <template lang="">
     <div class="c-container">
+        <div class="text-left mb-1">
+            <button class="general-button w-5" @click="$router.go(-1)">Back</button>
+        </div>
         <div class="l-page-title">
             <span>
                 Lean Canvas

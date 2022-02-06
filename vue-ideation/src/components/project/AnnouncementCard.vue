@@ -108,6 +108,14 @@ export default {
         ]),
     },  
 
+    mounted() {
+        this.connect()
+    },
+
+    beforeDestroy() {
+        this.disconnect()
+    },
+
     data() {
         return{
             projectId: this.$route.params.id,
@@ -211,6 +219,21 @@ export default {
                 console.log(error);
             }
         },
+
+        connect() {
+            window.Echo.private(`Project.${this.projectId}`)
+                        .listen('AnnouncementUpdated', async () => {
+                            try {
+                                await this.$store.dispatch('getAnnouncement', this.projectId)
+                            } catch (error) {
+                                console.log(error)
+                            }
+                        })
+        },
+
+        disconnect() {
+            window.Echo.leaveChannel(`Project.${this.projectId}}`)
+        }
 
         
     },

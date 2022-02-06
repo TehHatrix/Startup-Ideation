@@ -3,7 +3,7 @@
         <div class="card-black">
             <div class="card-title">
                 <span>Collaborator</span>
-                <font-awesome-icon icon="fa-user-edit" id="setting" @click="openAddModal" ></font-awesome-icon>
+                <font-awesome-icon icon="fa-user-edit" id="setting" @click="openAddModal" v-if="user.id === project.creator_id" ></font-awesome-icon>
             </div>
             <div class="card-body">
                 

@@ -3,6 +3,9 @@
         <main class="c-container">
             <!-- header card section -->
             <section>
+                <div class="text-left mb-1">
+                    <button class="general-button w-5" @click="$router.go(-1)">Back</button>
+                </div>
                 <div class="c-header-div">
                     <span class="title">Lean Canvas</span>
                     <div class="c-header-btn-container grid grid-cols-2 gap-4">

@@ -1,6 +1,9 @@
 <template lang="">
     <div v-if="!loading">
         <div class="c-container">
+                <div class="text-left mb-1">
+                    <button class="general-button w-5" @click="$router.go(-1)">Back</button>
+                </div>
             <section class="page-title">
                 <span v-if="canvas !== null">
                     {{ canvas.name }}
@@ -135,7 +138,6 @@ export default {
         connect() {
             window.Echo.private(`FreeCanvas.${this.$route.params.canvasId}`)
                         .listen('FreeCanvasContentUpdated', async () => {
-                            console.log('j')
                             let data = await this.$store.dispatch('getFreeCanvasContent', this.$route.params.canvasId)
                             if(data.success) {
                                 this.editorContent.content = this.FreeCanvasContent

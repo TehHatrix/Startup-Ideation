@@ -46,8 +46,9 @@ const mutations = {
     },
 
     SET_FOR_ME_TASK(state, payload) {
+        // console.table(payload)
         let taskForMe = payload.tasks.filter( task => {
-            return task.assigned_to === payload.userId || task.assigned_to === null ? true : false
+            return task.assigned_to == payload.userId  ? true : false
         })
         let tasksnew = taskForMe.filter( task => !task.completed)
 
@@ -65,7 +66,7 @@ const actions = {
             commit('GET_TASKS', res.data.tasks)
             commit('SET_TASK_DEFAULT', res.data.tasks)
             commit('SET_COMPLETED_TASK', res.data.tasks)
-            commit('SET_FOR_ME_TASK', {tasks: res.data.tasks, user: payload.userId})
+            commit('SET_FOR_ME_TASK', {tasks: res.data.tasks, userId: payload.userId})
         }
         return res
     },

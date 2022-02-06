@@ -49,7 +49,7 @@
                         </div> -->
 
                         <div class="canvas-wrapper">
-                            <div class="canvas-title">
+                            <div class="canvas-title" @click="goContent(canvas.id)">
                                 <span>{{ canvas.name }}</span>
                             </div>
                             <div class="grid grid-cols-2 gap-2">

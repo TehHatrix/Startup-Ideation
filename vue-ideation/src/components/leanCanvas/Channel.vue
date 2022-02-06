@@ -157,8 +157,8 @@ export default {
         },
 
         closeAddModal() {
-            this.showAddModal = false
             this.contentForm.topic = null
+            this.showAddModal = false
         },
 
         openAddModal() {
@@ -173,14 +173,14 @@ export default {
                     if(data.success) {
                         this.setSegment()
 
-                        this.showAddModal = false
+                        this.closeAddModal()
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Success')
                         this.$store.commit('setMessage', 'Successfully Added')
                         this.$store.commit('showTimeoutToast')
                     } else {
-                        this.showAddModal = false
+                        this.closeAddModal()
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Error')

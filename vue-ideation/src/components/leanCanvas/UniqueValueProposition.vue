@@ -200,9 +200,9 @@ export default {
         },
 
         closeAddModal() {
-            this.showAddModal = false
             this.contentForm.topic = null
             this.contentForm.customer_segment_id = null
+            this.showAddModal = false
         },
 
         openAddModal() {

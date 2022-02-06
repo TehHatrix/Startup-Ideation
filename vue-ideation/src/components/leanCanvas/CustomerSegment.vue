@@ -196,8 +196,8 @@ export default {
         },
 
         closeAddModal() {
-            this.contentForm.topic = null
             this.showAddModal = false
+            this.contentForm.topic = null
         },
 
         openAddModal() {
@@ -216,8 +216,8 @@ export default {
                         }
 
                         this.updateAllSegmentDependent()
-
                         this.closeAddModal()
+
                         this.processing = false
 
                         this.$store.commit('setTypeToast', 'Success')
@@ -263,8 +263,8 @@ export default {
                             this.$store.commit('SET_CUSTOMER_SEGMENT', resAll.data.content)
                         }
                         this.updateAllSegmentDependent()
-
                         this.closeDeleteModal()
+
                         this.processing = false
                     } else {
 
@@ -305,8 +305,8 @@ export default {
                             this.$store.commit('SET_CUSTOMER_SEGMENT', resAll.data.content)
                         }
                         this.updateAllSegmentDependent()
-                        
                         this.closeUpdateModal()
+                        
                         this.processing = false
                     } else {
                         this.closeUpdateModal() 

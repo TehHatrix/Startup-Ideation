@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AnnouncementUpdated;
 use App\Models\Announcement;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -42,6 +43,8 @@ class AnnouncementController extends Controller
         $announcement->project()->associate($project);
         $announcement->save();
 
+        broadcast(new AnnouncementUpdated($projectId))->toOthers();
+
         return response()->json([
             'success' => true,
             'announcement' => $announcement,
@@ -68,6 +71,8 @@ class AnnouncementController extends Controller
             'title' => $data['title'],
             'description' => $data['description']
         ]);
+        broadcast(new AnnouncementUpdated($projectId))->toOthers();
+
 
         return response()->json([
             'success' => true,
@@ -83,6 +88,8 @@ class AnnouncementController extends Controller
         $ann = Announcement::find($id);
         if($ann->publisher_id == Auth::id()) {
             $ann->delete();
+            broadcast(new AnnouncementUpdated($projectId))->toOthers();
+
             return response()->json([
                 'success' => true,
                 'errors' => null

@@ -84,6 +84,7 @@ export default {
   margin-right: auto;
   left: 0;
   right: 0;
+  top: 0;
   z-index: 999999;
   text-align: left;
   padding: 21px 0;
@@ -128,6 +129,7 @@ export default {
   margin-top: 0;
   margin-bottom: 0;
   color: #878787;
+  white-space: pre;
 }
 
 .toast__content {

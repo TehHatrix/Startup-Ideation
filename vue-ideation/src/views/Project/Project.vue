@@ -404,6 +404,10 @@ export default {
         let res = await this.$store.dispatch("getProject", this.projectId);
         if (!res.data.success) {
           alert(res.data.errors);
+          // console.log(res.data.erros)
+          // this.$store.commit('setTypeToast', 'Error')
+          // this.$store.commit('setMessage', res.data.errors)
+          // this.$store.commit('showToast')
           this.$router.push({ name: "ProjectsList" });
         }
         let annRes = await this.$store.dispatch(
@@ -446,7 +450,10 @@ export default {
           this.resetSettingModal();
         } else if (!res.data.success || res.status !== 200) {
           // !temp
-          alert("unsuccessful");
+          this.$store.commit('setTypeToast', 'Error')
+          this.$store.commit('setMessage', 'Error udpating project')
+          this.$store.commit('showToast')
+
         }
       } catch (error) {
         console.log(error);
@@ -456,6 +463,8 @@ export default {
 
   beforeDestroy() {
     // this.disconnect()
+      this.$store.commit('closeToast')
+
   },
 };
 </script>

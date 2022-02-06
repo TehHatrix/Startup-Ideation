@@ -115,8 +115,7 @@ export default {
 
     connect() {
       window.Echo.private(`ProjectList.${this.user.id}`)
-                  .listen('CollaboratorAdded', async (e) => {
-                    console.log(e + 'from pusher ')
+                  .listen('CollaboratorAdded', async () => {
                     this.loading = true
                     let res = await this.$store.dispatch('getProjects')
                     if(res.data.success) {
@@ -160,7 +159,6 @@ export default {
   },
 
   beforeDestroy() {
-    this.disconnect()
     
   }
 };

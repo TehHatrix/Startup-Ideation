@@ -46,7 +46,63 @@
                 <div v-if="currentProgress == 3">
                     <h1>Provide your solution </h1>
                     <p>For each of your customer segment, you want to give the solution to their problem </p>
-       
+                    <p>This is what you think the solution that you will provide and solve your customer segment based on the problem</p>
+                    <h1>For example, with a project of Uber, we will have the following Solution</h1>
+                    <ul>
+                        <li>Cheaper ride</li>
+                        <li>Flexible Work Schedule</li>
+                    </ul>
+                </div>
+                <div v-if="currentProgress == 4">
+                    <h1>Unique Value Proposition</h1>
+                    <p>A value proposition is a promise of value to be delivered</p>
+                    <p>Describe the uniqueness of your product and show its key difference from the existing alternative</p>
+                    <p>It is better to make a single, clear, compelling message that turns an unaware visitor into an interested prospect </p>
+                    <h1>For example, with a project of Uber, we will have the following Unique value Proposition</h1>
+                    <ul>
+                        <li>All services in one app, which allows you to find a safe ride 24/7</li>
+                        <li>Work on your own schedule and revenue, navigate route through the app</li>
+                    </ul>
+                </div>
+                <div v-if="currentProgress == 5">
+                    <h1>Channel</h1>
+                    <p>This is a way to which you will reach to your customer</p>
+                    <p>It can be said that this is where you wiil list how you will market your product to the potential customer</p>
+                    <h1>For Example, with a project of Uber, we will have the following Channel</h1>
+                    <ul>
+                        <li>User Referral</li>
+                        <li>Social Media</li>
+                    </ul>
+                </div>
+                <div v-if="currentProgress == 6">
+                    <h1>Key Metric</h1>
+                    <p>Define the key tracking metrics to measure the progress of your business</p>
+                    <h1>For Example, with a project of Uber, we will have the following Key Metric</h1>
+                    <ul>
+                        <li>Number of User</li>
+                        <li>Income</li>
+                        <li>Number of ride</li>
+                    </ul>
+                </div>
+                <div v-if="currentProgress == 7">
+                    <h1>Cost Structure</h1>
+                    <p>List the fixed and variable cost for your product </p>
+                    <p>This is where you will list the cost that you need to take to run your business</p>
+                    <h1>For Example, with a project of Uber, we will have the following Cost Structure</h1>
+                    <ul>
+                        <li>Product Development</li>
+                        <li>Marketing Expense</li>
+                        <li>Salaries</li>
+                    </ul>
+                </div>
+                <div v-if="currentProgress == 8">
+                    <h1>Unfair Advantage</h1>
+                    <p>A special thing about your idea that your competitors are not able to copy or obtain in any possible way </p>
+                    <h1>For Example, with a project of Uber, we will have the following Unfair Advantage</h1>
+                    <ul>
+                        <li>Low priced rides at the push of a button</li>
+                    </ul>
+
                 </div>
 
 
