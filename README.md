@@ -1,4 +1,6 @@
-# Introduction 
+# Introduction
+
+![Logo](https://github.com/TehHatrix/startup-ideation/blob/master/README/logo.png?raw=true =250x250)
 
 Startup Ideation System goal is to help the user stimulate their idea and determine their idea to see if there are opportunities in term of market, problem and product based on real customer feedback. The Startup Ideation System is mainly based on Lean Startup Principle and modified version of Business Model Canvas known as Lean Canvas to ensure the system follow the right path for a startup-based ideation system. 
 
@@ -11,10 +13,11 @@ VueJS 2\
 Laravel 8\
 PostgreSQL
 
+## User Interfaces (Not included all)
 
 
 ## Usage
-*Please make sure Docker is installed*
+*Please make sure Docker and WSL2 is installed in your machine*
 
 To use the system locally, for the front end, navigate to vue-ideation folder and run 
 ```bash
