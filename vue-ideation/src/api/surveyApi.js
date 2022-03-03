@@ -21,6 +21,10 @@ export default {
     return api.get(`/api/survey/indexuseranswer/${projectID}`)
   },
 
+  async getProductName(projectID) {
+    return api.get(`/api/getproductname/${projectID}`)
+},
+
 
   async updateGoalName(projectID, payload) {
     return api.put(`api/survey/updategoalname/${projectID}`, payload)

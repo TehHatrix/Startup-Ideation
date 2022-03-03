@@ -76,7 +76,13 @@
                 <span class="text nav-text">Hypothesis</span>
               </a>
             </li>
-            <li class="nav-link" v-if="this.$route.name == 'SurveySummary' || this.$route.name == 'Survey'  ">
+            <li
+              class="nav-link"
+              v-if="
+                this.$route.name == 'SurveySummary' ||
+                this.$route.name == 'Survey'
+              "
+            >
               <a @click="routeSidebar('SurveyDashboard')">
                 <i class="bx bx-line-chart icon"></i>
                 <span class="text nav-text">Back to Dashboard</span>
@@ -121,15 +127,23 @@ export default {
       };
     },
 
-    ...mapGetters(['project'])
+    ...mapGetters(["project"]),
   },
-  
+
   methods: {
     routeSidebar(routename) {
-      this.$router.push({
-        name: routename,
-        params: { id: this.currentProjectID },
-      });
+      console.log(this.currentProjectID);
+      if (routename === "SurveyDashboard") {
+        this.$router.push({
+          name: routename,
+          params: { projectID: this.currentProjectID },
+        });
+      } else {
+        this.$router.push({
+          name: routename,
+          params: { id: this.currentProjectID },
+        });
+      }
     },
 
     handleResume() {

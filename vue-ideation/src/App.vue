@@ -6,9 +6,11 @@
       </transition>
     </div>
 
+    <!-- If LandingPreview Page (No Transition) -->
     <div v-if="authenticated && noTransitionRoute">
       <router-view> </router-view>
     </div>
+    <!-- Else If Page with sidebar and navbar -->
     <sidebar v-else-if="authenticated && noSidebarRoute === false">
       <side-navbar>
         <vue-page-transition name="fade-in-right">
@@ -16,19 +18,25 @@
         </vue-page-transition>
       </side-navbar>
     </sidebar>
+    <!-- If Page with navbar Only -->
     <navbar v-else-if="authenticated && noNavbarRoute === false">
       <vue-page-transition name="fade-in-right">
         <router-view> </router-view>
       </vue-page-transition>
     </navbar>
+    <!-- If Page with No navbar no sidebar -->
     <vue-page-transition
       v-else-if="authenticated && noNavbarRoute && noSidebarRoute"
       name="fade-in-right"
     >
       <router-view></router-view>
     </vue-page-transition>
+    
+    <!-- If  Non authenticated -->
+    <vue-page-transition v-else name="fade-in-right">
+      <router-view ></router-view>
+    </vue-page-transition>
 
-    <router-view v-else></router-view>
   </div>
 </template>
 
@@ -78,7 +86,7 @@ export default {
       return false;
     },
     noTransitionRoute() {
-      if (this.$route.name === "LandingPage") {
+      if (this.$route.name === "LandingPage" || this.$route.name === "LandingPageShare") {
         return true;
       } else {
         return false;

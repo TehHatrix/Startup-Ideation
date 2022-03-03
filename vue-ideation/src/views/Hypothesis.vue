@@ -437,12 +437,14 @@ export default {
     },
     async getHypothesisData() {
       try {
-        const customersegWithproblems = await this.$http.get(
-          `http://localhost:80/api/getproblemswithcustSeg/${this.$route.params.id}`
-        );
-        const hypothesisData = await this.$http.get(
-          `http://localhost:80/api/getproblemHypothesis/${this.$route.params.id}`
-        );
+        // const customersegWithproblems = await this.$http.get(
+        //   `http://localhost:80/api/getproblemswithcustSeg/${this.$route.params.id}`
+        // );
+        const customersegWithproblems = await hypothesisApi.getProblemCustomerSeg(this.$route.params.id);
+        const hypothesisData = await hypothesisApi.getProblemHypothesis(this.$route.params.id);
+        // const hypothesisData = await this.$http.get(
+        //   `http://localhost:80/api/getproblemHypothesis/${this.$route.params.id}`
+        // );
         this.custseg_data = customersegWithproblems.data;
         this.defined_hypothesis = hypothesisData.data;
         if (

@@ -113,11 +113,17 @@ export default {
       this.fillMainContent = true;
     },
     handleBack() {
-      this.$router.push({ name: "LandingChooseTemplates", params:{id:this.currentProjectID} });
+      this.$router.push({
+        name: "LandingChooseTemplates",
+        params: { id: this.currentProjectID },
+      });
     },
     handleBackDashboard() {
       this.$store.commit("setEditingMode", false);
-      this.$router.push({ name: "LandingDashboard", params:{id:this.currentProjectID} });
+      this.$router.push({
+        name: "LandingDashboard",
+        params: { id: this.currentProjectID },
+      });
     },
     injectModal() {
       let stringHTML = this.editor.getHtml();
@@ -143,7 +149,10 @@ export default {
       this.$store.commit("setpageCSS", this.editor.getCss());
       this.$store.commit("setpageHTML", this.injectModal());
       this.$store.commit("setPreviewTrue");
-      this.$router.push({name:"LandingPage", params:{id:this.currentProjectID}})
+      this.$router.push({
+        name: "LandingPage",
+        params: { id: this.currentProjectID },
+      });
     },
     async handleSave() {
       let confirmDesign = confirm("Are you sure with this design?");
@@ -163,7 +172,10 @@ export default {
             throw new Error("Update Landing Page Fail!");
           } else {
             this.$store.commit("setEditingMode", false);
-            this.$router.push({ name: "LandingDashboard", params:{id:this.currentProjectID} });
+            this.$router.push({
+              name: "LandingDashboard",
+              params: { id: this.currentProjectID },
+            });
           }
         } else {
           let addPage = await landingApi.addLandingPage(
@@ -174,7 +186,10 @@ export default {
             throw new Error("Add Landing Page Fail!");
           } else {
             this.$store.commit("setEditingMode", false);
-            this.$router.push({ name: "LandingDashboard", params:{id:this.currentProjectID} });
+            this.$router.push({
+              name: "LandingDashboard",
+              params: { id: this.currentProjectID },
+            });
           }
         }
       }
@@ -369,11 +384,11 @@ export default {
         {
           id: "canvas-clear",
           className: "fa fa-trash",
-          command: (e) =>
-            e.runCommand(
-              "core:canvas-clear",
-              window.confirm("Clear the whole canvas?")
-            ),
+          command: function(){
+            if (confirm("Are you sure want to clear whole canvas?")){
+              editor.runCommand("core:canvas-clear");
+            }
+          }
         },
         {
           id: "sw-visibility",

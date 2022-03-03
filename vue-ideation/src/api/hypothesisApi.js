@@ -1,25 +1,32 @@
 import api from "./config";
 
 export default {
+
+  async getProblemCustomerSeg(projectID) {
+    return api.get(`api/getproblemswithcustSeg/${projectID}`);
+  },
+  async getProblemHypothesis(projectID) {
+    return api.get(`api/getproblemHypothesis/${projectID}`);
+  },
   async addHypothesis(payload) {
-   return api.post('api/hypothesis/store',payload)
+    return api.post('api/hypothesis/store', payload)
   },
   async getinterviewbyHypothesis(hypothesisID) {
     return api.get(`api/getinterviewIDbyHypothesis/${hypothesisID}`)
-   },
+  },
 
-  async deleteHypothesis(hypothesisID){
+  async deleteHypothesis(hypothesisID) {
     return api.delete(`api/hypothesis/delete/${hypothesisID}`)
   },
-  async updateHypothesis(hypothesisID,payload){
-    return api.put(`api/hypothesis/update/${hypothesisID}`,payload)
+  async updateHypothesis(hypothesisID, payload) {
+    return api.put(`api/hypothesis/update/${hypothesisID}`, payload)
   },
 
-  async setHypothesisValidated(interviewID){
+  async setHypothesisValidated(interviewID) {
     return api.put(`api/hypothesis/validate/${interviewID}`)
   },
 
-  async checkHypothesisValidated(projectID){
+  async checkHypothesisValidated(projectID) {
     return api.get(`api/hypothesis/checkvalidate/${projectID}`)
   }
 };

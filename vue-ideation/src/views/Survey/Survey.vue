@@ -152,7 +152,6 @@ import VueConfetti from "vue-confetti";
 import { mapGetters } from "vuex";
 import GeneralButton from "../../components/GeneralButton.vue";
 import surveyApi from "@/api/surveyApi.js";
-import projectApi from "@/api/projectApi.js";
 import LoadingScreenVue from "@/components/general/LoadingScreen.vue";
 
 Vue.use(VueConfetti);
@@ -384,7 +383,6 @@ export default {
           this.customerAnswer["reasonDissapoint"] = this.currentTextboxAnswer;
         }
         this.reset();
-        console.log(this.customerAnswer);
         this.currentStepsIndex += 1;
         this.updatePercentage();
         this.checkEnd();
@@ -514,8 +512,8 @@ export default {
         throw new Error("Cannot Get Survey Data");
       }
       //Get Product Name
-      let projectData = await projectApi.getProject(this.passedProjectID);
-      this.productName = projectData.data.project.project_name;
+      let productNameData = await surveyApi.getProductName(this.passedProjectID);
+      this.productName = productNameData.data;
       //Count Page View
       let today = new Date().toLocaleDateString();
       let projectdate = new Date(this.currentDate).toLocaleDateString();

@@ -18,6 +18,14 @@ class SurveyController extends Controller
         $searchProjectID = DB::table('survey')->where('projectID','=',$projectID)->value('validated');
         return $searchProjectID;
     }
+
+    public function getProductName($projectID){
+        $productName = DB::table('projects')->where('id','=',$projectID)->value('project_name');
+        return $productName;
+    }
+
+
+
     /**
      * Display a listing of the resource.
      *
