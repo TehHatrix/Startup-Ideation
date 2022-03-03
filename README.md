@@ -12,7 +12,9 @@ Laravel 8\
 PostgreSQL
 
 ## User Interfaces (Not included all)
-
+<img src="https://github.com/TehHatrix/startup-ideation/blob/master/README/project.png?raw=true" width="1000" height="500">
+<img src="https://github.com/TehHatrix/startup-ideation/blob/master/README/Landing%20Editor.png?raw=true" width="800" height="400">
+<img src="https://github.com/TehHatrix/startup-ideation/blob/master/README/SurveySummary.png?raw=true" width="800" height="400">
 
 ## Usage
 *Please make sure Docker and WSL2 is installed in your machine*
